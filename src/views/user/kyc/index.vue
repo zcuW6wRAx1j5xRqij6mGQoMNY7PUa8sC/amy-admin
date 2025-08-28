@@ -22,7 +22,7 @@ const { columns, data, loading, getDataByPage, mobilePagination, searchParams, r
     page: 1,
     page_size: 20,
     filter: '',
-    status: ''
+    status: null
   },
   columns: () => [
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
