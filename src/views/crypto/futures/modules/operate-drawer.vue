@@ -11,7 +11,7 @@ interface Props {
   /** the type of operation */
   operateType: NaiveUI.TableOperateType;
   /** the edit row data */
-  rowData?: CryptoPostCoinPlader | null;
+  rowData?: CryptoPostFuturesPlader | null;
 }
 
 const props = defineProps<Props>();

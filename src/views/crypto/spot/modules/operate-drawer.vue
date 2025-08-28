@@ -40,7 +40,7 @@ const title = computed(() => {
 
 const model = ref(createDefaultModel());
 
-function createDefaultModel(): CryptoPostFuturesPlader {
+function createDefaultModel(): CryptoPostSpotPlader {
   return {
     symbol_id: undefined,
     buy_spread: undefined,
@@ -48,7 +48,8 @@ function createDefaultModel(): CryptoPostFuturesPlader {
     id: undefined,
     sell_spread: undefined,
     sort: undefined,
-    status: 0
+    status: 0,
+    is_recommend:0
   }
 }
 
@@ -140,6 +141,7 @@ const handleFileChange = (options: { file: UploadFileInfo }) => {
         <MyFormItem v-model="model.buy_spread" label="买入点差" prop-name="buy_spread" />
         <MyFormItem v-model="model.sell_spread" label="卖出点差" prop-name="sell_spread" />
         <MyFormItem v-model="model.fee" label="手续费" prop-name="fee" />
+        <MyFormItem v-model="model.is_recommend" label="首页推荐" form-type="select" :data-list="statusList" prop-name="is_recommend" />
         <MyFormItem v-model="model.status" label="状态" form-type="select" :data-list="statusList" prop-name="status" />
       </MyForm>
       <template #footer>
