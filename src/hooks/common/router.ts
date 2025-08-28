@@ -18,7 +18,12 @@ export function useRouterPush(inSetup = true) {
 
   const routerBack = router.back;
 
-  async function routerPushByKey(key: RouteKey, options?: App.Global.RouterPushOptions) {
+  interface RouterPushOptions {
+    query?: Record<string, string>;
+    params?: Record<string, string>;
+  }
+
+  async function routerPushByKey(key: RouteKey, options?: RouterPushOptions) {
     const { query, params } = options || {};
 
     const routeLocation: RouteLocationRaw = {
@@ -59,20 +64,18 @@ export function useRouterPush(inSetup = true) {
    * @param loginModule The login module
    * @param redirectUrl The redirect url, if not specified, it will be the current route fullPath
    */
-  async function toLogin(loginModule?: UnionKey.LoginModule, redirectUrl?: string) {
+  async function toLogin(loginModule?: UnionKey.LoginModule) {
     const module = loginModule || 'pwd-login';
 
-    const options: App.Global.RouterPushOptions = {
+    const options: RouterPushOptions = {
       params: {
         module
       }
     };
 
-    const redirect = redirectUrl || route.value.fullPath;
+    // const redirect = redirectUrl || route.value.fullPath;
 
-    options.query = {
-      redirect
-    };
+    options.query = {};
 
     return routerPushByKey('login', options);
   }
@@ -97,9 +100,9 @@ export function useRouterPush(inSetup = true) {
     const redirect = route.value.query?.redirect as string;
 
     if (needRedirect && redirect) {
-      await routerPush(redirect);
+      routerPush(redirect);
     } else {
-      await toHome();
+      toHome();
     }
   }
 

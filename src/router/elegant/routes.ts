@@ -79,6 +79,14 @@ export const generatedRoutes: GeneratedRoute[] = [
     ]
   },
   {
+    name: 'data-detail',
+    path: '/data-detail',
+    component: 'layout.base$view.data-detail',
+    meta: {
+      title: 'data-detail'
+    }
+  },
+  {
     name: 'flow',
     path: '/flow',
     component: 'layout.base',

@@ -171,6 +171,7 @@ const routeMap: RouteMap = {
   "crypto_futures": "/crypto/futures",
   "crypto_spot": "/crypto/spot",
   "crypto_symbol": "/crypto/symbol",
+  "data-detail": "/data-detail",
   "flow": "/flow",
   "flow_futures": "/flow/futures",
   "flow_loan": "/flow/loan",

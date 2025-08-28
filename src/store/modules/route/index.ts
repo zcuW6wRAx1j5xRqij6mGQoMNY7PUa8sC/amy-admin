@@ -391,7 +391,7 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 					"url": "website_config-page",
 					"position": "1",
 					"open_link": 0,
-					"children":[{
+					"children": [{
 						"id": 73,
 						"parent_id": 65,
 						"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
@@ -947,6 +947,33 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 
 			},
 			{
+				"id": 1165,
+				"parent_id": 56,
+				"show_name": "\u7528\u6237\u8be6\u60c5",
+				"icon": "memory:align-horizontal-center",
+				"url": "data-detail",
+				"position": "2",
+				"open_link": 0,
+				"children": [{
+					"id": 73,
+					"parent_id": 65,
+					"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
+					"icon": "memory:align-horizontal-center",
+					"url": "",
+					"position": "1",
+					"open_link": 0,
+					"children": [{
+						"id": 73,
+						"parent_id": 65,
+						"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
+						"icon": "memory:align-horizontal-center",
+						"url": "website_banner",
+						"position": "1",
+						"open_link": 0
+					},]
+				},]
+			},
+			{
 				"id": 165,
 				"parent_id": 56,
 				"show_name": "\u7528\u6237\u8be6\u60c5",
@@ -980,7 +1007,7 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 					"url": "flow_spot",
 					"position": "1",
 					"open_link": 0,
-					"children":[{
+					"children": [{
 						"id": 73,
 						"parent_id": 65,
 						"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
@@ -998,7 +1025,7 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 					"url": "flow_futures",
 					"position": "1",
 					"open_link": 0,
-					"children":[{
+					"children": [{
 						"id": 73,
 						"parent_id": 65,
 						"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
@@ -1013,10 +1040,10 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 					"parent_id": 65,
 					"show_name": "\u589e\u52a0\u51cf\u5c11",
 					"icon": "memory:align-horizontal-center",
-					"url": "flow_loan",
+					"url": "flow_futures",
 					"position": "1",
 					"open_link": 0,
-					"children":[{
+					"children": [{
 						"id": 73,
 						"parent_id": 65,
 						"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",

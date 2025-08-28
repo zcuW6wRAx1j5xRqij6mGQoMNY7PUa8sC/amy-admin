@@ -87,18 +87,18 @@ const {
       align: 'center',
       minWidth: 150
     },
-    {
-      key: 'operate',
-      title: '操作',
-      align: 'center',
-      width: 80,
-      fixed: 'right',
-      render: row => (
-        <div >
-            <NButton onClick={()=> handleDetail(row)}>详情</NButton> 
-        </div>
-      )
-    }
+    // {
+    //   key: 'operate',
+    //   title: '操作',
+    //   align: 'center',
+    //   width: 80,
+    //   fixed: 'right',
+    //   render: row => (
+    //     <div >
+    //         <NButton onClick={()=> handleDetail(row)}>详情</NButton> 
+    //     </div>
+    //   )
+    // }
   ]
 });
 

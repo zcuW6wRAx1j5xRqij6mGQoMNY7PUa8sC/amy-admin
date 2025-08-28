@@ -178,7 +178,7 @@ function edit(id) {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-        <NCard title="币种列表" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
+        <NCard title="ipo列表" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
             <template #header-extra>
                 <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
                     :loading="loading" no-add @refresh="getData" />

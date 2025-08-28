@@ -1,12 +1,15 @@
 <script setup lang="jsx">
 import { onMounted, ref } from 'vue';
-import {  NTag } from 'naive-ui';
+import { NTag } from 'naive-ui';
 import { OrderFuturesList } from '@/service/api/order';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import { commApply } from "../ipo/index"
+import { useRouterPush } from '@/hooks/common/router';
+import { userDetailStore } from '@/store/modules/detail';
 
+const { routerPushByKey } = useRouterPush();
 const appStore = useAppStore();
+const { setDataDetail } = userDetailStore()
 
 const {
   columns,
@@ -52,9 +55,9 @@ const {
       title: '保证金类型',
       align: 'center',
       width: 80,
-      render: row=>{
-        const text = row.margin_type === 'isolated'? '逐仓': '全仓'
-        return <NTag>{{text}}</NTag>
+      render: row => {
+        const text = row.margin_type === 'isolated' ? '逐仓' : '全仓'
+        return <NTag>{{ text }}</NTag>
       }
     },
     {
@@ -98,7 +101,7 @@ const {
       align: 'center',
       width: 120
     }
-    
+
     ,
     {
       key: 'match_price',
@@ -218,8 +221,19 @@ const {
       title: '更新时间',
       align: 'center',
       width: 120
+    },
+    {
+      key: 'operate',
+      title: "操作",
+      align: 'center',
+      width: 100,
+      fixed: 'right',
+      render: row => (
+        <NButton type="primary" ghost size="small" onClick={() => toDetail(row)}>
+          详情
+        </NButton>
+      )
     }
-    
   ]
 });
 
@@ -231,20 +245,26 @@ const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedR
 function edit(id) {
   handleEdit(id);
 }
+
+function toDetail(row) {
+  setDataDetail({...row})
+  routerPushByKey('data-detail');
+}
+
 </script>
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-        <NCard title="币种列表" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
-            <template #header-extra>
-                <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
-                    :loading="loading" no-add @refresh="getData" />
-            </template>
-            <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
-                :flex-height="!appStore.isMobile" :scroll-x="800" :loading="loading" remote :row-key="row => row.id"
-                :pagination="mobilePagination" class="sm:h-full" />
-        </NCard>
-    </div>
+    <NCard title="现货列表" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
+      <template #header-extra>
+        <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
+          :loading="loading" no-add @refresh="getData" />
+      </template>
+      <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
+        :flex-height="!appStore.isMobile" :scroll-x="800" :loading="loading" remote :row-key="row => row.id"
+        :pagination="mobilePagination" class="sm:h-full" />
+    </NCard>
+  </div>
 </template>
 
 <style scoped></style>

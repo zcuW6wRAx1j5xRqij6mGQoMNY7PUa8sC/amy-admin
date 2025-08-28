@@ -24,6 +24,7 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   crypto_futures: () => import("@/views/crypto/futures/index.vue"),
   crypto_spot: () => import("@/views/crypto/spot/index.vue"),
   crypto_symbol: () => import("@/views/crypto/symbol/index.vue"),
+  "data-detail": () => import("@/views/data-detail/index.vue"),
   flow_futures: () => import("@/views/flow/futures/index.vue"),
   flow_loan: () => import("@/views/flow/loan/index.vue"),
   flow_spot: () => import("@/views/flow/spot/index.vue"),
