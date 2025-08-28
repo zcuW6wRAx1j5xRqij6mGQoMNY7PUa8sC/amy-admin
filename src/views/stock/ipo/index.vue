@@ -23,6 +23,8 @@ const {
 } = useTable({
   apiFn: StockIpoList,
   apiParams: {
+    stock_id: null,
+    status: null,
     page: 1,
     size: 20
   },
@@ -152,9 +154,11 @@ async function handleDelete(id: number) {
   loading.value = true;
   try {
     await StockDelIpo({ id });
-    loading.value = false;
+    window.$message?.success('删除成功');
     onDeleted();
-  } catch (error) {
+  } catch (error: any) {
+    window.$message?.error('删除失败');
+    console.error('删除IPO失败:', error);
   } finally {
     loading.value = false;
   }

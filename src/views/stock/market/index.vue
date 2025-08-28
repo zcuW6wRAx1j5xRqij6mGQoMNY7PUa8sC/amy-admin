@@ -23,6 +23,9 @@ const {
 } = useTable({
   apiFn: StockMarketList,
   apiParams: {
+    symbol: null,
+    exchange: null,
+    status: null,
     page: 1,
     size: 20
   },
@@ -216,9 +219,11 @@ async function handleDelete(id: number) {
   loading.value = true;
   try {
     await StockDelMarket({ id });
-    loading.value = false;
+    window.$message?.success('删除成功');
     onDeleted();
-  } catch (error) {
+  } catch (error: any) {
+    window.$message?.error('删除失败');
+    console.error('删除市场股票失败:', error);
   } finally {
     loading.value = false;
   }

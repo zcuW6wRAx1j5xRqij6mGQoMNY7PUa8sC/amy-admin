@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
-import { fetchAddAdmin, fetchEditAdmin, fetchGetAdminRoleList } from '@/service/api/rbac';
 import { statusList } from '@/constants/business';
+import { fetchAddAdmin, fetchEditAdmin, fetchGetAdminRoleList } from '@/service/api/rbac';
 import { isEmpty } from '@/utils/is';
 defineOptions({
   name: 'RoleOperateDrawer'
@@ -32,7 +32,7 @@ onMounted(() => {
     roleList.value = Object.keys(data).map(el => {
       return {
         label: data[el],
-        value: el
+        value: +el
       };
     });
   });
@@ -67,10 +67,9 @@ function handleInitModel() {
     model.value.uid = props.rowData.id;
     Object.assign(model.value, props.rowData);
   }
-  if(model.value.id) {
-    model.value.password = undefined
+  if (model.value.id) {
+    model.value.password = undefined;
   } else {
-    
   }
 }
 
@@ -85,8 +84,8 @@ async function handleSubmit() {
     errorObj.value.name = '请输入名称';
   }
   if (isEmpty(model.value.account)) {
-      errorObj.value.account = '请输入账号';
-    }
+    errorObj.value.account = '请输入账号';
+  }
   if (!isEdit.value) {
     if (isEmpty(model.value.password)) {
       errorObj.value.password = '请输入密码';

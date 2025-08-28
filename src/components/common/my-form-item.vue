@@ -3,7 +3,6 @@ import { computed, inject, ref, watch } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { fetchUploadOss } from '@/service/api/common';
 import { friendlyNumber, setBaseUrl } from '@/utils/utils';
-import { $t } from '@/locales';
 
 const props = defineProps({
   propName: {
@@ -244,8 +243,6 @@ defineExpose({
           <NButton v-else type="primary">重新上传</NButton>
         </NUpload>
       </div>
-
-      <ObRichText v-else-if="formType === 'richText'" v-model="formData" v-bind="$attrs" :disabled="disabled" />
       <slot />
       <slot name="append"></slot>
     </div>
