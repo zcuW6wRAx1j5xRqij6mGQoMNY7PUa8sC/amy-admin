@@ -28,11 +28,11 @@ const visible = defineModel<boolean>('visible', {
 
 const roleList = ref([]);
 onMounted(() => {
-  fetchGetAdminRoleList().then(data => {
-    roleList.value = data.map(el => {
+  fetchGetAdminRoleList().then((data: any) => {
+    roleList.value = Object.keys(data).map(el => {
       return {
-        label: el.show_name,
-        value: el.id
+        label: data[el],
+        value: el
       };
     });
   });
@@ -76,9 +76,12 @@ function closeDrawer() {
 const btnLoading = ref(false);
 async function handleSubmit() {
   errorObj.value = {};
-  if (isEmpty(model.value.username)) {
-    errorObj.value.username = '请输入用户名';
+  if (isEmpty(model.value.name)) {
+    errorObj.value.name = '请输入名称';
   }
+  if (isEmpty(model.value.account)) {
+      errorObj.value.account = '请输入账号';
+    }
   if (!isEdit.value) {
     if (isEmpty(model.value.password)) {
       errorObj.value.password = '请输入密码';
@@ -94,6 +97,7 @@ async function handleSubmit() {
     return;
   }
   btnLoading.value = true;
+  model.value.password = undefined
   const action = isEdit.value ? fetchEditAdmin : fetchAddAdmin;
   action(model.value)
     .then(() => {
@@ -122,8 +126,9 @@ watch(visible, () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="360">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm all-required :error-obj="errorObj">
-        <MyFormItem v-model="model.username" label="用户名" prop-name="username" />
-        <MyFormItem v-model="model.password" label="密码" prop-name="password" type="password" />
+        <MyFormItem v-model="model.name" label="名称" prop-name="name" />
+        <MyFormItem v-model="model.account" label="账号" prop-name="account" />
+        <MyFormItem v-if="!model.id" v-model="model.password" label="密码" prop-name="password" type="password" />
         <MyFormItem v-model="model.status" label="状态" form-type="select" :data-list="statusList" prop-name="status" />
         <MyFormItem v-model="model.role_id" label="角色" form-type="select" :data-list="roleList" prop-name="role_id" />
       </MyForm>

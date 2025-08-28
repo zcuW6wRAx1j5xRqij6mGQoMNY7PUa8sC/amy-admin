@@ -1,6 +1,6 @@
 <script setup lang="jsx">
 import { onMounted, ref } from 'vue';
-import { NTag } from 'naive-ui';
+import { NPopconfirm } from 'naive-ui';
 import { UserKycList, UserKycAudit } from '@/service/api/user';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
@@ -50,7 +50,7 @@ const {
             align: 'center',
             minWidth: 150,
             render: row => {
-                return <img src={setBaseUrl(row.photo_front)} class="h-60px w-60px object-cover" alt="" />
+                return <img src={setBaseUrl(row.photo_front)} class="h-100px w-130px object-cover" alt="" />
             }
         },
         {
@@ -59,7 +59,7 @@ const {
             align: 'center',
             width: 150,
             render: row => {
-                return <img src={setBaseUrl(row.photo_back)} class="h-60px w-60px object-cover" alt="" />
+                return <img src={setBaseUrl(row.photo_back)} class="h-100px w-130px object-cover" alt="" />
             }
         }
         ,
@@ -114,7 +114,7 @@ const {
             fixed: 'right',
             width: 80,
             render: row => (
-                <div>
+                row.status !== reviewList.success ? <div>
                     <NPopconfirm onPositiveClick={() => handleReview(row, reviewList.success)} >
                         {{
                             default: () => '确认拒绝吗？',
@@ -135,14 +135,14 @@ const {
                             )
                         }}
                     </NPopconfirm>
-                </div>
+                </div> : <div></div>
             )
         }
 
     ]
 });
 
-const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
+const { handleEdit, checkedRowKeys } = useTableOperate(
     data,
     getData
 );
@@ -164,7 +164,7 @@ function handleReview(item, status) {
 
 <template>
     <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-        <NCard title="用户列表" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
+        <NCard title="实名认证列表" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
             <template #header-extra>
                 <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
                     :loading="loading" no-add @refresh="getData" />

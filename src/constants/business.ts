@@ -6,3 +6,8 @@ export const statusList = [{
   label: '启用',
   value: 1,
 },]
+
+export const stautsObje = {
+  '0': '禁用',
+  '1': '启用'
+}

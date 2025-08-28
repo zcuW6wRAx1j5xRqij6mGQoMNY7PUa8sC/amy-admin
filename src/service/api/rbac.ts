@@ -109,6 +109,16 @@ export function fetchDeleteRole(data: any) {
   return request<any>({ url: `/api/admin/role/destroy`, method: 'post', data });
 }
 
+// 角色添加
+export function fetchAddRole(data: any) {
+  return request<any>({ url: '/api/admin/role/store', method: 'post', data });
+}
+
+// 角色编辑
+export function fetchEditRole(data: any) {
+  return request<any>({ url: `/api/admin/role/update`, method: 'post', data });
+}
+
 // 分配权限
 export function fetchAssignPermission(data: any) {
   return request<any>({ url: `/api/admin/role/assignMenus`, method: 'post', data });
@@ -126,7 +136,7 @@ export function fetchEditMenu(data: any) {
 
 // 角色详情
 export function fetchGetRoleDetail(params: any) {
-  return request<any>({ url: `/api/admin/role/detail/${params.id}`, method: 'get' });
+  return request<any>({ url: `/api/admin/role/detail`, params });
 }
 
 // 角色列表

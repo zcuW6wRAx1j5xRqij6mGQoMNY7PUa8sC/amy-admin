@@ -24,6 +24,10 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   crypto_futures: () => import("@/views/crypto/futures/index.vue"),
   crypto_spot: () => import("@/views/crypto/spot/index.vue"),
   crypto_symbol: () => import("@/views/crypto/symbol/index.vue"),
+  flow_futures: () => import("@/views/flow/futures/index.vue"),
+  flow_loan: () => import("@/views/flow/loan/index.vue"),
+  flow_spot: () => import("@/views/flow/spot/index.vue"),
+  flow_stock: () => import("@/views/flow/stock/index.vue"),
   home: () => import("@/views/home/index.vue"),
   manage_manage: () => import("@/views/manage/manage/index.vue"),
   manage_menu: () => import("@/views/manage/menu/index.vue"),
@@ -38,4 +42,6 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   stock_otc: () => import("@/views/stock/otc/index.vue"),
   user_kyc: () => import("@/views/user/kyc/index.vue"),
   "user_user-manage": () => import("@/views/user/user-manage/index.vue"),
+  website_banner: () => import("@/views/website/banner/index.vue"),
+  "website_config-page": () => import("@/views/website/config-page/index.vue"),
 };

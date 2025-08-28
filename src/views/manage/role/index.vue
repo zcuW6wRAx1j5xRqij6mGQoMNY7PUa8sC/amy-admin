@@ -9,7 +9,7 @@ import {
 } from '@/service/api/rbac';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-// import OperateDrawer from './modules/operate-drawer.vue';
+import OperateDrawer from './modules/operate-drawer.vue';
 
 const appStore = useAppStore();
 

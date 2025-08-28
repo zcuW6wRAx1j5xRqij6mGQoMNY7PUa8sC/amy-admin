@@ -16,7 +16,7 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
 
   const isMobile = computed(() => appStore.isMobile);
 
-  const { apiFn, apiParams, immediate, showTotal } = config;
+  const { apiFn, apiParams, immediate, showTotal = true } = config;
 
   const SELECTION_KEY = '__selection__';
 
@@ -69,7 +69,7 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
         if (isTableColumnHasKey(column)) {
           checks.push({
             key: column.key as string,
-            title: column.title!,
+            title: column.title as string,
             checked: true
           });
         } else if (column.type === 'selection') {
@@ -122,16 +122,14 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
 
   const pagination: PaginationProps = reactive({
     page: 1,
-    pageSize: 10,
-    showSizePicker: true,
-    itemCount: 0,
-    pageSizes: [10, 15, 20, 25, 30],
+    pageSize: 20,
+    showSizePicker: false,
+    // pageSizes: [10, 15, 20, 25, 30],
     onUpdatePage: async (page: number) => {
       pagination.page = page;
-
       updateSearchParams({
-        current: page,
-        size: pagination.pageSize!
+        page,
+        page_size: pagination.pageSize!
       });
 
       getData();
@@ -141,8 +139,8 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
       pagination.page = 1;
 
       updateSearchParams({
-        current: pagination.page,
-        size: pageSize
+        page: pagination.page,
+        page_size: pageSize
       });
 
       getData();
@@ -156,6 +154,9 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
 
   // this is for mobile, if the system does not support mobile, you can use `pagination` directly
   const mobilePagination = computed(() => {
+    if (apiParams.noPage) {
+      return false;
+    }
     const p: PaginationProps = {
       ...pagination,
       pageSlot: isMobile.value ? 3 : 9,
@@ -180,8 +181,8 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
     });
 
     updateSearchParams({
-      current: pageNum,
-      size: pagination.pageSize!
+      page: pageNum,
+      page_size: pagination.pageSize!
     });
 
     await getData();

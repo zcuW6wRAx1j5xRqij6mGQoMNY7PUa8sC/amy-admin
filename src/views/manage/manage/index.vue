@@ -1,10 +1,13 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { stautsObje } from "@/constants/business"
+import dayjs from 'dayjs';
 import {
   fetchDeleteAdmin,
   fetchGetAdminList,
   fetchGetAdminRoleList,
+  fetchAdminResetPwd
 } from '@/service/api/rbac';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
@@ -33,10 +36,32 @@ const {
   },
   columns: () => [
     {
-      key: 'username',
-      title: '用户名',
+      key: 'name',
+      title: '名称',
       align: 'center',
-      width: 120
+      minWidth: 120
+    },
+    {
+      key: 'account',
+      title: '账户',
+      align: 'center',
+      minWidth: 120
+    },
+    {
+      key: 'password',
+      title: '密码',
+      align: 'center',
+      minWidth: 120
+    },
+    {
+      key: 'status',
+      title: '状态',
+      align: 'center',
+      minWidth: 120,
+      render: row => {
+        const text = stautsObje[row.status]
+        return text
+      }
     },
     {
       key: 'role_name',
@@ -49,13 +74,16 @@ const {
       }
     },
     {
-      key: 'parent_name',
-      title: '组长',
-      align: 'center',
-      width: 120,
+      key: 'created_at',
+      title: '创建时间',
+      minWidth: 100,
+    },
+    {
+      key: 'login_time',
+      title: '最近登录时间',
+      minWidth: 100,
       render: row => {
-        if (!row.parent) return '-';
-        return <NTag type="info">{row.parent.nickname}</NTag>;
+        return <NText>{row.created_at && dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')}</NText>;
       }
     },
     {
@@ -68,6 +96,9 @@ const {
         <div class="flex-center gap-8px">
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             编辑
+          </NButton>
+          <NButton type="primary" ghost size="small" onClick={() => resetEdit(row.id)}>
+            重置密码
           </NButton>
           <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
@@ -105,8 +136,31 @@ function edit(id) {
   handleEdit(id);
 }
 
+function resetEdit(id: number) {
+  editVisible.value = true
+  editForm.value = ref({
+    password: "",
+    id
+  })
+}
+
 const roleList = ref([]);
 const roleOptions = ref([]);
+const editVisible = ref(false)
+const editForm = ref({})
+const editErrors = ref({})
+
+function handleEditSubmit() {
+  if (!editForm.value.password) return editErrors.value.password = '请输入密码';
+  fetchAdminResetPwd(editForm.value).then(res => {
+    window.$message?.success("修改成功")
+  }).catch(error => {
+    editErrors.value = error;
+  })
+    .finally(() => {
+      editLoading.value = false;
+    });
+}
 
 // 获取角色列表
 async function getRoleList() {
@@ -123,33 +177,30 @@ getRoleList();
     <SearchBox v-model:model="searchParams" :role-list="roleList" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard title="管理员管理" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
       <template #header-extra>
-        <TableHeaderOperation
-          v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
-          :loading="loading"
-          @add="handleAdd"
-          @refresh="getData"
-        />
+        <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
+          :loading="loading" @add="handleAdd" @refresh="getData" />
       </template>
-      <NDataTable
-        v-model:checked-row-keys="checkedRowKeys"
-        :columns="columns"
-        :data="data"
-        size="small"
-        :flex-height="!appStore.isMobile"
-        :scroll-x="800"
-        :loading="loading"
-        remote
-        :row-key="row => row.id"
-        :pagination="mobilePagination"
-        class="sm:h-full"
-      />
-      <OperateDrawer
-        v-model:visible="drawerVisible"
-        :operate-type="operateType"
-        :row-data="editingData"
-        @submitted="getDataByPage"
-      />
+
+      <!-- 编辑抽屉 -->
+      <NDrawer v-model:show="editVisible" :width="500">
+        <NDrawerContent title="重置密码" closable>
+          <MyForm all-required :error-obj="editErrors">
+            <MyFormItem v-model="editForm.password" label="请输入密码" prop-name="password" />
+          </MyForm>
+          <template #footer>
+            <NSpace :size="16">
+              <NButton :loading="editLoading" @click="editVisible = false">取消</NButton>
+              <NButton type="primary" :loading="editLoading" @click="handleEditSubmit">确定</NButton>
+            </NSpace>
+          </template>
+        </NDrawerContent>
+      </NDrawer>
+
+      <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
+        :flex-height="!appStore.isMobile" :scroll-x="800" :loading="loading" remote :row-key="row => row.id"
+        :pagination="mobilePagination" class="sm:h-full" />
+      <OperateDrawer v-model:visible="drawerVisible" :operate-type="operateType" :row-data="editingData"
+        @submitted="getDataByPage" />
       <!-- <BindLeaderDrawer v-model:visible="bindLeaderVisible" :row-data="currentRow" @submitted="getData" /> -->
     </NCard>
   </div>

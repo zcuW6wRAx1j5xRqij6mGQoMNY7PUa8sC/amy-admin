@@ -230,7 +230,7 @@ function handleDelete (id) {
                 <template #footer>
                     <NSpace :size="16">
                         <NButton :loading="editLoading" @click="editVisible = false">取消</NButton>
-                        <NButton type="primary" :loading="editLoading" @click="handleEditSubmit">确定</NButton>
+                        <NButton type="primary" :loading="editLoading" @click="handleSubmit">确定</NButton>
                     </NSpace>
                 </template>
             </NDrawerContent>

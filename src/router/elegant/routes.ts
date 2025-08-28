@@ -79,6 +79,48 @@ export const generatedRoutes: GeneratedRoute[] = [
     ]
   },
   {
+    name: 'flow',
+    path: '/flow',
+    component: 'layout.base',
+    meta: {
+      title: '钱包流水管理'
+    },
+    children: [
+      {
+        name: 'flow_futures',
+        path: '/flow/futures',
+        component: 'view.flow_futures',
+        meta: {
+          title: '合约钱包流水'
+        }
+      },
+      {
+        name: 'flow_loan',
+        path: '/flow/loan',
+        component: 'view.flow_loan',
+        meta: {
+          title: '贷款钱包流水'
+        }
+      },
+      {
+        name: 'flow_spot',
+        path: '/flow/spot',
+        component: 'view.flow_spot',
+        meta: {
+          title: '现货钱包流水'
+        }
+      },
+      {
+        name: 'flow_stock',
+        path: '/flow/stock',
+        component: 'view.flow_stock',
+        meta: {
+          title: '股票钱包流水'
+        }
+      }
+    ]
+  },
+  {
     name: 'home',
     path: '/home',
     component: 'layout.base$view.home',
@@ -261,6 +303,32 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.user_user-manage',
         meta: {
           title: '用户列表'
+        }
+      }
+    ]
+  },
+  {
+    name: 'website',
+    path: '/website',
+    component: 'layout.base',
+    meta: {
+      title: '网站管理'
+    },
+    children: [
+      {
+        name: 'website_banner',
+        path: '/website/banner',
+        component: 'view.website_banner',
+        meta: {
+          title: 'banner'
+        }
+      },
+      {
+        name: 'website_config-page',
+        path: '/website/config-page',
+        component: 'view.website_config-page',
+        meta: {
+          title: '配置管理'
         }
       }
     ]

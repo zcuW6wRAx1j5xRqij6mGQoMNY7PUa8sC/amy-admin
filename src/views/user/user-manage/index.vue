@@ -60,8 +60,8 @@ const {
             fixed: 'left'
         },
         {
-            key: 'nickname',
-            title: '昵称',
+            key: 'name',
+            title: '姓名',
             align: 'center',
             minWidth: 100
         },
@@ -85,7 +85,7 @@ const {
             }
         },
         {
-            key: 'name',
+            key: 'nickname',
             title: '昵称',
             align: 'center',
             minWidth: 100

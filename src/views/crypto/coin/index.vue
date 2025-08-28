@@ -4,6 +4,7 @@ import { NImage, NTag } from 'naive-ui';
 import { CryptoCoinList } from "@/service/api/crypto"
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
+import { setBaseUrl } from "@/utils/utils"
 
 const appStore = useAppStore();
 
@@ -33,9 +34,9 @@ const {
             title: 'logo',
             align: 'center',
             width: 80,
-            // render:row=>{
-            //     return <img src="" alt="logo" />
-            // }
+            render:row=>{
+                return <img src={setBaseUrl(row.logo)} class="w-60px h-60px" alt="" />
+            }
         },
         {
             key: 'name',

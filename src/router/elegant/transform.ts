@@ -171,6 +171,11 @@ const routeMap: RouteMap = {
   "crypto_futures": "/crypto/futures",
   "crypto_spot": "/crypto/spot",
   "crypto_symbol": "/crypto/symbol",
+  "flow": "/flow",
+  "flow_futures": "/flow/futures",
+  "flow_loan": "/flow/loan",
+  "flow_spot": "/flow/spot",
+  "flow_stock": "/flow/stock",
   "home": "/home",
   "iframe-page": "/iframe-page/:url",
   "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?",
@@ -191,7 +196,10 @@ const routeMap: RouteMap = {
   "stock_otc": "/stock/otc",
   "user": "/user",
   "user_kyc": "/user/kyc",
-  "user_user-manage": "/user/user-manage"
+  "user_user-manage": "/user/user-manage",
+  "website": "/website",
+  "website_banner": "/website/banner",
+  "website_config-page": "/website/config-page"
 };
 
 /**

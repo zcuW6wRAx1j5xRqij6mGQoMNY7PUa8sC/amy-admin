@@ -354,83 +354,92 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 							"open_link": 0
 						}
 						]
-					},
-					// {
-					// 	"id": 65,
-					// 	"parent_id": 56,
-					// 	"show_name": "\u7528\u6237\u8be6\u60c5",
-					// 	"icon": "memory:align-horizontal-center",
-					// 	"url": "crypto_coin",
-					// 	"position": "2",
-					// 	"open_link": 0,
-					// 	"children": [{
-					// 		"id": 73,
-					// 		"parent_id": 65,
-					// 		"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
-					// 		"icon": "memory:align-horizontal-center",
-					// 		"url": "list",
-					// 		"position": "1",
-					// 		"open_link": 0
-					// 	},
-					// 	{
-					// 		"id": 71,
-					// 		"parent_id": 65,
-					// 		"show_name": "\u589e\u52a0\u51cf\u5c11",
-					// 		"icon": "memory:align-horizontal-center",
-					// 		"url": "setCoin",
-					// 		"position": "1",
-					// 		"open_link": 0
-					// 	}
-					// 	]
-					// },
-					{
-						"id": 58,
-						"parent_id": 56,
-						"show_name": "\u5b9e\u540d\u5ba1\u6838",
-						"icon": "memory:align-horizontal-center",
-						"url": "user_name-manage",
-						"position": "2",
-						"open_link": 0
 					}
 				]
 			},
-			// {
-			// 	"id": 25,
-			// 	"parent_id": 0,
-			// 	"show_name": "\u7cfb\u7edf\u7ba1\u7406",
-			// 	"icon": "memory:align-horizontal-center",
-			// 	"url": "manage",
-			// 	"position": "10",
-			// 	"open_link": 0,
-			// 	"children": [{
-			// 		"id": 26,
-			// 		"parent_id": 25,
-			// 		"show_name": "\u7ba1\u7406\u5458\u7ba1\u7406",
-			// 		"icon": "",
-			// 		"url": "manage_manage",
-			// 		"position": "1",
-			// 		"open_link": 0
-			// 	},
-			// 	{
-			// 		"id": 27,
-			// 		"parent_id": 25,
-			// 		"show_name": "\u83dc\u5355\u7ba1\u7406",
-			// 		"icon": "",
-			// 		"url": "manage_menu",
-			// 		"position": "2",
-			// 		"open_link": 0
-			// 	},
-			// 	{
-			// 		"id": 28,
-			// 		"parent_id": 25,
-			// 		"show_name": "\u89d2\u8272\u7ba1\u7406",
-			// 		"icon": "",
-			// 		"url": "manage_role",
-			// 		"position": "3",
-			// 		"open_link": 0
-			// 	}
-			// 	]
-			// },
+			{
+				"id": 65,
+				"parent_id": 56,
+				"show_name": "\u7528\u6237\u8be6\u60c5",
+				"icon": "memory:align-horizontal-center",
+				"url": "website",
+				"position": "2",
+				"open_link": 0,
+				"children": [{
+					"id": 73,
+					"parent_id": 65,
+					"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
+					"icon": "memory:align-horizontal-center",
+					"url": "website_banner",
+					"position": "1",
+					"open_link": 0,
+					"children": [{
+						"id": 73,
+						"parent_id": 65,
+						"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
+						"icon": "memory:align-horizontal-center",
+						"url": "website_banner",
+						"position": "1",
+						"open_link": 0
+					},]
+				},
+				{
+					"id": 71,
+					"parent_id": 65,
+					"show_name": "\u589e\u52a0\u51cf\u5c11",
+					"icon": "memory:align-horizontal-center",
+					"url": "website_config-page",
+					"position": "1",
+					"open_link": 0,
+					"children":[{
+						"id": 73,
+						"parent_id": 65,
+						"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
+						"icon": "memory:align-horizontal-center",
+						"url": "website_banner",
+						"position": "1",
+						"open_link": 0
+					},]
+				}
+				]
+			},
+			{
+				"id": 25,
+				"parent_id": 0,
+				"show_name": "\u7cfb\u7edf\u7ba1\u7406",
+				"icon": "memory:align-horizontal-center",
+				"url": "manage",
+				"position": "10",
+				"open_link": 0,
+				"children": [{
+					"id": 26,
+					"parent_id": 25,
+					"show_name": "\u7ba1\u7406\u5458\u7ba1\u7406",
+					"icon": "",
+					"url": "manage_manage",
+					"position": "1",
+					"open_link": 0
+				},
+				{
+					"id": 27,
+					"parent_id": 25,
+					"show_name": "\u83dc\u5355\u7ba1\u7406",
+					"icon": "",
+					"url": "manage_menu",
+					"position": "2",
+					"open_link": 0
+				},
+				{
+					"id": 28,
+					"parent_id": 25,
+					"show_name": "\u89d2\u8272\u7ba1\u7406",
+					"icon": "",
+					"url": "manage_role",
+					"position": "3",
+					"open_link": 0
+				}
+				]
+			},
 			{
 				"id": 43,
 				"parent_id": 0,
@@ -669,14 +678,14 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 					"position": "1",
 					"open_link": 0,
 					"children": [{
-					"id": 32,
-					"parent_id": 31,
-					"show_name": "\u534f\u8bae\u7ba1\u7406",
-					"icon": "",
-					"url": "recharge_stock",
-					"position": "1",
-					"open_link": 0
-				},]
+						"id": 32,
+						"parent_id": 31,
+						"show_name": "\u534f\u8bae\u7ba1\u7406",
+						"icon": "",
+						"url": "recharge_stock",
+						"position": "1",
+						"open_link": 0
+					},]
 				},
 				{
 					"id": 79,
@@ -936,6 +945,88 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 					"open_link": 0,
 				},]
 
+			},
+			{
+				"id": 165,
+				"parent_id": 56,
+				"show_name": "\u7528\u6237\u8be6\u60c5",
+				"icon": "memory:align-horizontal-center",
+				"url": "flow",
+				"position": "2",
+				"open_link": 0,
+				"children": [{
+					"id": 73,
+					"parent_id": 65,
+					"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
+					"icon": "memory:align-horizontal-center",
+					"url": "flow_stock",
+					"position": "1",
+					"open_link": 0,
+					"children": [{
+						"id": 73,
+						"parent_id": 65,
+						"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
+						"icon": "memory:align-horizontal-center",
+						"url": "website_banner",
+						"position": "1",
+						"open_link": 0
+					},]
+				},
+				{
+					"id": 71,
+					"parent_id": 65,
+					"show_name": "\u589e\u52a0\u51cf\u5c11",
+					"icon": "memory:align-horizontal-center",
+					"url": "flow_spot",
+					"position": "1",
+					"open_link": 0,
+					"children":[{
+						"id": 73,
+						"parent_id": 65,
+						"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
+						"icon": "memory:align-horizontal-center",
+						"url": "website_banner",
+						"position": "1",
+						"open_link": 0
+					},]
+				},
+				{
+					"id": 71,
+					"parent_id": 65,
+					"show_name": "\u589e\u52a0\u51cf\u5c11",
+					"icon": "memory:align-horizontal-center",
+					"url": "flow_futures",
+					"position": "1",
+					"open_link": 0,
+					"children":[{
+						"id": 73,
+						"parent_id": 65,
+						"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
+						"icon": "memory:align-horizontal-center",
+						"url": "website_banner",
+						"position": "1",
+						"open_link": 0
+					},]
+				},
+				{
+					"id": 71,
+					"parent_id": 65,
+					"show_name": "\u589e\u52a0\u51cf\u5c11",
+					"icon": "memory:align-horizontal-center",
+					"url": "flow_loan",
+					"position": "1",
+					"open_link": 0,
+					"children":[{
+						"id": 73,
+						"parent_id": 65,
+						"show_name": "\u7528\u6237\u8be6\u60c5\u67e5\u770b",
+						"icon": "memory:align-horizontal-center",
+						"url": "website_banner",
+						"position": "1",
+						"open_link": 0
+					},]
+				}
+				]
 			},
 		]
 		console.log(data)
