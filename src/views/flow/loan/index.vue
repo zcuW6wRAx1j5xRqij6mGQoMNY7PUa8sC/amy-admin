@@ -62,7 +62,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 120,
       render: row => {
         const amount = Number.parseFloat(row.amount) || 0;
-        const color = amount < 0 ? 'text-red-600' : '';
+        const color = amount >= 0 ? 'text-green-600' : 'text-red-600';
         const prefix = amount >= 0 ? '+' : '';
         return (
           <span class={color}>

@@ -1,14 +1,9 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { stautsObje } from "@/constants/business"
 import dayjs from 'dayjs';
-import {
-  fetchDeleteAdmin,
-  fetchGetAdminList,
-  fetchGetAdminRoleList,
-  fetchAdminResetPwd
-} from '@/service/api/rbac';
+import { stautsObje } from '@/constants/business';
+import { fetchAdminResetPwd, fetchDeleteAdmin, fetchGetAdminList, fetchGetAdminRoleList } from '@/service/api/rbac';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import OperateDrawer from './modules/operate-drawer.vue';
@@ -48,19 +43,14 @@ const {
       minWidth: 120
     },
     {
-      key: 'password',
-      title: '密码',
-      align: 'center',
-      minWidth: 120
-    },
-    {
       key: 'status',
       title: '状态',
       align: 'center',
       minWidth: 120,
       render: row => {
-        const text = stautsObje[row.status]
-        return text
+        const type = row.status === 1 ? 'success' : 'error';
+        const text = row.status === 1 ? '开启' : '关闭';
+        return <NTag type={type}>{text}</NTag>;
       }
     },
     {
@@ -76,7 +66,7 @@ const {
     {
       key: 'created_at',
       title: '创建时间',
-      minWidth: 100,
+      minWidth: 100
     },
     {
       key: 'login_time',
@@ -137,26 +127,28 @@ function edit(id) {
 }
 
 function resetEdit(id: number) {
-  editVisible.value = true
+  editVisible.value = true;
   editForm.value = ref({
-    password: "",
+    password: '',
     id
-  })
+  });
 }
 
 const roleList = ref([]);
 const roleOptions = ref([]);
-const editVisible = ref(false)
-const editForm = ref({})
-const editErrors = ref({})
+const editVisible = ref(false);
+const editForm = ref({});
+const editErrors = ref({});
 
 function handleEditSubmit() {
-  if (!editForm.value.password) return editErrors.value.password = '请输入密码';
-  fetchAdminResetPwd(editForm.value).then(res => {
-    window.$message?.success("修改成功")
-  }).catch(error => {
-    editErrors.value = error;
-  })
+  if (!editForm.value.password) return (editErrors.value.password = '请输入密码');
+  fetchAdminResetPwd(editForm.value)
+    .then(res => {
+      window.$message?.success('修改成功');
+    })
+    .catch(error => {
+      editErrors.value = error;
+    })
     .finally(() => {
       editLoading.value = false;
     });
@@ -169,16 +161,20 @@ async function getRoleList() {
   roleOptions.value = data;
 }
 getRoleList();
-
 </script>
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <SearchBox v-model:model="searchParams" :role-list="roleList" @reset="resetSearchParams" @search="getDataByPage" />
-    <NCard title="管理员管理" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
+    <NCard title="管理员管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
-          :loading="loading" @add="handleAdd" @refresh="getData" />
+        <TableHeaderOperation
+          v-model:columns="columnChecks"
+          :disabled-delete="checkedRowKeys.length === 0"
+          :loading="loading"
+          @add="handleAdd"
+          @refresh="getData"
+        />
       </template>
 
       <!-- 编辑抽屉 -->
@@ -196,11 +192,25 @@ getRoleList();
         </NDrawerContent>
       </NDrawer>
 
-      <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
-        :flex-height="!appStore.isMobile" :scroll-x="800" :loading="loading" remote :row-key="row => row.id"
-        :pagination="mobilePagination" class="sm:h-full" />
-      <OperateDrawer v-model:visible="drawerVisible" :operate-type="operateType" :row-data="editingData"
-        @submitted="getDataByPage" />
+      <NDataTable
+        v-model:checked-row-keys="checkedRowKeys"
+        :columns="columns"
+        :data="data"
+        size="small"
+        :flex-height="!appStore.isMobile"
+        :scroll-x="800"
+        :loading="loading"
+        remote
+        :row-key="row => row.id"
+        :pagination="mobilePagination"
+        class="sm:h-full"
+      />
+      <OperateDrawer
+        v-model:visible="drawerVisible"
+        :operate-type="operateType"
+        :row-data="editingData"
+        @submitted="getDataByPage"
+      />
       <!-- <BindLeaderDrawer v-model:visible="bindLeaderVisible" :row-data="currentRow" @submitted="getData" /> -->
     </NCard>
   </div>
