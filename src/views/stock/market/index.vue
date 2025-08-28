@@ -75,7 +75,7 @@ const {
       title: '当前价格',
       align: 'center',
       width: 120,
-      render: row => <span class="text-blue-600">{row.price || 0}</span>
+      render: row => <span>{row.price || 0}</span>
     },
     {
       key: 'change',
@@ -84,7 +84,7 @@ const {
       width: 120,
       render: row => {
         const change = row.change || 0;
-        const color = change >= 0 ? 'text-green-600' : 'text-red-600';
+        const color = change < 0 ? 'text-red-600' : '';
         return <span class={color}>{change}%</span>;
       }
     },
@@ -93,49 +93,49 @@ const {
       title: '开盘价',
       align: 'center',
       width: 120,
-      render: row => <span class="text-orange-600">{row.open || 0}</span>
+      render: row => <span>{row.open || 0}</span>
     },
     {
       key: 'close',
       title: '收盘价',
       align: 'center',
       width: 120,
-      render: row => <span class="text-purple-600">{row.close || 0}</span>
+      render: row => <span>{row.close || 0}</span>
     },
     {
       key: 'high',
       title: '最高价',
       align: 'center',
       width: 120,
-      render: row => <span class="text-green-600">{row.high || 0}</span>
+      render: row => <span>{row.high || 0}</span>
     },
     {
       key: 'low',
       title: '最低价',
       align: 'center',
       width: 120,
-      render: row => <span class="text-red-600">{row.low || 0}</span>
+      render: row => <span>{row.low || 0}</span>
     },
     {
       key: 'volume',
       title: '成交量',
       align: 'center',
       width: 120,
-      render: row => <span class="text-blue-600">{row.volume || 0}</span>
+      render: row => <span>{row.volume || 0}</span>
     },
     {
       key: 'market_cap',
       title: '成交额',
       align: 'center',
       width: 120,
-      render: row => <span class="text-green-600">{row.market_cap || 0}</span>
+      render: row => <span>{row.market_cap || 0}</span>
     },
     {
       key: 'isin',
       title: '国际证券识别码',
       align: 'center',
       width: 150,
-      render: row => <span class="text-gray-600">{row.isin || '-'}</span>
+      render: row => <span>{row.isin || '-'}</span>
     },
     {
       key: 'is_recommend',
@@ -164,7 +164,7 @@ const {
       title: '排序',
       align: 'center',
       width: 80,
-      render: row => <span class="text-gray-600">{row.sort || 0}</span>
+      render: row => <span>{row.sort || 0}</span>
     },
     {
       key: 'created_at',
@@ -248,7 +248,7 @@ function edit(id: number) {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="2000"
+        :scroll-x="2200"
         :loading="loading"
         remote
         :row-key="row => row.id"

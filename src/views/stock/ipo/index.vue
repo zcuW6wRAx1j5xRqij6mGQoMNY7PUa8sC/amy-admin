@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { StockIpoList, StockDelIpo } from '@/service/api/stock';
+import { StockDelIpo, StockIpoList } from '@/service/api/stock';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import OperateDrawer from './modules/operate-drawer.vue';
@@ -45,35 +45,35 @@ const {
       title: '申请价格',
       align: 'center',
       width: 120,
-      render: row => <span class="text-blue-600">{row.apply_price || 0}</span>
+      render: row => <span>{row.apply_price || 0}</span>
     },
     {
       key: 'close_price',
       title: '平仓价格',
       align: 'center',
       width: 120,
-      render: row => <span class="text-green-600">{row.close_price || 0}</span>
+      render: row => <span>{row.close_price || 0}</span>
     },
     {
       key: 'apply_min_quantity',
       title: '申请最小量',
       align: 'center',
       width: 120,
-      render: row => <span class="text-orange-600">{row.apply_min_quantity || 0}</span>
+      render: row => <span>{row.apply_min_quantity || 0}</span>
     },
     {
       key: 'apply_max_quantity',
       title: '申请最大量',
       align: 'center',
       width: 120,
-      render: row => <span class="text-purple-600">{row.apply_max_quantity || 0}</span>
+      render: row => <span>{row.apply_max_quantity || 0}</span>
     },
     {
       key: 'issue_quantity',
       title: '发行数量',
       align: 'center',
       width: 120,
-      render: row => <span class="text-blue-600">{row.issue_quantity || 0}</span>
+      render: row => <span>{row.issue_quantity || 0}</span>
     },
     {
       key: 'open_fee',
@@ -94,14 +94,14 @@ const {
       title: '开始时间',
       align: 'center',
       width: 160,
-      render: row => <span class="text-gray-600">{row.apply_start_at || '-'}</span>
+      render: row => <span>{row.apply_start_at || '-'}</span>
     },
     {
       key: 'apply_end_at',
       title: '结束时间',
       align: 'center',
       width: 160,
-      render: row => <span class="text-gray-600">{row.apply_end_at || '-'}</span>
+      render: row => <span>{row.apply_end_at || '-'}</span>
     },
     {
       key: 'status',
@@ -113,18 +113,6 @@ const {
         const text = row.status === 1 ? '开启' : '关闭';
         return <NTag type={type}>{text}</NTag>;
       }
-    },
-    {
-      key: 'created_at',
-      title: '创建时间',
-      align: 'center',
-      width: 160
-    },
-    {
-      key: 'updated_at',
-      title: '更新时间',
-      align: 'center',
-      width: 160
     },
     {
       key: 'actions',
@@ -196,7 +184,7 @@ function edit(id: number) {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="1800"
+        :scroll-x="2000"
         :loading="loading"
         remote
         :row-key="row => row.id"

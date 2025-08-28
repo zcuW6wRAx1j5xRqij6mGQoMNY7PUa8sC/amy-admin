@@ -59,28 +59,28 @@ const {
       title: '申请价格',
       align: 'center',
       width: 120,
-      render: row => <span class="text-blue-600">{row.apply_price || 0}</span>
+      render: row => <span>{row.apply_price || 0}</span>
     },
     {
       key: 'close_price',
       title: '平仓价格',
       align: 'center',
       width: 120,
-      render: row => <span class="text-green-600">{row.close_price || 0}</span>
+      render: row => <span>{row.close_price || 0}</span>
     },
     {
       key: 'apply_min_quantity',
       title: '申请最小量',
       align: 'center',
       width: 120,
-      render: row => <span class="text-orange-600">{row.apply_min_quantity || 0}</span>
+      render: row => <span>{row.apply_min_quantity || 0}</span>
     },
     {
       key: 'apply_max_quantity',
       title: '申请最大量',
       align: 'center',
       width: 120,
-      render: row => <span class="text-purple-600">{row.apply_max_quantity || 0}</span>
+      render: row => <span>{row.apply_max_quantity || 0}</span>
     },
     {
       key: 'open_fee',
@@ -189,7 +189,7 @@ function edit(id: number) {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="1600"
+        :scroll-x="2000"
         :loading="loading"
         remote
         :row-key="row => row.id"

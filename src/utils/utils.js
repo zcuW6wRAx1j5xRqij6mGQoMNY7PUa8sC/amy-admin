@@ -1,5 +1,5 @@
-import Decimal from 'decimal.js';
 import dayjs from 'dayjs';
+import Decimal from 'decimal.js';
 import utc from 'dayjs/plugin/utc'; // 导入 UTC 插件
 import timezone from 'dayjs/plugin/timezone'; // 导入时区插件
 import { isEmpty, isNumber } from '@/utils/is';
@@ -42,7 +42,7 @@ export const friendlyNumber = (num, addSign = false) => {
   if (!isNumber(num) && !Number(num) && Number(num) !== 0) {
     return num;
   }
-  if (isNaN(num)) {
+  if (Number.isNaN(num)) {
     return 0.0;
   }
   // 将数字转换为字符串

@@ -77,27 +77,18 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/crypto/symbol',
         component: 'view.crypto_symbol',
         meta: {
-          title: 'Symnol管理',
+          title: '交易对管理',
           icon: 'ic:baseline-label'
         }
       }
     ]
   },
   {
-    name: 'demo',
-    path: '/demo',
-    component: 'layout.base$view.demo',
-    meta: {
-      title: 'demo',
-      icon: 'ic:baseline-science'
-    }
-  },
-  {
     name: 'flow',
     path: '/flow',
     component: 'layout.base',
     meta: {
-      title: '钱包管理',
+      title: '钱包流水管理',
       icon: 'ic:baseline-account-balance-wallet'
     },
     children: [
@@ -249,26 +240,6 @@ export const generatedRoutes: GeneratedRoute[] = [
         meta: {
           title: '现货订单',
           icon: 'ic:baseline-local-offer'
-        }
-      }
-    ]
-  },
-  {
-    name: 'recharge',
-    path: '/recharge',
-    component: 'layout.base',
-    meta: {
-      title: 'recharge',
-      icon: 'ic:baseline-battery-charging-full'
-    },
-    children: [
-      {
-        name: 'recharge_stock',
-        path: '/recharge/stock',
-        component: 'view.recharge_stock',
-        meta: {
-          title: 'recharge_stock',
-          icon: 'ic:baseline-add-circle'
         }
       }
     ]

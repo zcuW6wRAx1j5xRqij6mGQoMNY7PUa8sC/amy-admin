@@ -35,4 +35,9 @@ export function WebsiteDelConfig(params: CommIdPlader) {
     return request<any>({ url: '/api/admin/platform/config/delete', params})
 }
 
+//配置详情
+export function WebsiteConfigDetail(params: CommIdPlader) {
+    return request<any>({ url: '/api/admin/platform/config/detail', params})
+}
+
 

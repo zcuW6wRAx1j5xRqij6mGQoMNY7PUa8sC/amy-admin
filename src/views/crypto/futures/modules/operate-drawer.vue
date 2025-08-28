@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
-import { CryptoCreateFutures, CryptoUpdateFutures, type CryptoPostFuturesPlader } from '@/service/api/crypto';
+import { computed, ref, watch } from 'vue';
 import { statusList } from '@/constants/business';
+import {
+  CryptoCreateFutures,
+  CryptoFuturesInfo,
+  type CryptoPostFuturesPlader,
+  CryptoUpdateFutures
+} from '@/service/api/crypto';
 import { isEmpty } from '@/utils/is';
-defineOptions({
-  name: 'RoleOperateDrawer'
-});
 
 interface Props {
   /** the type of operation */
@@ -26,17 +28,13 @@ const visible = defineModel<boolean>('visible', {
   default: false
 });
 
-onMounted(() => {
-
-});
 const title = computed(() => {
   const titles: Record<NaiveUI.TableOperateType, string> = {
-    add: '新增',
-    edit: '编辑'
+    add: '新增合约',
+    edit: '编辑合约'
   };
   return titles[props.operateType];
 });
-
 
 const model = ref(createDefaultModel());
 
@@ -49,25 +47,39 @@ function createDefaultModel(): CryptoPostFuturesPlader {
     sell_spread: undefined,
     sort: undefined,
     status: 0
-  }
+  };
 }
 
 const isEdit = computed(() => props.operateType === 'edit');
 
-function handleInitModel() {
+async function handleInitModel() {
   errorObj.value = {};
   model.value = createDefaultModel();
-  console.log(model.value)
-  if (props.operateType === 'edit' && props.rowData) {
-    Object.assign(model.value, {
-      buy_spread:props.rowData.buy_spread,
-      fee:props.rowData.fee,
-      id:props.rowData.id,
-      sell_spread:props.rowData.sell_spread,
-      sort:props.rowData.sort,
-      status:props.rowData.status,
-      symbol_id:props.rowData.symbol_id
-    });
+  if (props.operateType === 'edit' && props.rowData?.id) {
+    try {
+      const detailData = await CryptoFuturesInfo({ id: props.rowData.id });
+      Object.assign(model.value, {
+        buy_spread: detailData.rowData.buy_spread,
+        fee: detailData.rowData.fee,
+        id: detailData.rowData.id,
+        sell_spread: detailData.rowData.sell_spread,
+        sort: detailData.rowData.sort,
+        status: detailData.rowData.status,
+        symbol_id: detailData.rowData.symbol_id
+      });
+    } catch (error) {
+      console.error('获取合约详情失败:', error);
+      // 如果详情接口失败，使用传入的rowData作为备选
+      Object.assign(model.value, {
+        buy_spread: props.rowData.buy_spread,
+        fee: props.rowData.fee,
+        id: props.rowData.id,
+        sell_spread: props.rowData.sell_spread,
+        sort: props.rowData.sort,
+        status: props.rowData.status,
+        symbol_id: props.rowData.symbol_id
+      });
+    }
   }
 }
 
@@ -75,7 +87,9 @@ function closeDrawer() {
   btnLoading.value = false;
   visible.value = false;
 }
+
 const btnLoading = ref(false);
+
 async function handleSubmit() {
   errorObj.value = {};
   if (isEmpty(model.value.symbol_id)) {
@@ -88,47 +102,40 @@ async function handleSubmit() {
     errorObj.value.sell_spread = '请输入卖出点差';
   }
   if (isEmpty(model.value.fee)) {
-    errorObj.value.fee = '手续费';
+    errorObj.value.fee = '请输入手续费';
   }
   if (isEmpty(model.value.sort)) {
     errorObj.value.sort = '请输入排序';
   }
   if (isEmpty(model.value.status)) {
-    errorObj.value.status = '请选择开关';
+    errorObj.value.status = '请选择状态';
   }
   if (Object.values(errorObj.value).some(item => item)) {
     return;
   }
   btnLoading.value = true;
   const action = isEdit.value ? CryptoUpdateFutures : CryptoCreateFutures;
-  if(model.value.index)  model.value.index = undefined
-  action(model.value)
-    .then(() => {
-      // request
-      window.$message?.success('操作成功');
-      closeDrawer();
-      emit('submitted');
-    })
-    .catch(error => {
-      errorObj.value = error;
-    })
-    .finally(() => {
-      btnLoading.value = false;
-    });
+  if (model.value.index) model.value.index = undefined;
+  try {
+    await action(model.value);
+    window.$message?.success('操作成功');
+    closeDrawer();
+    emit('submitted');
+  } catch (error) {
+    errorObj.value = error;
+  } finally {
+    btnLoading.value = false;
+  }
 }
+
 const errorObj = ref<Record<string, string>>({});
-watch(visible, () => {
+
+watch(visible, async () => {
   if (visible.value) {
-    handleInitModel();
+    await handleInitModel();
     errorObj.value = {};
   }
 });
-const handleFileChange = (options: { file: UploadFileInfo }) => {
-  const file = options.file.file;
-  if (file) {
-    model.value.logo = URL.createObjectURL(file);
-  }
-}
 </script>
 
 <template>

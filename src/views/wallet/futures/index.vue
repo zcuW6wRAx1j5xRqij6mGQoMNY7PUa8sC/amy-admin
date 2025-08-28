@@ -40,7 +40,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       align: 'center',
       width: 120,
       render: row => {
-        return <span class="text-green-600 font-bold">{row.balance || 0}</span>;
+        return <span class="font-bold">{row.balance || 0}</span>;
       }
     },
     {
@@ -59,10 +59,9 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 120,
       render: row => {
         const profit = row.floating_profit || 0;
-        const color = profit >= 0 ? 'text-green-600' : 'text-red-600';
         const prefix = profit >= 0 ? '+' : '';
         return (
-          <span class={color}>
+          <span>
             {prefix}
             {profit}
           </span>
@@ -76,12 +75,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 100,
       render: row => {
         const credit = row.user?.credit || 0;
-        let color = 'text-gray-600';
-        if (credit >= 800) color = 'text-green-600';
-        else if (credit >= 600) color = 'text-blue-600';
-        else if (credit >= 400) color = 'text-orange-600';
-        else color = 'text-red-600';
-        return <span class={color}>{credit}</span>;
+        return <span>{credit}</span>;
       }
     },
     {

@@ -41,7 +41,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 120,
       render: row => {
         const amount = Number.parseFloat(row.amount) || 0;
-        const color = amount >= 0 ? 'text-green-600' : 'text-red-600';
+        const color = amount < 0 ? 'text-red-600' : '';
         const prefix = amount >= 0 ? '+' : '';
         return (
           <span class={color}>
@@ -57,7 +57,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       align: 'center',
       width: 120,
       render: row => {
-        return <span class="text-blue-600">{row.before_amount || 0}</span>;
+        return <span>{row.before_amount || 0}</span>;
       }
     },
     {
@@ -66,7 +66,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       align: 'center',
       width: 120,
       render: row => {
-        return <span class="text-green-600">{row.after_amount || 0}</span>;
+        return <span>{row.after_amount || 0}</span>;
       }
     },
     {
@@ -111,7 +111,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       align: 'center',
       width: 150,
       render: row => {
-        return <span class="text-gray-600">{row.remark || '-'}</span>;
+        return <span>{row.remark || '-'}</span>;
       }
     },
     {
@@ -121,12 +121,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 100,
       render: row => {
         const credit = row.user?.credit || 0;
-        let color = 'text-gray-600';
-        if (credit >= 800) color = 'text-green-600';
-        else if (credit >= 600) color = 'text-blue-600';
-        else if (credit >= 400) color = 'text-orange-600';
-        else color = 'text-red-600';
-        return <span class={color}>{credit}</span>;
+        return <span>{credit}</span>;
       }
     },
     {

@@ -55,7 +55,7 @@ const {
       align: 'center',
       width: 120,
       render: row => {
-        return <span class="text-green-600 font-bold">{row.amount_total || 0}</span>;
+        return <span class="font-bold">{row.amount_total || 0}</span>;
       }
     },
     {
@@ -64,7 +64,7 @@ const {
       align: 'center',
       width: 120,
       render: row => {
-        return <span class="text-blue-600">{row.amount_used || 0}</span>;
+        return <span>{row.amount_used || 0}</span>;
       }
     },
     {
@@ -73,7 +73,7 @@ const {
       align: 'center',
       width: 120,
       render: row => {
-        return <span class="text-orange-600">{row.amount_unused || 0}</span>;
+        return <span>{row.amount_unused || 0}</span>;
       }
     },
     {
@@ -92,12 +92,7 @@ const {
       width: 100,
       render: row => {
         const credit = row.user?.credit || 0;
-        let color = 'text-gray-600';
-        if (credit >= 800) color = 'text-green-600';
-        else if (credit >= 600) color = 'text-blue-600';
-        else if (credit >= 400) color = 'text-orange-600';
-        else color = 'text-red-600';
-        return <span class={color}>{credit}</span>;
+        return <span>{credit}</span>;
       }
     },
     {

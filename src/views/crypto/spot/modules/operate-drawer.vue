@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
-import { CryptoCreateSpot, CryptoUpdateSpot, type CryptoPostSpotPlader } from '@/service/api/crypto';
-import { recommendList, openDataList } from '@/constants/business';
+import { computed, ref, watch } from 'vue';
+import { openDataList, recommendList } from '@/constants/business';
+import { CryptoCreateSpot, type CryptoPostSpotPlader, CryptoSpotInfo, CryptoUpdateSpot } from '@/service/api/crypto';
 import { isEmpty } from '@/utils/is';
-defineOptions({
-  name: 'RoleOperateDrawer'
-});
 
 interface Props {
   /** the type of operation */
@@ -26,17 +23,13 @@ const visible = defineModel<boolean>('visible', {
   default: false
 });
 
-onMounted(() => {
-
-});
 const title = computed(() => {
   const titles: Record<NaiveUI.TableOperateType, string> = {
-    add: '新增',
-    edit: '编辑'
+    add: '新增现货',
+    edit: '编辑现货'
   };
   return titles[props.operateType];
 });
-
 
 const model = ref(createDefaultModel());
 
@@ -49,26 +42,42 @@ function createDefaultModel(): CryptoPostSpotPlader {
     sell_spread: undefined,
     sort: undefined,
     status: 0,
-    is_recommend:0
-  }
+    is_recommend: 0
+  };
 }
 
 const isEdit = computed(() => props.operateType === 'edit');
 
-function handleInitModel() {
+async function handleInitModel() {
   errorObj.value = {};
   model.value = createDefaultModel();
-  console.log(model.value)
-  if (props.operateType === 'edit' && props.rowData) {
-    Object.assign(model.value, {
-      buy_spread:props.rowData.buy_spread,
-      fee:props.rowData.fee,
-      id:props.rowData.id,
-      sell_spread:props.rowData.sell_spread,
-      sort:props.rowData.sort,
-      status:props.rowData.status,
-      symbol_id:props.rowData.symbol_id
-    });
+  if (props.operateType === 'edit' && props.rowData?.id) {
+    try {
+      const detailData = await CryptoSpotInfo({ id: props.rowData.id });
+      Object.assign(model.value, {
+        buy_spread: detailData.rowData.buy_spread,
+        fee: detailData.rowData.fee,
+        id: detailData.rowData.id,
+        sell_spread: detailData.rowData.sell_spread,
+        sort: detailData.rowData.sort,
+        status: detailData.rowData.status,
+        symbol_id: detailData.rowData.symbol_id,
+        is_recommend: detailData.rowData.is_recommend
+      });
+    } catch (error) {
+      console.error('获取现货详情失败:', error);
+      // 如果详情接口失败，使用传入的rowData作为备选
+      Object.assign(model.value, {
+        buy_spread: props.rowData.buy_spread,
+        fee: props.rowData.fee,
+        id: props.rowData.id,
+        sell_spread: props.rowData.sell_spread,
+        sort: props.rowData.sort,
+        status: props.rowData.status,
+        symbol_id: props.rowData.symbol_id,
+        is_recommend: props.rowData.is_recommend
+      });
+    }
   }
 }
 
@@ -76,7 +85,9 @@ function closeDrawer() {
   btnLoading.value = false;
   visible.value = false;
 }
+
 const btnLoading = ref(false);
+
 async function handleSubmit() {
   errorObj.value = {};
   if (isEmpty(model.value.symbol_id)) {
@@ -89,47 +100,40 @@ async function handleSubmit() {
     errorObj.value.sell_spread = '请输入卖出点差';
   }
   if (isEmpty(model.value.fee)) {
-    errorObj.value.fee = '手续费';
+    errorObj.value.fee = '请输入手续费';
   }
   if (isEmpty(model.value.sort)) {
     errorObj.value.sort = '请输入排序';
   }
   if (isEmpty(model.value.status)) {
-    errorObj.value.status = '请选择开关';
+    errorObj.value.status = '请选择状态';
   }
   if (Object.values(errorObj.value).some(item => item)) {
     return;
   }
   btnLoading.value = true;
   const action = isEdit.value ? CryptoUpdateSpot : CryptoCreateSpot;
-  if(model.value.index)  model.value.index = undefined
-  action(model.value)
-    .then(() => {
-      // request
-      window.$message?.success('操作成功');
-      closeDrawer();
-      emit('submitted');
-    })
-    .catch(error => {
-      errorObj.value = error;
-    })
-    .finally(() => {
-      btnLoading.value = false;
-    });
+  if (model.value.index) model.value.index = undefined;
+  try {
+    await action(model.value);
+    window.$message?.success('操作成功');
+    closeDrawer();
+    emit('submitted');
+  } catch (error) {
+    errorObj.value = error;
+  } finally {
+    btnLoading.value = false;
+  }
 }
+
 const errorObj = ref<Record<string, string>>({});
-watch(visible, () => {
+
+watch(visible, async () => {
   if (visible.value) {
-    handleInitModel();
+    await handleInitModel();
     errorObj.value = {};
   }
 });
-const handleFileChange = (options: { file: UploadFileInfo }) => {
-  const file = options.file.file;
-  if (file) {
-    model.value.logo = URL.createObjectURL(file);
-  }
-}
 </script>
 
 <template>
@@ -141,8 +145,20 @@ const handleFileChange = (options: { file: UploadFileInfo }) => {
         <MyFormItem v-model="model.buy_spread" label="买入点差" prop-name="buy_spread" />
         <MyFormItem v-model="model.sell_spread" label="卖出点差" prop-name="sell_spread" />
         <MyFormItem v-model="model.fee" label="手续费" prop-name="fee" />
-        <MyFormItem v-model="model.is_recommend" label="首页推荐" form-type="select" :data-list="recommendList" prop-name="is_recommend" />
-        <MyFormItem v-model="model.status" label="交易状态" form-type="select" :data-list="openDataList" prop-name="status" />
+        <MyFormItem
+          v-model="model.is_recommend"
+          label="首页推荐"
+          form-type="select"
+          :data-list="recommendList"
+          prop-name="is_recommend"
+        />
+        <MyFormItem
+          v-model="model.status"
+          label="交易状态"
+          form-type="select"
+          :data-list="openDataList"
+          prop-name="status"
+        />
       </MyForm>
       <template #footer>
         <NSpace :size="16">

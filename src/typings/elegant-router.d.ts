@@ -25,7 +25,6 @@ declare module "@elegant-router/types" {
     "crypto_futures": "/crypto/futures";
     "crypto_spot": "/crypto/spot";
     "crypto_symbol": "/crypto/symbol";
-    "demo": "/demo";
     "flow": "/flow";
     "flow_futures": "/flow/futures";
     "flow_loan": "/flow/loan";
@@ -43,8 +42,6 @@ declare module "@elegant-router/types" {
     "order_ipo": "/order/ipo";
     "order_otc": "/order/otc";
     "order_spot": "/order/spot";
-    "recharge": "/recharge";
-    "recharge_stock": "/recharge/stock";
     "stock": "/stock";
     "stock_ipo": "/stock/ipo";
     "stock_market": "/stock/market";
@@ -95,14 +92,12 @@ declare module "@elegant-router/types" {
     | "404"
     | "500"
     | "crypto"
-    | "demo"
     | "flow"
     | "home"
     | "iframe-page"
     | "login"
     | "manage"
     | "order"
-    | "recharge"
     | "stock"
     | "user"
     | "wallet"
@@ -132,7 +127,6 @@ declare module "@elegant-router/types" {
     | "crypto_futures"
     | "crypto_spot"
     | "crypto_symbol"
-    | "demo"
     | "flow_futures"
     | "flow_loan"
     | "flow_spot"
@@ -145,7 +139,6 @@ declare module "@elegant-router/types" {
     | "order_ipo"
     | "order_otc"
     | "order_spot"
-    | "recharge_stock"
     | "stock_ipo"
     | "stock_market"
     | "stock_otc"

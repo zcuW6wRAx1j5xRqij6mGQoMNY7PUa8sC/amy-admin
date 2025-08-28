@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { depositList, statusList } from '@/constants/business';
-import { CryptoCoinInfo, CryptoCreateCoin, type CryptoPostCoinPlader, CryptoUpdateCoin } from '@/service/api/crypto';
+import { statusList } from '@/constants/business';
+import {
+  CryptoCreateSymbol,
+  type CryptoPostFuturesPlader,
+  CryptoSymbolInfo,
+  CryptoUpdateSymbol
+} from '@/service/api/crypto';
 import { isEmpty } from '@/utils/is';
 
 interface Props {
   /** the type of operation */
   operateType: NaiveUI.TableOperateType;
   /** the edit row data */
-  rowData?: CryptoPostCoinPlader | null;
+  rowData?: CryptoPostFuturesPlader | null;
 }
 
 const props = defineProps<Props>();
@@ -25,24 +30,25 @@ const visible = defineModel<boolean>('visible', {
 
 const title = computed(() => {
   const titles: Record<NaiveUI.TableOperateType, string> = {
-    add: '新增币种',
-    edit: '编辑币种'
+    add: '新增交易对',
+    edit: '编辑交易对'
   };
   return titles[props.operateType];
 });
 
 const model = ref(createDefaultModel());
 
-function createDefaultModel(): CryptoPostCoinPlader {
+function createDefaultModel(): CryptoPostFuturesPlader {
   return {
+    coin_id: undefined,
     logo: '',
     name: '',
-    block: '',
-    id: undefined,
-    full_name: '',
-    deposit_address: '',
-    allow_deposit: 0,
-    allow_withdraw: 1,
+    symbol: '',
+    base_asset: '',
+    quote_asset: '',
+    binance_symbol: '',
+    digits: undefined,
+    self_data: 0,
     status: 0
   };
 }
@@ -54,10 +60,17 @@ async function handleInitModel() {
   model.value = createDefaultModel();
   if (props.operateType === 'edit' && props.rowData?.id) {
     try {
-      const detailData = await CryptoCoinInfo({ id: props.rowData.id });
-      Object.assign(model.value, detailData);
+      const detailData = await CryptoSymbolInfo({ id: props.rowData.id });
+      Object.assign(model.value, {
+        coin_id: detailData.coin_id,
+        logo: detailData.logo,
+        name: detailData.name,
+        symbol: detailData.symbol,
+        base_asset: detailData.base_asset,
+        quote_asset: detailData.quote_asset
+      });
     } catch (error) {
-      console.error('获取币种详情失败:', error);
+      console.error('获取交易对详情失败:', error);
       // 如果详情接口失败，使用传入的rowData作为备选
       Object.assign(model.value, props.rowData);
     }
@@ -73,35 +86,29 @@ const btnLoading = ref(false);
 
 async function handleSubmit() {
   errorObj.value = {};
-  if (isEmpty(model.value.logo)) {
-    errorObj.value.logo = '请上传logo';
+  if (isEmpty(model.value.coin_id)) {
+    errorObj.value.coin_id = '请输入货币ID';
   }
   if (isEmpty(model.value.name)) {
-    errorObj.value.name = '请输入货币名称';
+    errorObj.value.name = '请输入自定义名称';
   }
-  if (isEmpty(model.value.block)) {
-    errorObj.value.block = '请输入链名称';
+  if (isEmpty(model.value.symbol)) {
+    errorObj.value.symbol = '请输入交易对名称';
+  }
+  if (isEmpty(model.value.base_asset)) {
+    errorObj.value.base_asset = '请输入交易货币';
+  }
+  if (isEmpty(model.value.quote_asset)) {
+    errorObj.value.quote_asset = '请输入计价货币';
   }
   if (isEmpty(model.value.status)) {
     errorObj.value.status = '请选择状态';
-  }
-  if (isEmpty(model.value.full_name)) {
-    errorObj.value.full_name = '请输入全称';
-  }
-  if (isEmpty(model.value.deposit_address)) {
-    errorObj.value.deposit_address = '请输入充值地址';
-  }
-  if (isEmpty(model.value.allow_deposit)) {
-    errorObj.value.allow_deposit = '请选择是否允许充值';
-  }
-  if (isEmpty(model.value.allow_withdraw)) {
-    errorObj.value.allow_withdraw = '请选择是否允许提现';
   }
   if (Object.values(errorObj.value).some(item => item)) {
     return;
   }
   btnLoading.value = true;
-  const action = isEdit.value ? CryptoUpdateCoin : CryptoCreateCoin;
+  const action = isEdit.value ? CryptoUpdateSymbol : CryptoCreateSymbol;
   if (model.value.index) model.value.index = undefined;
   try {
     await action(model.value);
@@ -129,24 +136,20 @@ watch(visible, async () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="360">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm all-required :error-obj="errorObj">
+        <MyFormItem v-model="model.coin_id" label="货币ID" prop-name="coin_id" />
         <MyFormItem v-model="model.logo" label="Logo" prop-name="logo" form-type="upload" />
-        <MyFormItem v-model="model.name" label="货币名称" prop-name="name" />
-        <MyFormItem v-model="model.block" label="链名称" prop-name="block" />
-        <MyFormItem v-model="model.full_name" label="全称" prop-name="full_name" />
-        <MyFormItem v-model="model.deposit_address" label="充值地址" prop-name="deposit_address" />
+        <MyFormItem v-model="model.name" label="自定义名称" prop-name="name" />
+        <MyFormItem v-model="model.symbol" label="交易对名称" prop-name="symbol" />
+        <MyFormItem v-model="model.base_asset" label="交易货币" prop-name="base_asset" />
+        <MyFormItem v-model="model.quote_asset" label="计价货币" prop-name="quote_asset" />
+        <MyFormItem v-model="model.binance_symbol" label="币安交易对别名" prop-name="binance_symbol" />
+        <MyFormItem v-model="model.digits" label="结算小数位" prop-name="digits" />
         <MyFormItem
-          v-model="model.allow_deposit"
-          label="是否允许充值"
+          v-model="model.self_data"
+          label="自有行情"
           form-type="select"
-          :data-list="depositList"
-          prop-name="allow_deposit"
-        />
-        <MyFormItem
-          v-model="model.allow_withdraw"
-          label="是否允许提现"
-          form-type="select"
-          :data-list="depositList"
-          prop-name="allow_withdraw"
+          :data-list="statusList"
+          prop-name="self_data"
         />
         <MyFormItem v-model="model.status" label="状态" form-type="select" :data-list="statusList" prop-name="status" />
       </MyForm>
