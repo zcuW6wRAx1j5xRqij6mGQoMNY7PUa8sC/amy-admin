@@ -255,12 +255,7 @@ const {
       align: 'center',
       width: 160
     },
-    {
-      key: 'updated_at',
-      title: '更新时间',
-      align: 'center',
-      width: 160
-    }
+
   ]
 });
 

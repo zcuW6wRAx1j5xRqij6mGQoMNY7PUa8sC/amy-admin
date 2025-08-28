@@ -74,13 +74,7 @@ const {
       width: 160,
       render: row => <NText>{row.created_at}</NText>
     },
-    {
-      key: 'updated_at',
-      title: '更新时间',
-      align: 'center',
-      width: 160,
-      render: row => <NText>{row.updated_at}</NText>
-    },
+
     {
       key: 'actions',
       title: '操作',
