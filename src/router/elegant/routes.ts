@@ -42,7 +42,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     component: 'layout.base',
     meta: {
       title: '数字货币管理',
-      icon: 'ic:baseline-currency-bitcoin'
+      icon: 'mdi:currency-btc'
     },
     children: [
       {
@@ -51,7 +51,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.crypto_coin',
         meta: {
           title: '币种管理',
-          icon: 'ic:baseline-monetization-on'
+          icon: 'mdi:coin'
         }
       },
       {
@@ -60,7 +60,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.crypto_futures',
         meta: {
           title: '合约管理',
-          icon: 'ic:baseline-assignment'
+          icon: 'mdi:file-document-edit'
         }
       },
       {
@@ -69,7 +69,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.crypto_spot',
         meta: {
           title: '现货管理',
-          icon: 'ic:baseline-shopping-cart'
+          icon: 'mdi:shopping'
         }
       },
       {
@@ -78,7 +78,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.crypto_symbol',
         meta: {
           title: '交易对管理',
-          icon: 'ic:baseline-label'
+          icon: 'mdi:currency-usd'
         }
       }
     ]
@@ -89,7 +89,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     component: 'layout.base',
     meta: {
       title: '钱包流水管理',
-      icon: 'ic:baseline-account-balance-wallet'
+      icon: 'mdi:bank-transfer'
     },
     children: [
       {
@@ -97,7 +97,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/flow/futures',
         component: 'view.flow_futures',
         meta: {
-          title: '合约钱包流水'
+          title: '合约钱包流水',
+          icon: 'mdi:chart-line'
         }
       },
       {
@@ -105,7 +106,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/flow/loan',
         component: 'view.flow_loan',
         meta: {
-          title: '贷款钱包流水'
+          title: '贷款钱包流水',
+          icon: 'mdi:handshake'
         }
       },
       {
@@ -113,7 +115,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/flow/spot',
         component: 'view.flow_spot',
         meta: {
-          title: '现货钱包流水'
+          title: '现货钱包流水',
+          icon: 'mdi:cash-multiple'
         }
       },
       {
@@ -121,7 +124,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/flow/stock',
         component: 'view.flow_stock',
         meta: {
-          title: '股票钱包流水'
+          title: '股票钱包流水',
+          icon: 'mdi:trending-up'
         }
       }
     ]
@@ -165,7 +169,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     component: 'layout.base',
     meta: {
       title: '系统管理',
-      icon: 'ic:baseline-settings'
+      icon: 'mdi:cog'
     },
     children: [
       {
@@ -174,7 +178,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.manage_manage',
         meta: {
           title: '管理员管理',
-          icon: 'ic:baseline-admin-panel-settings'
+          icon: 'mdi:account-cog'
         }
       },
       {
@@ -183,7 +187,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.manage_menu',
         meta: {
           title: '菜单管理',
-          icon: 'ic:baseline-menu'
+          icon: 'mdi:menu'
         }
       },
       {
@@ -192,7 +196,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.manage_role',
         meta: {
           title: '角色管理',
-          icon: 'ic:baseline-security'
+          icon: 'mdi:shield-account'
         }
       }
     ]
@@ -203,7 +207,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     component: 'layout.base',
     meta: {
       title: '订单管理',
-      icon: 'ic:baseline-receipt'
+      icon: 'mdi:clipboard-list'
     },
     children: [
       {
@@ -212,7 +216,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.order_futures',
         meta: {
           title: '合约订单',
-          icon: 'ic:baseline-assignment-turned-in'
+          icon: 'mdi:file-chart'
         }
       },
       {
@@ -221,7 +225,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.order_ipo',
         meta: {
           title: 'IPO订单',
-          icon: 'ic:baseline-public'
+          icon: 'mdi:rocket-launch'
         }
       },
       {
@@ -230,7 +234,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.order_otc',
         meta: {
           title: '大宗订单',
-          icon: 'ic:baseline-business'
+          icon: 'mdi:briefcase'
         }
       },
       {
@@ -239,7 +243,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.order_spot',
         meta: {
           title: '现货订单',
-          icon: 'ic:baseline-local-offer'
+          icon: 'mdi:tag'
         }
       }
     ]
@@ -250,7 +254,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     component: 'layout.base',
     meta: {
       title: '股票管理',
-      icon: 'ic:baseline-trending-up'
+      icon: 'mdi:chart-line'
     },
     children: [
       {
@@ -259,7 +263,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.stock_ipo',
         meta: {
           title: 'IPO股票',
-          icon: 'ic:baseline-new-releases'
+          icon: 'mdi:rocket'
         }
       },
       {
@@ -268,7 +272,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.stock_market',
         meta: {
           title: '市场股票',
-          icon: 'ic:baseline-store'
+          icon: 'mdi:store'
         }
       },
       {
@@ -277,7 +281,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.stock_otc',
         meta: {
           title: '大宗股票',
-          icon: 'ic:baseline-account-balance'
+          icon: 'mdi:bank'
         }
       }
     ]
@@ -288,7 +292,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     component: 'layout.base',
     meta: {
       title: '用户管理',
-      icon: 'ic:baseline-people'
+      icon: 'mdi:account-group'
     },
     children: [
       {
@@ -297,7 +301,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.user_kyc',
         meta: {
           title: 'KYC管理',
-          icon: 'ic:baseline-verified-user'
+          icon: 'mdi:card-account-details'
         }
       },
       {
@@ -306,7 +310,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.user_user-manage',
         meta: {
           title: '用户列表',
-          icon: 'ic:baseline-person'
+          icon: 'mdi:account-multiple'
         }
       }
     ]
@@ -316,7 +320,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/wallet',
     component: 'layout.base',
     meta: {
-      title: 'wallet'
+      title: '钱包管理',
+      icon: 'mdi:wallet'
     },
     children: [
       {
@@ -324,7 +329,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/wallet/futures',
         component: 'view.wallet_futures',
         meta: {
-          title: '合约钱包'
+          title: '合约钱包',
+          icon: 'mdi:chart-timeline-variant'
         }
       },
       {
@@ -332,7 +338,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/wallet/loan',
         component: 'view.wallet_loan',
         meta: {
-          title: '贷款钱包'
+          title: '贷款钱包',
+          icon: 'mdi:handshake-outline'
         }
       },
       {
@@ -340,7 +347,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/wallet/spot',
         component: 'view.wallet_spot',
         meta: {
-          title: '现货钱包'
+          title: '现货钱包',
+          icon: 'mdi:cash'
         }
       },
       {
@@ -348,7 +356,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/wallet/stock',
         component: 'view.wallet_stock',
         meta: {
-          title: '股票钱包'
+          title: '股票钱包',
+          icon: 'mdi:chart-areaspline'
         }
       }
     ]
@@ -359,7 +368,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     component: 'layout.base',
     meta: {
       title: '网站管理',
-      icon: 'ic:baseline-web'
+      icon: 'mdi:web'
     },
     children: [
       {
@@ -368,7 +377,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.website_banner',
         meta: {
           title: 'banner',
-          icon: 'ic:baseline-image'
+          icon: 'mdi:image'
         }
       },
       {
@@ -377,7 +386,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.website_config-page',
         meta: {
           title: '配置管理',
-          icon: 'ic:baseline-tune'
+          icon: 'mdi:tune'
         }
       }
     ]

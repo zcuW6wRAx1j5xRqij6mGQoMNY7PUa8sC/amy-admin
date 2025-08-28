@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { StockCreateMarket, StockUpdateMarket } from '@/service/api/stock';
+import { StockCreateMarket, StockUpdateMarket, StockMarketInfo } from '@/service/api/stock';
 import { isEmpty } from '@/utils/is';
 
 defineOptions({
@@ -61,11 +61,21 @@ function createDefaultModel() {
   };
 }
 
-function handleInitModel() {
+async function handleInitModel() {
   errorObj.value = {};
   ruleForm.value = createDefaultModel();
-  if (props.operateType === 'edit' && props.rowData) {
-    Object.assign(ruleForm.value, props.rowData);
+
+  if (props.operateType === 'edit' && props.rowData?.id) {
+    try {
+      btnLoading.value = true;
+      const detailData = await StockMarketInfo({ id: props.rowData.id });
+      Object.assign(ruleForm.value, detailData);
+    } catch (error: any) {
+      window.$message?.error('获取详情失败');
+      console.error('获取市场股票详情失败:', error);
+    } finally {
+      btnLoading.value = false;
+    }
   }
 }
 
@@ -140,7 +150,7 @@ async function handleSubmit() {
       closeDrawer();
       emit('submitted');
     })
-    .catch(error => {
+    .catch((error: any) => {
       errorObj.value = error;
     })
     .finally(() => {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { StockCreateIpo, StockUpdateIpo } from '@/service/api/stock';
+import { StockCreateIpo, StockIpoInfo, StockUpdateIpo } from '@/service/api/stock';
 import { isEmpty } from '@/utils/is';
 
 defineOptions({
@@ -47,17 +47,26 @@ function createDefaultModel() {
     open_fee: 0,
     status: 0,
     stock_id: 0,
-    apply_start_at: undefined,
-    apply_end_at: undefined,
+    apply_start_at: null,
+    apply_end_at: null,
     issue_quantity: 0
   };
 }
 
-function handleInitModel() {
+async function handleInitModel() {
   errorObj.value = {};
   ruleForm.value = createDefaultModel();
-  if (props.operateType === 'edit' && props.rowData) {
-    Object.assign(ruleForm.value, props.rowData);
+
+  if (props.operateType === 'edit' && props.rowData?.id) {
+    try {
+      btnLoading.value = true;
+      const detailData = await StockIpoInfo({ id: props.rowData.id });
+      Object.assign(ruleForm.value, detailData);
+    } catch (error: any) {
+      console.error('获取IPO详情失败:', error);
+    } finally {
+      btnLoading.value = false;
+    }
   }
 }
 
@@ -112,7 +121,7 @@ async function handleSubmit() {
       closeDrawer();
       emit('submitted');
     })
-    .catch(error => {
+    .catch((error: any) => {
       errorObj.value = error;
     })
     .finally(() => {
@@ -140,9 +149,20 @@ watch(visible, () => {
         <MyFormItem v-model="ruleForm.issue_quantity" label="发行数量" prop-name="issue_quantity" />
         <MyFormItem v-model="ruleForm.open_fee" label="开仓手续费%" prop-name="open_fee" />
         <MyFormItem v-model="ruleForm.close_fee" label="平仓手续费%" prop-name="close_fee" />
-        <MyFormItem v-model="ruleForm.apply_start_at" label="开始时间" prop-name="apply_start_at" form-type="datetime" />
+        <MyFormItem
+          v-model="ruleForm.apply_start_at"
+          label="开始时间"
+          prop-name="apply_start_at"
+          form-type="datetime"
+        />
         <MyFormItem v-model="ruleForm.apply_end_at" label="结束时间" prop-name="apply_end_at" form-type="datetime" />
-        <MyFormItem v-model="ruleForm.status" label="状态" form-type="select" :data-list="statusOptions" prop-name="status" />
+        <MyFormItem
+          v-model="ruleForm.status"
+          label="状态"
+          form-type="select"
+          :data-list="statusOptions"
+          prop-name="status"
+        />
       </MyForm>
       <template #footer>
         <NSpace :size="16">
