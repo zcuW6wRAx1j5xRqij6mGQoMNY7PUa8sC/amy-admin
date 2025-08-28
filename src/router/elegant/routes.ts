@@ -84,15 +84,6 @@ export const generatedRoutes: GeneratedRoute[] = [
     ]
   },
   {
-    name: 'data-detail',
-    path: '/data-detail',
-    component: 'layout.base$view.data-detail',
-    meta: {
-      title: 'data-detail',
-      icon: 'ic:baseline-analytics'
-    }
-  },
-  {
     name: 'demo',
     path: '/demo',
     component: 'layout.base$view.demo',
@@ -220,7 +211,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/order',
     component: 'layout.base',
     meta: {
-      title: '订单',
+      title: '订单管理',
       icon: 'ic:baseline-receipt'
     },
     children: [
