@@ -26,11 +26,16 @@ declare module "@elegant-router/types" {
     "crypto_spot": "/crypto/spot";
     "crypto_symbol": "/crypto/symbol";
     "data-detail": "/data-detail";
+    "demo": "/demo";
     "flow": "/flow";
     "flow_futures": "/flow/futures";
     "flow_loan": "/flow/loan";
     "flow_spot": "/flow/spot";
     "flow_stock": "/flow/stock";
+    "flow_wallet-futures": "/flow/wallet-futures";
+    "flow_wallet-loan": "/flow/wallet-loan";
+    "flow_wallet-spot": "/flow/wallet-spot";
+    "flow_wallet-stock": "/flow/wallet-stock";
     "home": "/home";
     "iframe-page": "/iframe-page/:url";
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
@@ -91,6 +96,7 @@ declare module "@elegant-router/types" {
     | "500"
     | "crypto"
     | "data-detail"
+    | "demo"
     | "flow"
     | "home"
     | "iframe-page"
@@ -127,10 +133,15 @@ declare module "@elegant-router/types" {
     | "crypto_spot"
     | "crypto_symbol"
     | "data-detail"
+    | "demo"
     | "flow_futures"
     | "flow_loan"
     | "flow_spot"
     | "flow_stock"
+    | "flow_wallet-futures"
+    | "flow_wallet-loan"
+    | "flow_wallet-spot"
+    | "flow_wallet-stock"
     | "home"
     | "manage_manage"
     | "manage_menu"

@@ -1,260 +1,203 @@
-<script setup lang="jsx">
-import { NButton } from 'naive-ui';
+<script setup lang="tsx">
+import { NTag } from 'naive-ui';
 import { FlowLoanList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import { setBaseUrl } from "@/utils/utils"
+import { setBaseUrl } from '@/utils/utils';
 
 const appStore = useAppStore();
 
-const {
-    columns,
-    columnChecks,
-    data,
-    loading,
-    getData,
-    mobilePagination,
-} = useTable({
-    apiFn: FlowLoanList,
-    apiParams: {
-        page: 1,
-        page_size: 20,
+// 表格相关
+const { columns, columnChecks, data, loading, getData, mobilePagination } = useTable({
+  apiFn: FlowLoanList,
+  apiParams: {
+    page: 1,
+    size: 20
+  },
+  columns: () => [
+    {
+      key: 'id',
+      title: 'ID',
+      align: 'center',
+      width: 80
     },
-    columns: () => [
-        {
-            key: 'id',
-            title: 'ID',
-            align: 'center',
-            width: 120,
-            fixed: 'left'
-        },
-        {
-            key: 'uid',
-            title: '用户ID',
-            align: 'center',
-            width: 120,
-            fixed: 'left'
-        },
-        {
-            key: 'amount',
-            title: '变动金额',
-            align: 'center',
-            width: 120,
-            fixed: 'left'
-        },
-        {
-            key: 'balance_before',
-            title: '变动前',
-            align: 'center',
-            width: 120,
-            fixed: 'left'
-        },
-        {
-            key: 'balance_after',
-            title: '变动后',
-            align: 'center',
-            width: 120,
-            fixed: 'left'
-        },
-        {
-            key: 'remark',
-            title: '备注',
-            align: 'center',
-            width: 120,
-            fixed: 'left'
-        },
-        {
-            key: 'source',
-            title: 'source',
-            align: 'center',
-            width: 120,
-            fixed: 'left'
-        },
-        {
-            key: 'type',
-            title: '类型',
-            align: 'center',
-            width: 120,
-            fixed: 'left'
-        },
-
-
-        // {
-        //     key: 'nickname',
-        //     title: ' 昵称',
-        //     align: 'center',
-        //     width: 80,
-        // },
-        // {
-        //     key: 'email',
-        //     title: '邮箱',
-        //     align: 'center',
-        //     minWidth: 150
-        // },
-        // {
-        //     key: 'phone_code',
-        //     title: '国际区号',
-        //     align: 'center',
-        //     minWidth: 150
-        // },
-        // {
-        //     key: 'phone',
-        //     title: '手机号',
-        //     align: 'center',
-        //     minWidth: 150
-        // },
-        // {
-        //     key: 'invite_code',
-        //     title: '邀请码',
-        //     align: 'center',
-        //     minWidth: 150
-        // },
-        // {
-        //     key: 'parent_id',
-        //     title: '上级ID',
-        //     align: 'center',
-        //     minWidth: 150
-        // },
-        // {
-        //     key: 'role_id',
-        //     title: '角色ID',
-        //     align: 'center',
-        //     minWidth: 150
-        // },
-        // {
-        //     key: 'name',
-        //     title: '姓名',
-        //     align: 'center',
-        //     minWidth: 150
-        // },
-        // {
-        //     key: 'level_id',
-        //     title: '用户等级ID',
-        //     align: 'center',
-        //     minWidth: 150
-        // },
-        // {
-        //     key: 'credit',
-        //     title: '信用分',
-        //     align: 'center',
-        //     minWidth: 150
-        // },
-        // {
-        //     key: 'is_kyc',
-        //     title: '是否实名',
-        //     align: 'center',
-        //     minWidth: 100,
-        //     render: row => {
-        //         return (
-        //             <NTag type={row.is_kyc ? 'success' : 'error'}>{row.is_kyc ? '是' : '否'}</NTag>
-        //         );
-        //     }
-        // },
-        // {
-        //     key: 'kyc_data',
-        //     title: 'KYC数据',
-        //     align: 'center',
-        //     minWidth: 150
-        // },
-        // {
-        //     key: 'avatar',
-        //     title: '头像',
-        //     align: 'center',
-        //     minWidth: 60,
-        //     render: row => {
-        //         <img src={setBaseUrl(row.avatar)} class="w-60px h-60px" alt="" />
-        //     }
-        // },
-        // {
-        //     key: 'status',
-        //     title: '是否实名',
-        //     align: 'center',
-        //     minWidth: 100,
-        //     render: row => {
-        //         return (
-        //             <NTag type={row.status ? 'success' : 'error'}>{row.status ? '是' : '否'}</NTag>
-        //         );
-        //     }
-        // },
-        // {
-        //     key: 'register_ip',
-        //     title: '注册IP',
-        //     align: 'center',
-        //     minWidth: 100,
-        // },
-        // {
-        //     key: 'regsiter_device',
-        //     title: '注册设备',
-        //     align: 'center',
-        //     minWidth: 100,
-        // },
-        // {
-        //     key: 'last_login_at',
-        //     title: '最后登录时间',
-        //     align: 'center',
-        //     minWidth: 150,
-        // },
-        // {
-        //     key: 'last_login_ip',
-        //     title: '最后登录的ip',
-        //     align: 'center',
-        //     minWidth: 150,
-        // },
-        // {
-        //     key: 'last_login_device',
-        //     title: '最后登录设备',
-        //     align: 'center',
-        //     minWidth: 150,
-        // },
-        {
-            key: 'created_at',
-            title: '创建日期',
-            align: 'center',
-            minWidth: 150
-        },
-        {
-            key: 'updated_at',
-            title: '最近日期',
-            align: 'center',
-            minWidth: 150
-        },
-        // {
-        //     key: 'operate',
-        //     title: '操作',
-        //     align: 'center',
-        //     width: 80,
-        //     fixed: 'right',
-        //     render: row => (
-        //         <div >
-        //             <NButton onClick={() => handleDetail(row)}>详情</NButton>
-        //         </div>
-        //     )
-        // }
-    ]
+    {
+      key: 'uid',
+      title: '用户ID',
+      align: 'center',
+      width: 100
+    },
+    {
+      key: 'user.nickname',
+      title: '用户昵称',
+      align: 'center',
+      width: 120,
+      render: row => row.user?.nickname || '-'
+    },
+    {
+      key: 'wallet_id',
+      title: '钱包ID',
+      align: 'center',
+      width: 100
+    },
+    {
+      key: 'balance_type',
+      title: '余额类型',
+      align: 'center',
+      width: 100,
+      render: row => {
+        const typeMap: Record<string, { type: string; text: string }> = {
+          frozen: { type: 'warning', text: '冻结' },
+          available: { type: 'success', text: '可用' },
+          total: { type: 'info', text: '总额' }
+        };
+        const config = typeMap[row.balance_type] || { type: 'default', text: row.balance_type };
+        return <NTag type={config.type}>{config.text}</NTag>;
+      }
+    },
+    {
+      key: 'amount',
+      title: '变动金额',
+      align: 'center',
+      width: 120,
+      render: row => {
+        const amount = Number.parseFloat(row.amount) || 0;
+        const color = amount >= 0 ? 'text-green-600' : 'text-red-600';
+        const prefix = amount >= 0 ? '+' : '';
+        return (
+          <span class={color}>
+            {prefix}
+            {amount}
+          </span>
+        );
+      }
+    },
+    {
+      key: 'balance_before',
+      title: '变动前余额',
+      align: 'center',
+      width: 120,
+      render: row => {
+        return <span class="text-blue-600">{row.balance_before || 0}</span>;
+      }
+    },
+    {
+      key: 'balance_after',
+      title: '变动后余额',
+      align: 'center',
+      width: 120,
+      render: row => {
+        return <span class="text-green-600">{row.balance_after || 0}</span>;
+      }
+    },
+    {
+      key: 'type',
+      title: '变动类型',
+      align: 'center',
+      width: 100,
+      render: row => {
+        const typeMap: Record<string, { type: string; text: string }> = {
+          apply: { type: 'warning', text: '申请' },
+          approve: { type: 'success', text: '审批' },
+          reject: { type: 'error', text: '拒绝' },
+          repay: { type: 'info', text: '还款' },
+          freeze: { type: 'warning', text: '冻结' },
+          unfreeze: { type: 'success', text: '解冻' }
+        };
+        const config = typeMap[row.type] || { type: 'default', text: row.type };
+        return <NTag type={config.type}>{config.text}</NTag>;
+      }
+    },
+    {
+      key: 'source',
+      title: '来源',
+      align: 'center',
+      width: 120,
+      render: row => {
+        return <span class="text-gray-600">{row.source || '-'}</span>;
+      }
+    },
+    {
+      key: 'remark',
+      title: '备注',
+      align: 'center',
+      width: 150,
+      render: row => {
+        return <span class="text-gray-600">{row.remark || '-'}</span>;
+      }
+    },
+    {
+      key: 'user.credit',
+      title: '信用分',
+      align: 'center',
+      width: 100,
+      render: row => {
+        const credit = row.user?.credit || 0;
+        let color = 'text-gray-600';
+        if (credit >= 800) color = 'text-green-600';
+        else if (credit >= 600) color = 'text-blue-600';
+        else if (credit >= 400) color = 'text-orange-600';
+        else color = 'text-red-600';
+        return <span class={color}>{credit}</span>;
+      }
+    },
+    {
+      key: 'user.is_kyc',
+      title: '实名认证',
+      align: 'center',
+      width: 100,
+      render: row => {
+        const isKyc = row.user?.is_kyc;
+        const type = isKyc ? 'success' : 'error';
+        const text = isKyc ? '已认证' : '未认证';
+        return <NTag type={type}>{text}</NTag>;
+      }
+    },
+    {
+      key: 'created_at',
+      title: '创建时间',
+      align: 'center',
+      width: 160
+    },
+    {
+      key: 'updated_at',
+      title: '更新时间',
+      align: 'center',
+      width: 160
+    }
+  ]
 });
 
-const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
-    data,
-    getData
-);
-
-function edit(id) {
-    handleEdit(id);
-}
+const { checkedRowKeys } = useTableOperate(data, getData);
 </script>
 
 <template>
-    <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-        <NCard title="合约钱包流水" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
-            <template #header-extra>
-                <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
-                    :loading="loading" no-add @refresh="getData" />
-            </template>
-            <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
-                :flex-height="!appStore.isMobile" :scroll-x="800" :loading="loading" remote :row-key="row => row.id"
-                :pagination="mobilePagination" class="sm:h-full" />
-        </NCard>
-    </div>
+  <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
+    <NCard title="贷款钱包流水" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
+      <template #header-extra>
+        <TableHeaderOperation
+          v-model:columns="columnChecks"
+          :disabled-delete="checkedRowKeys.length === 0"
+          :loading="loading"
+          no-add
+          @refresh="getData"
+        />
+      </template>
+      <NDataTable
+        v-model:checked-row-keys="checkedRowKeys"
+        :columns="columns"
+        :data="data"
+        size="small"
+        :flex-height="!appStore.isMobile"
+        :scroll-x="1800"
+        :loading="loading"
+        remote
+        :row-key="row => row.id"
+        :pagination="mobilePagination"
+        class="sm:h-full"
+      />
+    </NCard>
+  </div>
 </template>
 
 <style scoped></style>

@@ -1,16 +1,31 @@
 <script setup lang="tsx">
-import { NTag } from 'naive-ui';
-import { FlowStockList } from '@/service/api/flow';
+// import { ref } from 'vue';
+import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { WalletLoanList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { setBaseUrl } from '@/utils/utils';
+import OperateDrawer from './modules/operate-drawer.vue';
+import SearchBox from './modules/search-box.vue';
 
 const appStore = useAppStore();
 
 // 表格相关
-const { columns, columnChecks, data, loading, getData, mobilePagination } = useTable({
-  apiFn: FlowStockList,
+const {
+  columns,
+  columnChecks,
+  data,
+  loading,
+  getData,
+  getDataByPage,
+  mobilePagination,
+  searchParams,
+  resetSearchParams
+} = useTable({
+  apiFn: WalletLoanList,
   apiParams: {
+    uid: null,
+    status: null,
     page: 1,
     size: 20
   },
@@ -35,83 +50,39 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       render: row => row.user?.nickname || '-'
     },
     {
-      key: 'amount',
-      title: '变动金额',
+      key: 'amount_total',
+      title: '总贷款金额',
       align: 'center',
       width: 120,
       render: row => {
-        const amount = Number.parseFloat(row.amount) || 0;
-        const color = amount >= 0 ? 'text-green-600' : 'text-red-600';
-        const prefix = amount >= 0 ? '+' : '';
-        return (
-          <span class={color}>
-            {prefix}
-            {amount}
-          </span>
-        );
+        return <span class="text-green-600 font-bold">{row.amount_total || 0}</span>;
       }
     },
     {
-      key: 'before_amount',
-      title: '变动前金额',
+      key: 'amount_used',
+      title: '已用金额',
       align: 'center',
       width: 120,
       render: row => {
-        return <span class="text-blue-600">{row.before_amount || 0}</span>;
+        return <span class="text-blue-600">{row.amount_used || 0}</span>;
       }
     },
     {
-      key: 'after_amount',
-      title: '变动后金额',
+      key: 'amount_unused',
+      title: '未用金额',
       align: 'center',
       width: 120,
       render: row => {
-        return <span class="text-green-600">{row.after_amount || 0}</span>;
+        return <span class="text-orange-600">{row.amount_unused || 0}</span>;
       }
     },
     {
-      key: 'type',
-      title: '变动类型',
+      key: 'amount_frozen',
+      title: '冻结金额',
       align: 'center',
       width: 120,
       render: row => {
-        const typeMap: Record<string, { type: string; text: string }> = {
-          deposit: { type: 'success', text: '充值' },
-          withdraw: { type: 'error', text: '提现' },
-          transfer: { type: 'info', text: '转账' },
-          buy: { type: 'warning', text: '买入' },
-          sell: { type: 'success', text: '卖出' },
-          dividend: { type: 'info', text: '分红' },
-          fee: { type: 'error', text: '手续费' },
-          block_etf_apply: { type: 'warning', text: 'ETF申购' },
-          block_etf_redeem: { type: 'info', text: 'ETF赎回' },
-          ipo_apply: { type: 'warning', text: 'IPO申购' },
-          ipo_refund: { type: 'error', text: 'IPO退款' },
-          otc_buy: { type: 'warning', text: '大宗买入' },
-          otc_sell: { type: 'success', text: '大宗卖出' },
-          margin_call: { type: 'error', text: '保证金追加' },
-          margin_return: { type: 'success', text: '保证金返还' }
-        };
-        const config = typeMap[row.type] || { type: 'default', text: row.type };
-        return <NTag type={config.type}>{config.text}</NTag>;
-      }
-    },
-    {
-      key: 'relation_id',
-      title: '关联ID',
-      align: 'center',
-      width: 100,
-      render: row => {
-        return row.relation_id || '-';
-      }
-    },
-    {
-      key: 'remark',
-      title: '备注',
-      align: 'center',
-      width: 150,
-      render: row => {
-        return <span class="text-gray-600">{row.remark || '-'}</span>;
+        return <span class="text-red-600">{row.amount_frozen || 0}</span>;
       }
     },
     {
@@ -142,6 +113,30 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       }
     },
     {
+      key: 'user.status',
+      title: '用户状态',
+      align: 'center',
+      width: 100,
+      render: row => {
+        const status = row.user?.status;
+        const type = status ? 'success' : 'error';
+        const text = status ? '正常' : '禁用';
+        return <NTag type={type}>{text}</NTag>;
+      }
+    },
+    {
+      key: 'status',
+      title: '钱包状态',
+      align: 'center',
+      width: 100,
+      render: row => {
+        const status = row.status;
+        const type = status === 'enabled' ? 'success' : 'error';
+        const text = status === 'enabled' ? '启用' : '禁用';
+        return <NTag type={type}>{text}</NTag>;
+      }
+    },
+    {
       key: 'created_at',
       title: '创建时间',
       align: 'center',
@@ -156,18 +151,43 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
   ]
 });
 
-const { checkedRowKeys } = useTableOperate(data, getData);
+const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
+  data,
+  getData
+);
+
+// 删除
+async function handleDelete(id: number) {
+  if (loading.value) return;
+  loading.value = true;
+  try {
+    // 这里可以添加实际的删除API调用
+    window.$message?.success('删除成功');
+    loading.value = false;
+    onDeleted();
+  } catch (error) {
+    window.$message?.error('删除失败');
+  } finally {
+    loading.value = false;
+  }
+}
+
+function edit(_id: number) {
+  handleEdit(_id);
+}
 </script>
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <NCard title="股票钱包流水" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
+    <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
+    <NCard title="贷款钱包管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
           no-add
+          @add="handleAdd"
           @refresh="getData"
         />
       </template>
@@ -183,6 +203,12 @@ const { checkedRowKeys } = useTableOperate(data, getData);
         :row-key="row => row.id"
         :pagination="mobilePagination"
         class="sm:h-full"
+      />
+      <OperateDrawer
+        v-model:visible="drawerVisible"
+        :operate-type="operateType"
+        :row-data="editingData"
+        @submitted="getDataByPage"
       />
     </NCard>
   </div>

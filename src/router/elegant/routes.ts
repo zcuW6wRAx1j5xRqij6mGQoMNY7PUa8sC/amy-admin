@@ -41,7 +41,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/crypto',
     component: 'layout.base',
     meta: {
-      title: '数字货币管理'
+      title: '数字货币管理',
+      icon: 'ic:baseline-currency-bitcoin'
     },
     children: [
       {
@@ -49,7 +50,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/crypto/coin',
         component: 'view.crypto_coin',
         meta: {
-          title: '币种管理'
+          title: '币种管理',
+          icon: 'ic:baseline-monetization-on'
         }
       },
       {
@@ -57,7 +59,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/crypto/futures',
         component: 'view.crypto_futures',
         meta: {
-          title: '合约管理'
+          title: '合约管理',
+          icon: 'ic:baseline-assignment'
         }
       },
       {
@@ -65,7 +68,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/crypto/spot',
         component: 'view.crypto_spot',
         meta: {
-          title: '现货管理'
+          title: '现货管理',
+          icon: 'ic:baseline-shopping-cart'
         }
       },
       {
@@ -73,7 +77,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/crypto/symbol',
         component: 'view.crypto_symbol',
         meta: {
-          title: 'Symnol管理'
+          title: 'Symnol管理',
+          icon: 'ic:baseline-label'
         }
       }
     ]
@@ -83,7 +88,17 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/data-detail',
     component: 'layout.base$view.data-detail',
     meta: {
-      title: 'data-detail'
+      title: 'data-detail',
+      icon: 'ic:baseline-analytics'
+    }
+  },
+  {
+    name: 'demo',
+    path: '/demo',
+    component: 'layout.base$view.demo',
+    meta: {
+      title: 'demo',
+      icon: 'ic:baseline-science'
     }
   },
   {
@@ -91,7 +106,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/flow',
     component: 'layout.base',
     meta: {
-      title: '钱包流水管理'
+      title: '钱包管理',
+      icon: 'ic:baseline-account-balance-wallet'
     },
     children: [
       {
@@ -124,6 +140,38 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.flow_stock',
         meta: {
           title: '股票钱包流水'
+        }
+      },
+      {
+        name: 'flow_wallet-futures',
+        path: '/flow/wallet-futures',
+        component: 'view.flow_wallet-futures',
+        meta: {
+          title: '合约钱包'
+        }
+      },
+      {
+        name: 'flow_wallet-loan',
+        path: '/flow/wallet-loan',
+        component: 'view.flow_wallet-loan',
+        meta: {
+          title: '贷款钱包'
+        }
+      },
+      {
+        name: 'flow_wallet-spot',
+        path: '/flow/wallet-spot',
+        component: 'view.flow_wallet-spot',
+        meta: {
+          title: '现货钱包'
+        }
+      },
+      {
+        name: 'flow_wallet-stock',
+        path: '/flow/wallet-stock',
+        component: 'view.flow_wallet-stock',
+        meta: {
+          title: '股票钱包'
         }
       }
     ]
@@ -166,7 +214,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/manage',
     component: 'layout.base',
     meta: {
-      title: '系统管理'
+      title: '系统管理',
+      icon: 'ic:baseline-settings'
     },
     children: [
       {
@@ -174,7 +223,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/manage/manage',
         component: 'view.manage_manage',
         meta: {
-          title: '管理员管理'
+          title: '管理员管理',
+          icon: 'ic:baseline-admin-panel-settings'
         }
       },
       {
@@ -182,7 +232,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/manage/menu',
         component: 'view.manage_menu',
         meta: {
-          title: '菜单管理'
+          title: '菜单管理',
+          icon: 'ic:baseline-menu'
         }
       },
       {
@@ -190,7 +241,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/manage/role',
         component: 'view.manage_role',
         meta: {
-          title: '角色管理'
+          title: '角色管理',
+          icon: 'ic:baseline-security'
         }
       }
     ]
@@ -200,7 +252,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/order',
     component: 'layout.base',
     meta: {
-      title: '订单'
+      title: '订单',
+      icon: 'ic:baseline-receipt'
     },
     children: [
       {
@@ -208,7 +261,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/order/futures',
         component: 'view.order_futures',
         meta: {
-          title: '合约订单'
+          title: '合约订单',
+          icon: 'ic:baseline-assignment-turned-in'
         }
       },
       {
@@ -216,7 +270,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/order/ipo',
         component: 'view.order_ipo',
         meta: {
-          title: 'IPO订单'
+          title: 'IPO订单',
+          icon: 'ic:baseline-public'
         }
       },
       {
@@ -224,7 +279,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/order/otc',
         component: 'view.order_otc',
         meta: {
-          title: '大宗订单'
+          title: '大宗订单',
+          icon: 'ic:baseline-business'
         }
       },
       {
@@ -232,7 +288,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/order/spot',
         component: 'view.order_spot',
         meta: {
-          title: '现货订单'
+          title: '现货订单',
+          icon: 'ic:baseline-local-offer'
         }
       }
     ]
@@ -242,7 +299,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/recharge',
     component: 'layout.base',
     meta: {
-      title: 'recharge'
+      title: 'recharge',
+      icon: 'ic:baseline-battery-charging-full'
     },
     children: [
       {
@@ -250,7 +308,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/recharge/stock',
         component: 'view.recharge_stock',
         meta: {
-          title: 'recharge_stock'
+          title: 'recharge_stock',
+          icon: 'ic:baseline-add-circle'
         }
       }
     ]
@@ -260,7 +319,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/stock',
     component: 'layout.base',
     meta: {
-      title: '股票管理'
+      title: '股票管理',
+      icon: 'ic:baseline-trending-up'
     },
     children: [
       {
@@ -268,7 +328,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/stock/ipo',
         component: 'view.stock_ipo',
         meta: {
-          title: 'IPO股票'
+          title: 'IPO股票',
+          icon: 'ic:baseline-new-releases'
         }
       },
       {
@@ -276,7 +337,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/stock/market',
         component: 'view.stock_market',
         meta: {
-          title: '市场股票'
+          title: '市场股票',
+          icon: 'ic:baseline-store'
         }
       },
       {
@@ -284,7 +346,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/stock/otc',
         component: 'view.stock_otc',
         meta: {
-          title: '大宗股票'
+          title: '大宗股票',
+          icon: 'ic:baseline-account-balance'
         }
       }
     ]
@@ -294,7 +357,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/user',
     component: 'layout.base',
     meta: {
-      title: '用户管理'
+      title: '用户管理',
+      icon: 'ic:baseline-people'
     },
     children: [
       {
@@ -302,7 +366,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/user/kyc',
         component: 'view.user_kyc',
         meta: {
-          title: 'KYC管理'
+          title: 'KYC管理',
+          icon: 'ic:baseline-verified-user'
         }
       },
       {
@@ -310,7 +375,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/user/user-manage',
         component: 'view.user_user-manage',
         meta: {
-          title: '用户列表'
+          title: '用户列表',
+          icon: 'ic:baseline-person'
         }
       }
     ]
@@ -320,7 +386,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/website',
     component: 'layout.base',
     meta: {
-      title: '网站管理'
+      title: '网站管理',
+      icon: 'ic:baseline-web'
     },
     children: [
       {
@@ -328,7 +395,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/website/banner',
         component: 'view.website_banner',
         meta: {
-          title: 'banner'
+          title: 'banner',
+          icon: 'ic:baseline-image'
         }
       },
       {
@@ -336,7 +404,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/website/config-page',
         component: 'view.website_config-page',
         meta: {
-          title: '配置管理'
+          title: '配置管理',
+          icon: 'ic:baseline-tune'
         }
       }
     ]
@@ -346,8 +415,8 @@ export const generatedRoutes: GeneratedRoute[] = [
 // 返回generatedRoutes，name为key，对象为value的对象, 子集也需要拍平
 export const generatedRoutesObj = generatedRoutes.reduce((acc: any, route) => {
   acc[route.name] = route;
-  if (route.children) {
-    route.children.forEach(child => {
+  if ('children' in route && route.children) {
+    route.children.forEach((child: any) => {
       acc[child.name] = child;
     });
     // 删除children

@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { NTag } from 'naive-ui';
-import { FlowStockList } from '@/service/api/flow';
+import { WalletStockList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { setBaseUrl } from '@/utils/utils';
@@ -9,7 +9,7 @@ const appStore = useAppStore();
 
 // 表格相关
 const { columns, columnChecks, data, loading, getData, mobilePagination } = useTable({
-  apiFn: FlowStockList,
+  apiFn: WalletStockList,
   apiParams: {
     page: 1,
     size: 20
@@ -35,83 +35,39 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       render: row => row.user?.nickname || '-'
     },
     {
-      key: 'amount',
-      title: '变动金额',
+      key: 'balance',
+      title: '钱包余额',
       align: 'center',
       width: 120,
       render: row => {
-        const amount = Number.parseFloat(row.amount) || 0;
-        const color = amount >= 0 ? 'text-green-600' : 'text-red-600';
-        const prefix = amount >= 0 ? '+' : '';
-        return (
-          <span class={color}>
-            {prefix}
-            {amount}
-          </span>
-        );
+        return <span class="text-green-600 font-bold">{row.balance || 0}</span>;
       }
     },
     {
-      key: 'before_amount',
-      title: '变动前金额',
+      key: 'frozen_balance',
+      title: '冻结余额',
       align: 'center',
       width: 120,
       render: row => {
-        return <span class="text-blue-600">{row.before_amount || 0}</span>;
+        return <span class="text-red-600">{row.frozen_balance || 0}</span>;
       }
     },
     {
-      key: 'after_amount',
-      title: '变动后金额',
+      key: 'total_deposit',
+      title: '总充值金额',
       align: 'center',
       width: 120,
       render: row => {
-        return <span class="text-green-600">{row.after_amount || 0}</span>;
+        return <span class="text-blue-600">{row.total_deposit || 0}</span>;
       }
     },
     {
-      key: 'type',
-      title: '变动类型',
+      key: 'total_withdraw',
+      title: '总提现金额',
       align: 'center',
       width: 120,
       render: row => {
-        const typeMap: Record<string, { type: string; text: string }> = {
-          deposit: { type: 'success', text: '充值' },
-          withdraw: { type: 'error', text: '提现' },
-          transfer: { type: 'info', text: '转账' },
-          buy: { type: 'warning', text: '买入' },
-          sell: { type: 'success', text: '卖出' },
-          dividend: { type: 'info', text: '分红' },
-          fee: { type: 'error', text: '手续费' },
-          block_etf_apply: { type: 'warning', text: 'ETF申购' },
-          block_etf_redeem: { type: 'info', text: 'ETF赎回' },
-          ipo_apply: { type: 'warning', text: 'IPO申购' },
-          ipo_refund: { type: 'error', text: 'IPO退款' },
-          otc_buy: { type: 'warning', text: '大宗买入' },
-          otc_sell: { type: 'success', text: '大宗卖出' },
-          margin_call: { type: 'error', text: '保证金追加' },
-          margin_return: { type: 'success', text: '保证金返还' }
-        };
-        const config = typeMap[row.type] || { type: 'default', text: row.type };
-        return <NTag type={config.type}>{config.text}</NTag>;
-      }
-    },
-    {
-      key: 'relation_id',
-      title: '关联ID',
-      align: 'center',
-      width: 100,
-      render: row => {
-        return row.relation_id || '-';
-      }
-    },
-    {
-      key: 'remark',
-      title: '备注',
-      align: 'center',
-      width: 150,
-      render: row => {
-        return <span class="text-gray-600">{row.remark || '-'}</span>;
+        return <span class="text-orange-600">{row.total_withdraw || 0}</span>;
       }
     },
     {
@@ -142,6 +98,18 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       }
     },
     {
+      key: 'user.status',
+      title: '用户状态',
+      align: 'center',
+      width: 100,
+      render: row => {
+        const status = row.user?.status;
+        const type = status ? 'success' : 'error';
+        const text = status ? '正常' : '禁用';
+        return <NTag type={type}>{text}</NTag>;
+      }
+    },
+    {
       key: 'created_at',
       title: '创建时间',
       align: 'center',
@@ -161,7 +129,7 @@ const { checkedRowKeys } = useTableOperate(data, getData);
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <NCard title="股票钱包流水" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
+    <NCard title="股票钱包管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"

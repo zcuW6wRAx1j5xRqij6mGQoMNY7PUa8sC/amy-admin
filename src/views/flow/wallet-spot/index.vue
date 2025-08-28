@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { NTag } from 'naive-ui';
-import { FlowStockList } from '@/service/api/flow';
+import { WalletSpotList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { setBaseUrl } from '@/utils/utils';
@@ -9,7 +9,7 @@ const appStore = useAppStore();
 
 // 表格相关
 const { columns, columnChecks, data, loading, getData, mobilePagination } = useTable({
-  apiFn: FlowStockList,
+  apiFn: WalletSpotList,
   apiParams: {
     page: 1,
     size: 20
@@ -35,83 +35,73 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       render: row => row.user?.nickname || '-'
     },
     {
+      key: 'coin.name',
+      title: '币种',
+      align: 'center',
+      width: 100,
+      render: row => row.coin?.name || '-'
+    },
+    {
       key: 'amount',
-      title: '变动金额',
+      title: '数量',
       align: 'center',
       width: 120,
       render: row => {
-        const amount = Number.parseFloat(row.amount) || 0;
-        const color = amount >= 0 ? 'text-green-600' : 'text-red-600';
-        const prefix = amount >= 0 ? '+' : '';
-        return (
-          <span class={color}>
-            {prefix}
-            {amount}
-          </span>
-        );
+        return <span class="text-green-600 font-bold">{row.amount || 0}</span>;
       }
     },
     {
-      key: 'before_amount',
-      title: '变动前金额',
+      key: 'lock_amount',
+      title: '锁定数量',
       align: 'center',
       width: 120,
       render: row => {
-        return <span class="text-blue-600">{row.before_amount || 0}</span>;
+        return <span class="text-red-600">{row.lock_amount || 0}</span>;
       }
     },
     {
-      key: 'after_amount',
-      title: '变动后金额',
+      key: 'usdt_value',
+      title: 'USDT价值',
       align: 'center',
       width: 120,
       render: row => {
-        return <span class="text-green-600">{row.after_amount || 0}</span>;
+        return <span class="text-blue-600">${row.usdt_value || 0}</span>;
       }
     },
     {
-      key: 'type',
-      title: '变动类型',
-      align: 'center',
-      width: 120,
-      render: row => {
-        const typeMap: Record<string, { type: string; text: string }> = {
-          deposit: { type: 'success', text: '充值' },
-          withdraw: { type: 'error', text: '提现' },
-          transfer: { type: 'info', text: '转账' },
-          buy: { type: 'warning', text: '买入' },
-          sell: { type: 'success', text: '卖出' },
-          dividend: { type: 'info', text: '分红' },
-          fee: { type: 'error', text: '手续费' },
-          block_etf_apply: { type: 'warning', text: 'ETF申购' },
-          block_etf_redeem: { type: 'info', text: 'ETF赎回' },
-          ipo_apply: { type: 'warning', text: 'IPO申购' },
-          ipo_refund: { type: 'error', text: 'IPO退款' },
-          otc_buy: { type: 'warning', text: '大宗买入' },
-          otc_sell: { type: 'success', text: '大宗卖出' },
-          margin_call: { type: 'error', text: '保证金追加' },
-          margin_return: { type: 'success', text: '保证金返还' }
-        };
-        const config = typeMap[row.type] || { type: 'default', text: row.type };
-        return <NTag type={config.type}>{config.text}</NTag>;
-      }
-    },
-    {
-      key: 'relation_id',
-      title: '关联ID',
+      key: 'coin.status',
+      title: '币种状态',
       align: 'center',
       width: 100,
       render: row => {
-        return row.relation_id || '-';
+        const status = row.coin?.status;
+        const type = status ? 'success' : 'error';
+        const text = status ? '正常' : '禁用';
+        return <NTag type={type}>{text}</NTag>;
       }
     },
     {
-      key: 'remark',
-      title: '备注',
+      key: 'coin.allow_deposit',
+      title: '允许充值',
       align: 'center',
-      width: 150,
+      width: 100,
       render: row => {
-        return <span class="text-gray-600">{row.remark || '-'}</span>;
+        const allowDeposit = row.coin?.allow_deposit;
+        const type = allowDeposit ? 'success' : 'error';
+        const text = allowDeposit ? '是' : '否';
+        return <NTag type={type}>{text}</NTag>;
+      }
+    },
+    {
+      key: 'coin.allow_withdraw',
+      title: '允许提现',
+      align: 'center',
+      width: 100,
+      render: row => {
+        const allowWithdraw = row.coin?.allow_withdraw;
+        const type = allowWithdraw ? 'success' : 'error';
+        const text = allowWithdraw ? '是' : '否';
+        return <NTag type={type}>{text}</NTag>;
       }
     },
     {
@@ -161,7 +151,7 @@ const { checkedRowKeys } = useTableOperate(data, getData);
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <NCard title="股票钱包流水" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
+    <NCard title="数字货币现货钱包管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
@@ -177,7 +167,7 @@ const { checkedRowKeys } = useTableOperate(data, getData);
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="1800"
+        :scroll-x="1600"
         :loading="loading"
         remote
         :row-key="row => row.id"
