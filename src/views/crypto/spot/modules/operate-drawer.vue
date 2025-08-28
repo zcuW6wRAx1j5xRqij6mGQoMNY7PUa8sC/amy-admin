@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
 import { CryptoCreateSpot, CryptoUpdateSpot, type CryptoPostSpotPlader } from '@/service/api/crypto';
-import { statusList } from '@/constants/business';
+import { recommendList, openDataList } from '@/constants/business';
 import { isEmpty } from '@/utils/is';
 defineOptions({
   name: 'RoleOperateDrawer'
@@ -141,8 +141,8 @@ const handleFileChange = (options: { file: UploadFileInfo }) => {
         <MyFormItem v-model="model.buy_spread" label="买入点差" prop-name="buy_spread" />
         <MyFormItem v-model="model.sell_spread" label="卖出点差" prop-name="sell_spread" />
         <MyFormItem v-model="model.fee" label="手续费" prop-name="fee" />
-        <MyFormItem v-model="model.is_recommend" label="首页推荐" form-type="select" :data-list="statusList" prop-name="is_recommend" />
-        <MyFormItem v-model="model.status" label="状态" form-type="select" :data-list="statusList" prop-name="status" />
+        <MyFormItem v-model="model.is_recommend" label="首页推荐" form-type="select" :data-list="recommendList" prop-name="is_recommend" />
+        <MyFormItem v-model="model.status" label="交易状态" form-type="select" :data-list="openDataList" prop-name="status" />
       </MyForm>
       <template #footer>
         <NSpace :size="16">

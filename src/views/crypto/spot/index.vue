@@ -1,9 +1,10 @@
-<script setup lang="jsx">
+<script setup lang="tsx">
 import { onMounted, ref } from 'vue';
-import { NImage, NTag } from 'naive-ui';
-import { CryptoSpotList } from "@/service/api/crypto"
+import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { CryptoSpotList, CryptoDelSpot} from "@/service/api/crypto"
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
+import OperateDrawer from './modules/operate-drawer.vue';
 
 const appStore = useAppStore();
 
@@ -88,7 +89,29 @@ const {
             title: '更新时间',
             align: 'center',
             width: 150
-        }
+        },{
+            key: 'operate',
+            title: '操作',
+            align: 'center',
+            width: 80,
+            fixed: 'right',
+            render:row=>(
+                <div class="flex-center gap-8px">
+                    <NButton type="primary" ghost size="small" onClick={() => handleEdit(row.id)}>
+                        编辑
+                    </NButton>
+                    <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+                        {{
+                            default: () => '确认删除吗？',
+                            trigger: () => (
+                                <NButton type="error" ghost size="small">
+                                    删除
+                                </NButton>
+                            )
+                        }}
+                    </NPopconfirm>
+                </div>
+            )}
     ]
 });
 
@@ -100,6 +123,14 @@ const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedR
 function edit(id) {
     handleEdit(id);
 }
+function handleDelete(id: number) {
+    CryptoDelSpot({ id }).then(() => {
+        window.$message?.success('删除成功')
+        getData()
+    }).catch(err => {
+        window.$message?.success(err)
+    })
+}
 </script>
 
 <template>
@@ -107,11 +138,13 @@ function edit(id) {
         <NCard title="现货列表" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
             <template #header-extra>
                 <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
-                    :loading="loading" no-add @refresh="getData" />
+                    :loading="loading" @add="handleAdd" @refresh="getData" />
             </template>
             <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
                 :flex-height="!appStore.isMobile" :scroll-x="800" :loading="loading" remote :row-key="row => row.id"
                 :pagination="mobilePagination" class="sm:h-full" />
+                <OperateDrawer v-model:visible="drawerVisible" :operate-type="operateType" :row-data="editingData"
+                @submitted="getData" />
         </NCard>
     </div>
 </template>
