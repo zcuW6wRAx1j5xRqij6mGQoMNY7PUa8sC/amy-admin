@@ -141,38 +141,6 @@ export const generatedRoutes: GeneratedRoute[] = [
         meta: {
           title: '股票钱包流水'
         }
-      },
-      {
-        name: 'flow_wallet-futures',
-        path: '/flow/wallet-futures',
-        component: 'view.flow_wallet-futures',
-        meta: {
-          title: '合约钱包'
-        }
-      },
-      {
-        name: 'flow_wallet-loan',
-        path: '/flow/wallet-loan',
-        component: 'view.flow_wallet-loan',
-        meta: {
-          title: '贷款钱包'
-        }
-      },
-      {
-        name: 'flow_wallet-spot',
-        path: '/flow/wallet-spot',
-        component: 'view.flow_wallet-spot',
-        meta: {
-          title: '现货钱包'
-        }
-      },
-      {
-        name: 'flow_wallet-stock',
-        path: '/flow/wallet-stock',
-        component: 'view.flow_wallet-stock',
-        meta: {
-          title: '股票钱包'
-        }
       }
     ]
   },
@@ -377,6 +345,48 @@ export const generatedRoutes: GeneratedRoute[] = [
         meta: {
           title: '用户列表',
           icon: 'ic:baseline-person'
+        }
+      }
+    ]
+  },
+  {
+    name: 'wallet',
+    path: '/wallet',
+    component: 'layout.base',
+    meta: {
+      title: 'wallet'
+    },
+    children: [
+      {
+        name: 'wallet_futures',
+        path: '/wallet/futures',
+        component: 'view.wallet_futures',
+        meta: {
+          title: '合约钱包'
+        }
+      },
+      {
+        name: 'wallet_loan',
+        path: '/wallet/loan',
+        component: 'view.wallet_loan',
+        meta: {
+          title: '贷款钱包'
+        }
+      },
+      {
+        name: 'wallet_spot',
+        path: '/wallet/spot',
+        component: 'view.wallet_spot',
+        meta: {
+          title: '现货钱包'
+        }
+      },
+      {
+        name: 'wallet_stock',
+        path: '/wallet/stock',
+        component: 'view.wallet_stock',
+        meta: {
+          title: '股票钱包'
         }
       }
     ]

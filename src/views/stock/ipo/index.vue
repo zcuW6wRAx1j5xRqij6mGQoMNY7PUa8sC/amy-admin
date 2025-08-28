@@ -1,237 +1,216 @@
 <script setup lang="tsx">
-import { onMounted, ref } from 'vue';
-import { NButton, NPopconfirm } from 'naive-ui';
-import { StockIpoList, StockCreateIpo, StockUpdateIpo, StockDelIpo, type IpoPostPlader } from '@/service/api/stock';
+import { ref } from 'vue';
+import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { StockIpoList, StockDelIpo } from '@/service/api/stock';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
+import OperateDrawer from './modules/operate-drawer.vue';
+import SearchBox from './modules/search-box.vue';
 
 const appStore = useAppStore();
 
-const statusList = [
-    { label: '关闭', value: 0 },
-    { label: '开启', value: 1 }
-];
-
+// 表格相关
 const {
-    columns,
-    columnChecks,
-    data,
-    loading,
-    getData,
-    mobilePagination,
+  columns,
+  columnChecks,
+  data,
+  loading,
+  getData,
+  getDataByPage,
+  mobilePagination,
+  searchParams,
+  resetSearchParams
 } = useTable({
-    apiFn: StockIpoList,
-    apiParams: {
-        page: 1,
-        page_size: 20,
+  apiFn: StockIpoList,
+  apiParams: {
+    page: 1,
+    size: 20
+  },
+  columns: () => [
+    {
+      key: 'id',
+      title: 'ID',
+      align: 'center',
+      width: 80,
+      fixed: 'left'
     },
-    columns: () => [
-        {
-            key: 'id',
-            title: 'ID',
-            align: 'center',
-            width: 120,
-            fixed: 'left'
-        },
-        {
-            key: 'stock_id',
-            title: '股票ID',
-            align: 'center',
-            width: 80,
-        },
-        {
-            key: 'open_fee',
-            title: '开仓手续费%',
-            align: 'center',
-            width: 120
-        }
-        ,
-        {
-            key: 'close_fee',
-            title: '平仓手续费%',
-            align: 'center',
-            width: 120
-        },
-        {
-            key: 'apply_price',
-            title: '申请价格',
-            align: 'center',
-            width: 120
-        },
-        {
-            key: 'apply_min_quantity',
-            title: '申请最小量',
-            align: 'center',
-            minWidth: 150
-        },
-        {
-            key: 'apply_max_quantity',
-            title: '申请最大量',
-            align: 'center',
-            width: 80
-        },
-        ,
-        {
-            key: 'status',
-            title: '状态',
-            align: 'center',
-            width: 120,
-        },
-        {
-            key: 'close_price',
-            title: '平仓价格',
-            align: 'center',
-            width: 120
-        },
-        {
-            key: 'apply_start_at',
-            title: '开始时间',
-            align: 'center',
-            width: 120
-        },
-        {
-            key: 'apply_end_at',
-            title: '结束时间',
-            align: 'center',
-            width: 120
-        },
-        {
-            key: 'issue_quantity',
-            title: '发行数量',
-            align: 'center',
-            width: 120
-        },
-        {
-            key: 'created_at',
-            title: '创建时间',
-            align: 'center',
-            width: 120
-        },
-        {
-            key: 'updated_at',
-            title: '更新时间',
-            align: 'center',
-            width: 120
-        },
-        {
-            key: 'actions',
-            title: '操作',
-            align: 'center',
-            fixed: 'right',
-            width: 80,
-            render: row => (
-                <div>
-                    <NButton text type="primary" onClick={() => handleEdit(row)}>
-                        编辑
-                    </NButton>
-                    <NPopconfirm onPositiveClick={() => handleDelete(row.id)} >
-                        {{
-                            default: () => '确认删除吗？',
-                            trigger: () => (
-                                <NButton type="error" ghost size="small">
-                                    删除
-                                </NButton>
-                            )
-                        }}
-                    </NPopconfirm>
-                </div>
-            )
-        }
-    ]
+    {
+      key: 'stock_id',
+      title: '股票ID',
+      align: 'center',
+      width: 100
+    },
+    {
+      key: 'apply_price',
+      title: '申请价格',
+      align: 'center',
+      width: 120,
+      render: row => <span class="text-blue-600">{row.apply_price || 0}</span>
+    },
+    {
+      key: 'close_price',
+      title: '平仓价格',
+      align: 'center',
+      width: 120,
+      render: row => <span class="text-green-600">{row.close_price || 0}</span>
+    },
+    {
+      key: 'apply_min_quantity',
+      title: '申请最小量',
+      align: 'center',
+      width: 120,
+      render: row => <span class="text-orange-600">{row.apply_min_quantity || 0}</span>
+    },
+    {
+      key: 'apply_max_quantity',
+      title: '申请最大量',
+      align: 'center',
+      width: 120,
+      render: row => <span class="text-purple-600">{row.apply_max_quantity || 0}</span>
+    },
+    {
+      key: 'issue_quantity',
+      title: '发行数量',
+      align: 'center',
+      width: 120,
+      render: row => <span class="text-blue-600">{row.issue_quantity || 0}</span>
+    },
+    {
+      key: 'open_fee',
+      title: '开仓手续费%',
+      align: 'center',
+      width: 120,
+      render: row => <span class="text-red-600">{row.open_fee || 0}%</span>
+    },
+    {
+      key: 'close_fee',
+      title: '平仓手续费%',
+      align: 'center',
+      width: 120,
+      render: row => <span class="text-red-600">{row.close_fee || 0}%</span>
+    },
+    {
+      key: 'apply_start_at',
+      title: '开始时间',
+      align: 'center',
+      width: 160,
+      render: row => <span class="text-gray-600">{row.apply_start_at || '-'}</span>
+    },
+    {
+      key: 'apply_end_at',
+      title: '结束时间',
+      align: 'center',
+      width: 160,
+      render: row => <span class="text-gray-600">{row.apply_end_at || '-'}</span>
+    },
+    {
+      key: 'status',
+      title: '状态',
+      align: 'center',
+      width: 100,
+      render: row => {
+        const type = row.status === 1 ? 'success' : 'error';
+        const text = row.status === 1 ? '开启' : '关闭';
+        return <NTag type={type}>{text}</NTag>;
+      }
+    },
+    {
+      key: 'created_at',
+      title: '创建时间',
+      align: 'center',
+      width: 160
+    },
+    {
+      key: 'updated_at',
+      title: '更新时间',
+      align: 'center',
+      width: 160
+    },
+    {
+      key: 'actions',
+      title: '操作',
+      align: 'center',
+      width: 120,
+      fixed: 'right',
+      render: row => (
+        <div class="flex-center gap-12px">
+          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+            编辑
+          </NButton>
+          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+            {{
+              default: () => '确认删除吗？',
+              trigger: () => (
+                <NButton type="error" ghost size="small">
+                  删除
+                </NButton>
+              )
+            }}
+          </NPopconfirm>
+        </div>
+      )
+    }
+  ]
 });
 
-const { checkedRowKeys } = useTableOperate(
-    data,
-    getData
+const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
+  data,
+  getData
 );
 
-function edit(id: any) {
-    handleEdit(id);
-}
-const editVisible = ref(false)
-const editErrors = ref({});
-const editLoading = ref(false)
-const defaultForm: IpoPostPlader = {
-    id: undefined,
-    apply_max_quantity: 0,//申请最大量
-    apply_min_quantity: 0, //申请最小量
-    apply_price: 0, //申请价格
-    close_fee: 0, //手续费%
-    close_price: 0, //平仓价格
-    open_fee: 0, //开盘手续费%
-    status: 0, //状态，0 关闭 1开启
-    stock_id: 0, //股票ID
-    apply_start_at: undefined,
-    apply_end_at: undefined
-}
-const editForm = ref({ ...defaultForm })
-const handleEdit = (item: any) => {
-    editVisible.value = true
-    editForm.value = item
-}
-async function handleSubmit() {
-    editErrors.value = {};
-    editLoading.value = true;
-    const action = editForm.value.id ? StockUpdateIpo : StockCreateIpo;
-    action(editForm.value)
-        .then(() => {
-            // request
-            window.$message?.success('操作成功');
-            editVisible.value = false;
-            getData()
-        })
-        .catch(error => {
-            editErrors.value = error;
-        })
-        .finally(() => {
-            editLoading.value = false;
-        });
+// 删除
+async function handleDelete(id: number) {
+  if (loading.value) return;
+  loading.value = true;
+  try {
+    await StockDelIpo({ id });
+    loading.value = false;
+    onDeleted();
+  } catch (error) {
+  } finally {
+    loading.value = false;
+  }
 }
 
-function handleDelete(id) {
-    StockDelIpo(id).then(() => {
-        window.$message?.success('操作成功');
-        getData()
-    })
+function edit(id: number) {
+  handleEdit(id);
 }
 </script>
 
 <template>
-    <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-        <NCard title="币种列表" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
-            <template #header-extra>
-                <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
-                    :loading="loading" @add="handleEdit(defaultForm)" @refresh="getData" />
-            </template>
-            <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
-                :flex-height="!appStore.isMobile" :scroll-x="800" :loading="loading" remote :row-key="row => row.id"
-                :pagination="mobilePagination" class="sm:h-full" />
-        </NCard>
-
-
-        <!-- 编辑抽屉 -->
-        <NDrawer v-model:show="editVisible" :width="500">
-            <NDrawerContent title="编辑交易对" closable>
-                <MyForm all-required :error-obj="editErrors">
-                    <MyFormItem v-model="editForm.apply_price" label="申请价格" prop-name="apply_price" />
-                    <MyFormItem v-model="editForm.apply_max_quantity" label="申请最大量" prop-name="apply_max_quantity" />
-                    <MyFormItem v-model="editForm.apply_min_quantity" label="申请最小量" prop-name="apply_min_quantity" />
-                    <MyFormItem v-model="editForm.close_fee" label="手续费%" prop-name="close_fee" />
-                    <MyFormItem v-model="editForm.stock_id" label="股票ID" prop-name="stock_id" />
-                    <MyFormItem v-model="editForm.status" label="状态" form-type="select" :data-list="statusList"
-                        prop-name="status" />
-                    <NTimePicker v-model="editForm.apply_start_at" style="margin-bottom: 15px;" format="yyyy-MM-dd HH:mm:ss" placeholder="选择开始时间" />
-                    <NTimePicker v-model="editForm.apply_end_at" format="yyyy-MM-dd HH:mm:ss" placeholder="选择结束时间" />
-                </MyForm>
-                <template #footer>
-                    <NSpace :size="16">
-                        <NButton :loading="editLoading" @click="editVisible = false">取消</NButton>
-                        <NButton type="primary" :loading="editLoading" @click="handleEditSubmit">确定</NButton>
-                    </NSpace>
-                </template>
-            </NDrawerContent>
-        </NDrawer>
-    </div>
+  <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
+    <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
+    <NCard title="IPO股票管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
+      <template #header-extra>
+        <TableHeaderOperation
+          v-model:columns="columnChecks"
+          :disabled-delete="checkedRowKeys.length === 0"
+          :loading="loading"
+          @add="handleAdd"
+          @refresh="getData"
+        />
+      </template>
+      <NDataTable
+        v-model:checked-row-keys="checkedRowKeys"
+        :columns="columns"
+        :data="data"
+        size="small"
+        :flex-height="!appStore.isMobile"
+        :scroll-x="1800"
+        :loading="loading"
+        remote
+        :row-key="row => row.id"
+        :pagination="mobilePagination"
+        class="sm:h-full"
+      />
+      <OperateDrawer
+        v-model:visible="drawerVisible"
+        :operate-type="operateType"
+        :row-data="editingData"
+        @submitted="getDataByPage"
+      />
+    </NCard>
+  </div>
 </template>
 
 <style scoped></style>

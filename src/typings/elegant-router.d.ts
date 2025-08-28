@@ -32,10 +32,6 @@ declare module "@elegant-router/types" {
     "flow_loan": "/flow/loan";
     "flow_spot": "/flow/spot";
     "flow_stock": "/flow/stock";
-    "flow_wallet-futures": "/flow/wallet-futures";
-    "flow_wallet-loan": "/flow/wallet-loan";
-    "flow_wallet-spot": "/flow/wallet-spot";
-    "flow_wallet-stock": "/flow/wallet-stock";
     "home": "/home";
     "iframe-page": "/iframe-page/:url";
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
@@ -57,6 +53,11 @@ declare module "@elegant-router/types" {
     "user": "/user";
     "user_kyc": "/user/kyc";
     "user_user-manage": "/user/user-manage";
+    "wallet": "/wallet";
+    "wallet_futures": "/wallet/futures";
+    "wallet_loan": "/wallet/loan";
+    "wallet_spot": "/wallet/spot";
+    "wallet_stock": "/wallet/stock";
     "website": "/website";
     "website_banner": "/website/banner";
     "website_config-page": "/website/config-page";
@@ -106,6 +107,7 @@ declare module "@elegant-router/types" {
     | "recharge"
     | "stock"
     | "user"
+    | "wallet"
     | "website"
   >;
 
@@ -138,10 +140,6 @@ declare module "@elegant-router/types" {
     | "flow_loan"
     | "flow_spot"
     | "flow_stock"
-    | "flow_wallet-futures"
-    | "flow_wallet-loan"
-    | "flow_wallet-spot"
-    | "flow_wallet-stock"
     | "home"
     | "manage_manage"
     | "manage_menu"
@@ -156,6 +154,10 @@ declare module "@elegant-router/types" {
     | "stock_otc"
     | "user_kyc"
     | "user_user-manage"
+    | "wallet_futures"
+    | "wallet_loan"
+    | "wallet_spot"
+    | "wallet_stock"
     | "website_banner"
     | "website_config-page"
   >;
