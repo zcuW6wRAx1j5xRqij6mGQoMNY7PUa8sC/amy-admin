@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 import {
   fetchAssignPermission,
   fetchDeleteRole,
-  fetchGetMenuListPage,
+  fetchGetMenuList,
   fetchGetRoleDetail,
   fetchGetRoleListPage
 } from '@/service/api/rbac';
@@ -103,8 +103,8 @@ const updateCheckedKeys = (_, options) => {
 
 onMounted(() => {
   const ids = [];
-  fetchGetMenuListPage().then(res => {
-    treeData.value = res.items.map(el => {
+  fetchGetMenuList().then(res => {
+    treeData.value = res.rows.map(el => {
       el.show_name = `${el.show_name}(${el.id})`;
       if (el.children && el.children.length > 0) {
         el.children = el.children?.map(cel => {
@@ -150,7 +150,7 @@ const assignHandleConfirm = () => {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <NCard title="角色管理" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
+    <NCard title="角色管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"

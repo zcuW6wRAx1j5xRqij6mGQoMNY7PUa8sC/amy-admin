@@ -1,43 +1,43 @@
 import ResetPwd from '@/views/_builtin/login/modules/reset-pwd.vue';
 import { request } from '../request';
-import { CommListPlader, CommIdPlader } from "./typescript/comm-plader"
+import type { CommIdPlader, CommListPlader } from './typescript/comm-plader';
 
 interface MenuItemPlader {
-    icon: string,
-    id: number,
-    open_link: number,
-    parent_id: number,
-    position: string,
-    show_name: string,
-    url: string,
-    cgildren: any,
+  icon: string;
+  id: number;
+  open_link: number;
+  parent_id: number;
+  position: string;
+  show_name: string;
+  url: string;
+  cgildren: any;
 }
 
 export interface ResetPwdPlader extends CommIdPlader {
-  password: string
+  password: string;
 }
 
 export interface RoleAdminPlader extends CommIdPlader {
-  role_id: number
+  role_id: number;
 }
 
 /**
  * 创建管理员
  */
 export interface AccountPostPlader {
-    id?:number;
-    account?: string; //账号
-    avatar?: string; //头像
-    name?: string; //姓名
-    parent_id?: number; //上级ID
-    password?: string; //密码
-    role_id?: number; //角色ID
-    status?: number; //状态 0 禁用 1 启用
+  id?: number;
+  account?: string; // 账号
+  avatar?: string; // 头像
+  name?: string; // 姓名
+  parent_id?: number; // 上级ID
+  password?: string; // 密码
+  role_id?: number; // 角色ID
+  status?: number; // 状态 0 禁用 1 启用
 }
 
 // 获取个人菜单
 export function fetchGetPersonalMenu() {
-    return request<any>({ url: '/api/admin/menu/index' });
+  return request<any>({ url: '/api/admin/menu/index' });
 }
 
 // 管理员列表
@@ -47,7 +47,7 @@ export function fetchGetAdminList(params: CommListPlader) {
 
 // 添加管理员
 export function fetchAddAdmin(data: AccountPostPlader) {
-  return request<any>({ url: '/api/admin/account/create',method:"post", data });
+  return request<any>({ url: '/api/admin/account/create', method: 'post', data });
 }
 
 // 添加管理员
@@ -57,7 +57,7 @@ export function fetchUpdateAdmin(data: AccountPostPlader) {
 
 // 管理员退出登录
 export function fetchAdminRolelogout() {
-  return request<any>({ url: '/api/admin/account/logout',method:"post" });
+  return request<any>({ url: '/api/admin/account/logout', method: 'post' });
 }
 
 // 管理员角色选项
@@ -67,17 +67,17 @@ export function fetchAdminRolelogout() {
 
 // 管理员删除
 export function fetchDeleteAdmin(params: CommIdPlader) {
-  return request<any>({ url: `/api/admin/account/destroy`, params});
+  return request<any>({ url: `/api/admin/account/destroy`, params });
 }
 
 // 管理员冻结
 export function fetchAdminFreeze(params: CommIdPlader) {
-  return request<any>({ url: `/api/admin/account/freeze`, params});
+  return request<any>({ url: `/api/admin/account/freeze`, params });
 }
 
 // 管理员详情
 export function fetchAdminInfo(params: CommIdPlader) {
-  return request<any>({ url: `/api/admin/account/detail`, params});
+  return request<any>({ url: `/api/admin/account/detail`, params });
 }
 // 管理员编辑
 export function fetchEditAdmin(params: any) {
@@ -86,7 +86,7 @@ export function fetchEditAdmin(params: any) {
 
 // 重置密码
 export function fetchAdminResetPwd(data: ResetPwdPlader) {
-  return request<any>({ url: `/api/admin/account/resetPwd`, data});
+  return request<any>({ url: `/api/admin/account/resetPwd`, data });
 }
 
 // 管理员角色列表
@@ -126,12 +126,12 @@ export function fetchAssignPermission(data: any) {
 
 // 菜单添加
 export function fetchAddMenu(data: any) {
-  return request<any>({ url: '/api/admin/menu/store',method:"post", data });
+  return request<any>({ url: '/api/admin/menu/store', method: 'post', data });
 }
 
 // 菜单编辑
 export function fetchEditMenu(data: any) {
-  return request<any>({ url: `/api/admin/menu/update`,method:"post", data });
+  return request<any>({ url: `/api/admin/menu/update`, method: 'post', data });
 }
 
 // 角色详情
@@ -146,5 +146,5 @@ export function fetchGetRoleListPage() {
 
 // 获取无分页的菜单列表
 export function fetchGetMenuList() {
-  return request<any>({ url: '/api/admin/menu/selector' });
+  return request<any>({ url: '/api/admin/menu/selector', method: 'get' });
 }

@@ -55,9 +55,6 @@ async function search() {
       <NCollapseItem :title="$t('common.search')" name="control-search">
         <NForm ref="formRef" :model="model" label-placement="left" :label-width="80">
           <NGrid responsive="screen" item-responsive>
-            <NFormItemGi span="24 s:12 m:8 l:6" label="订单编号" path="order_code" class="pr-24px">
-              <NInput v-model:value="model.order_code" placeholder="请输入订单编号" />
-            </NFormItemGi>
             <NFormItemGi span="24 s:12 m:8 l:6" label="用户ID" path="uid" class="pr-24px">
               <NInput v-model:value="model.uid" placeholder="请输入用户ID" />
             </NFormItemGi>

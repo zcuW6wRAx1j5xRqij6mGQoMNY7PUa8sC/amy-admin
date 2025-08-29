@@ -27,7 +27,7 @@ async function getMenuData() {
   loading.value = true;
   try {
     const response = await fetchGetMenuList();
-    treeData.value = response.items || [];
+    treeData.value = response.rows || [];
     // 默认展开所有节点
     expandedKeys.value = getAllKeys(treeData.value);
   } catch (error) {
@@ -93,7 +93,6 @@ async function handleDelete(id) {
     getMenuData();
   } catch (error) {
     console.error('删除失败:', error);
-    message.error('删除失败');
   } finally {
     loading.value = false;
   }
@@ -145,7 +144,7 @@ function renderTreeLabel(data) {
         )}
       </div>
       <div class="ml-2 flex items-center gap-1">
-        {node.category === 1 && hasAuth('add') && (
+        {node.category === 1 && (
           <NButton
             type="primary"
             size="tiny"
@@ -157,7 +156,7 @@ function renderTreeLabel(data) {
             <svg-icon icon="tabler:code-plus" class="h-4 w-4" />
           </NButton>
         )}
-        {hasAuth('edit') && (
+        {
           <NButton
             type="primary"
             size="tiny"
@@ -168,8 +167,8 @@ function renderTreeLabel(data) {
           >
             <svg-icon icon="tabler:pencil-cog" class="h-4 w-4" />
           </NButton>
-        )}
-        {hasAuth('delete') && (
+        }
+        {
           <NPopconfirm onPositiveClick={() => handleDelete(node.id)}>
             {{
               default: () => `确认删除这个${node.category === 1 ? '菜单' : '按钮'}吗？`,
@@ -180,7 +179,7 @@ function renderTreeLabel(data) {
               )
             }}
           </NPopconfirm>
-        )}
+        }
       </div>
     </div>
   );
@@ -195,7 +194,7 @@ onMounted(() => {
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <NCard title="菜单管理" :bordered="false" size="small" class="card-wrapper shadow-sm sm:flex-1-hidden">
       <template #header-extra>
-        <NButton v-if="hasAuth('add')" type="primary" @click="handleAdd">新增</NButton>
+        <NButton type="primary" @click="handleAdd">新增</NButton>
       </template>
       <NSpin :show="loading">
         <!-- 调试信息 -->
@@ -204,7 +203,7 @@ onMounted(() => {
           <div class="text-sm text-gray-300">点击右上角的新增按钮开始创建菜单</div>
         </div>
 
-        <div v-if="hasAuth('index')" class="h-full overflow-auto">
+        <div class="h-full overflow-auto">
           <NTree
             v-if="treeData.length > 0"
             :data="treeData"
