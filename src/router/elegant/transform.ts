@@ -194,6 +194,7 @@ const routeMap: RouteMap = {
   "stock_otc": "/stock/otc",
   "user": "/user",
   "user_kyc": "/user/kyc",
+  "user_level": "/user/level",
   "user_user-manage": "/user/user-manage",
   "wallet": "/wallet",
   "wallet_futures": "/wallet/futures",

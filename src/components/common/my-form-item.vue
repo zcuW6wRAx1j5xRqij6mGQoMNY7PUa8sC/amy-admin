@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, ref, watch } from 'vue';
 import { useVModel } from '@vueuse/core';
-import { fetchUploadOss } from '@/service/api/common';
+import useUpload from '@/hooks/business/useUpload';
 import { friendlyNumber, setBaseUrl } from '@/utils/utils';
 
 const props = defineProps({
@@ -63,10 +63,11 @@ const disabled = computed(() => parentInfo.value?.disabled || props.disabled);
 const emit = defineEmits(['update:modelValue']);
 const formData = useVModel(props, 'modelValue', emit);
 const displayValue = ref('');
-const uploading = ref(false);
 const showPicNew = ref(props.showPic);
 // 用于上传组件的文件列表
 const fileList = ref([]);
+// 使用上传 hook
+const uploadFile = useUpload();
 
 // 监听输入值变化,处理千分位
 watch(
@@ -83,7 +84,7 @@ watch(
       // 允许负号和数字
       const numValue = newVal?.toString().replace(/[^\d-]/g, '') || '';
       // 确保负号只在开头出现一次
-      const cleanValue = numValue.replace(/-/g, (match, index) => (index === 0 ? '-' : ''));
+      const cleanValue = numValue.replace(/-/g, (_match, index) => (index === 0 ? '-' : ''));
       // 更新实际值
       formData.value = cleanValue;
       // 更新显示值(添加千分位)
@@ -101,7 +102,7 @@ const handleInput = value => {
     // 允许负号和数字
     const numValue = value?.toString().replace(/[^\d-]/g, '') || '';
     // 确保负号只在开头出现一次
-    const cleanValue = numValue.replace(/-/g, (match, index) => (index === 0 ? '-' : ''));
+    const cleanValue = numValue.replace(/-/g, (_match, index) => (index === 0 ? '-' : ''));
     formData.value = cleanValue;
   } else {
     formData.value = value;
@@ -110,22 +111,12 @@ const handleInput = value => {
 
 // 上传前拦截，调用后端接口
 async function handleBeforeUpload({ file }) {
-  if (uploading.value) return false;
-  uploading.value = true;
-  const formData = new FormData();
-  formData.append('file', file.file);
-  try {
-    const res = await fetchUploadOss(formData);
-    const url = res.url || '';
-    showPicNew.value = res.full_url || '';
-    emit('update:modelValue', url);
-    return false; // 阻止默认上传
-  } catch (e) {
-    uploading.value = false;
-    return false;
-  } finally {
-    uploading.value = false;
+  const filepath = await uploadFile(file.file);
+  if (filepath) {
+    showPicNew.value = setBaseUrl(filepath);
+    emit('update:modelValue', filepath);
   }
+  return false; // 阻止默认上传
 }
 
 const selectList = computed(() => {

@@ -3,7 +3,6 @@ import { NTag } from 'naive-ui';
 import { FlowSpotList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import { setBaseUrl } from '@/utils/utils';
 
 const appStore = useAppStore();
 
@@ -76,15 +75,25 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 100,
       render: row => {
         const typeMap: Record<string, { type: string; text: string }> = {
-          deposit: { type: 'success', text: '充值' },
+          // 基础操作类型
+          system: { type: 'default', text: '系统操作' },
+          system_deposit: { type: 'success', text: '系统入金' },
+          system_withdraw: { type: 'error', text: '系统提现' },
           withdraw: { type: 'error', text: '提现' },
-          transfer: { type: 'info', text: '转账' },
-          buy: { type: 'warning', text: '买入' },
-          sell: { type: 'success', text: '卖出' },
-          postion_margin: { type: 'info', text: '仓位保证金' },
-          trading_fee: { type: 'error', text: '交易手续费' },
-          dividend: { type: 'info', text: '分红' },
-          airdrop: { type: 'success', text: '空投' }
+          withdraw_fee: { type: 'error', text: '提现手续费' },
+          withdraw_fee_refund: { type: 'success', text: '提现手续费返还' },
+          withdraw_refund: { type: 'success', text: '提现失败返还' },
+          deposit: { type: 'success', text: '入金' },
+
+          // 转账相关
+          transfer_out: { type: 'info', text: '转出' },
+
+          // 挂单相关
+          posting_order: { type: 'warning', text: '挂单' },
+          refund_posting_order: { type: 'success', text: '挂单退款' },
+
+          // 现货交易相关
+          execution: { type: 'info', text: '现货成交' }
         };
         const config = typeMap[row.type] || { type: 'default', text: row.type };
         return <NTag type={config.type}>{config.text}</NTag>;

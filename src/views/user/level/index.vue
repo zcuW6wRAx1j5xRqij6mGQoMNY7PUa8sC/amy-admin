@@ -1,24 +1,15 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
-import { NButton, NPopconfirm, NTag, NImage } from 'naive-ui';
-import { WebsiteBannerList, WebsiteDelBanner } from '@/service/api/website';
+import { NButton, NPopconfirm } from 'naive-ui';
+import { UserLevelDelete, UserLevelList } from '@/service/api/user';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import { setBaseUrl } from '@/utils/utils';
 import OperateDrawer from './modules/operate-drawer.vue';
 
 const appStore = useAppStore();
 
 // 表格相关
-const {
-  columns,
-  columnChecks,
-  data,
-  loading,
-  getData,
-  mobilePagination
-} = useTable({
-  apiFn: WebsiteBannerList,
+const { columns, columnChecks, data, loading, getData, mobilePagination } = useTable({
+  apiFn: UserLevelList,
   apiParams: {
     page: 1,
     size: 20
@@ -26,58 +17,60 @@ const {
   columns: () => [
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
     {
-      key: 'img_path',
-      title: '图片',
+      key: 'slug',
+      title: '等级标识',
       align: 'center',
       width: 120,
-      render: row => {
-        if (row.img_path) {
-          return <NImage src={setBaseUrl(row.img_path)} width={80} height={60} object-fit="cover" />;
-        }
-        return <span>-</span>;
-      }
+      render: row => <span>{row.slug || '-'}</span>
     },
     {
-      key: 'link_url',
-      title: '跳转链接',
+      key: 'name_en',
+      title: '英文名称',
       align: 'center',
-      width: 200,
-      render: row => <span>{row.link_url || '-'}</span>
+      width: 120,
+      render: row => <span>{row.name_en || '-'}</span>
     },
     {
-      key: 'platform',
-      title: '平台',
+      key: 'name_es',
+      title: '西班牙名称',
       align: 'center',
-      width: 100,
-      render: row => {
-        const platformMap = {
-          app: { type: 'success', text: 'APP' },
-          web: { type: 'info', text: 'WEB' }
-        };
-        const config = platformMap[row.platform] || { type: 'default', text: row.platform };
-        return <NTag type={config.type}>{config.text}</NTag>;
-      }
+      width: 120,
+      render: row => <span>{row.name_es || '-'}</span>
     },
     {
-      key: 'sort',
-      title: '排序',
+      key: 'name_jp',
+      title: '日语名称',
       align: 'center',
-      width: 80,
-      render: row => <span>{row.sort || 0}</span>
+      width: 120,
+      render: row => <span>{row.name_jp || '-'}</span>
     },
     {
-      key: 'status',
-      title: '状态',
+      key: 'name_kr',
+      title: '韩语名称',
       align: 'center',
-      width: 100,
-      render: row => {
-        const statusMap = {
-          0: { type: 'error', text: '不展示' },
-          1: { type: 'success', text: '展示' }
-        };
-        const config = statusMap[row.status] || { type: 'default', text: '未知' };
-        return <NTag type={config.type}>{config.text}</NTag>;
-      }
+      width: 120,
+      render: row => <span>{row.name_kr || '-'}</span>
+    },
+    {
+      key: 'despoit_money',
+      title: '充值金额',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.despoit_money || 0}</span>
+    },
+    {
+      key: 'high_yield_rate',
+      title: '高收益比例',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.high_yield_rate || 0}%</span>
+    },
+    {
+      key: 'high_yield_amount_rate',
+      title: '高收益金额比例',
+      align: 'center',
+      width: 140,
+      render: row => <span>{row.high_yield_amount_rate || 0}%</span>
     },
     { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
     {
@@ -117,10 +110,10 @@ async function handleDelete(id: number) {
   if (loading.value) return;
   loading.value = true;
   try {
-    await WebsiteDelBanner({ id });
+    await UserLevelDelete({ id });
     loading.value = false;
     onDeleted();
-  } catch (error) {
+  } catch {
   } finally {
     loading.value = false;
   }
@@ -133,7 +126,7 @@ function edit(id: number) {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <NCard title="Banner管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
+    <NCard title="用户等级管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
@@ -149,7 +142,7 @@ function edit(id: number) {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="1000"
+        :scroll-x="1400"
         :loading="loading"
         remote
         :row-key="row => row.id"

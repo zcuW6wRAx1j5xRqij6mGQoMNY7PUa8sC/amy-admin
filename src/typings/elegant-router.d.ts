@@ -48,6 +48,7 @@ declare module "@elegant-router/types" {
     "stock_otc": "/stock/otc";
     "user": "/user";
     "user_kyc": "/user/kyc";
+    "user_level": "/user/level";
     "user_user-manage": "/user/user-manage";
     "wallet": "/wallet";
     "wallet_futures": "/wallet/futures";
@@ -143,6 +144,7 @@ declare module "@elegant-router/types" {
     | "stock_market"
     | "stock_otc"
     | "user_kyc"
+    | "user_level"
     | "user_user-manage"
     | "wallet_futures"
     | "wallet_loan"

@@ -3,7 +3,6 @@ import { NTag } from 'naive-ui';
 import { FlowFuturesList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import { setBaseUrl } from '@/utils/utils';
 
 const appStore = useAppStore();
 
@@ -76,14 +75,27 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 100,
       render: row => {
         const typeMap: Record<string, { type: string; text: string }> = {
-          deposit: { type: 'success', text: '充值' },
-          withdraw: { type: 'error', text: '提现' },
-          transfer: { type: 'info', text: '转账' },
-          open: { type: 'warning', text: '开仓' },
-          close: { type: 'success', text: '平仓' },
-          margin: { type: 'info', text: '保证金' },
-          pnl: { type: 'error', text: '盈亏' },
-          fee: { type: 'error', text: '手续费' }
+          // 基础操作类型
+          system: { type: 'default', text: '系统操作' },
+
+          // 资金划转相关
+          transfer_in: { type: 'success', text: '资金划转入' },
+          transfer_out: { type: 'error', text: '资金划转出' },
+
+          // 保证金相关
+          postion_margin: { type: 'warning', text: '建仓保证金' },
+          increase_margin: { type: 'success', text: '增加保证金' },
+          reduce_margin: { type: 'error', text: '减少保证金' },
+
+          // 平仓相关
+          position_close: { type: 'info', text: '平仓流水' },
+
+          // 手续费相关
+          position_fee: { type: 'error', text: '建仓手续费' },
+
+          // 挂单相关
+          posting_order: { type: 'warning', text: '挂单' },
+          refund_posting_order: { type: 'success', text: '挂单取消退回' }
         };
         const config = typeMap[row.type] || { type: 'default', text: row.type };
         return <NTag type={config.type}>{config.text}</NTag>;
@@ -134,8 +146,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       title: '创建时间',
       align: 'center',
       width: 160
-    },
-
+    }
   ]
 });
 

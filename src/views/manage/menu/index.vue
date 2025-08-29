@@ -192,7 +192,12 @@ onMounted(() => {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <NCard title="菜单管理" :bordered="false" size="small" class="card-wrapper shadow-sm sm:flex-1-hidden">
+    <NCard
+      title="菜单管理"
+      :bordered="false"
+      size="small"
+      class="overflow-auto card-wrapper shadow-sm sm:flex-1-hidden"
+    >
       <template #header-extra>
         <NButton type="primary" @click="handleAdd">新增</NButton>
       </template>
@@ -212,7 +217,7 @@ onMounted(() => {
             label-field="show_name"
             children-field="children"
             :render-label="renderTreeLabel"
-            class="menu-tree h-full"
+            class="menu-tree h-full overflow-auto"
           />
         </div>
 

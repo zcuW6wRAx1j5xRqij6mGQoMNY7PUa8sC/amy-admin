@@ -305,6 +305,15 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
+        name: 'user_level',
+        path: '/user/level',
+        component: 'view.user_level',
+        meta: {
+          title: '用户等级',
+          icon: 'mdi:account-cog'
+        }
+      },
+      {
         name: 'user_user-manage',
         path: '/user/user-manage',
         component: 'view.user_user-manage',

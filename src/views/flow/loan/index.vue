@@ -3,7 +3,6 @@ import { NTag } from 'naive-ui';
 import { FlowLoanList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import { setBaseUrl } from '@/utils/utils';
 
 const appStore = useAppStore();
 
@@ -47,9 +46,10 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 100,
       render: row => {
         const typeMap: Record<string, { type: string; text: string }> = {
-          frozen: { type: 'warning', text: '冻结' },
-          available: { type: 'success', text: '可用' },
-          total: { type: 'info', text: '总额' }
+          total: { type: 'info', text: '总额度' },
+          used: { type: 'warning', text: '已贷额度' },
+          unused: { type: 'success', text: '可用额度' },
+          frozen: { type: 'error', text: '冻结额度' }
         };
         const config = typeMap[row.balance_type] || { type: 'default', text: row.balance_type };
         return <NTag type={config.type}>{config.text}</NTag>;
@@ -97,12 +97,11 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 100,
       render: row => {
         const typeMap: Record<string, { type: string; text: string }> = {
-          apply: { type: 'warning', text: '申请' },
-          approve: { type: 'success', text: '审批' },
-          reject: { type: 'error', text: '拒绝' },
-          repay: { type: 'info', text: '还款' },
-          freeze: { type: 'warning', text: '冻结' },
-          unfreeze: { type: 'success', text: '解冻' }
+          apply: { type: 'warning', text: '申请贷款' },
+          approved: { type: 'success', text: '审核通过' },
+          rejected: { type: 'error', text: '审核拒绝' },
+          canceled: { type: 'default', text: '取消贷款' },
+          paid: { type: 'info', text: '还款' }
         };
         const config = typeMap[row.type] || { type: 'default', text: row.type };
         return <NTag type={config.type}>{config.text}</NTag>;
@@ -153,8 +152,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       title: '创建时间',
       align: 'center',
       width: 160
-    },
-
+    }
   ]
 });
 

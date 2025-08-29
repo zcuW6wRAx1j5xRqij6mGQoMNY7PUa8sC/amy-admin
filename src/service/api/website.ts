@@ -10,9 +10,38 @@ export interface SetConfigPlader {
     value: string //配置值
 }
 
+export interface BannerRequest {
+    id?: number,
+    img_path?: string, // 图片地址
+    link_url?: string, // 点击跳转
+    platform?: string, // 平台 : app -> APP web -> WEB
+    sort?: number, // 排序 数字小在前
+    status?: number // 是否展示 0 否 1是
+}
+
 // 轮播列表
 export function WebsiteBannerList(params: any) {
     return request<any>({ url: '/api/admin/banner/list', params})
+}
+
+// 添加轮播
+export function WebsiteAddBanner(data: BannerRequest) {
+    return request<any>({ url: '/api/admin/banner/create', method: 'post', data })
+}
+
+// 修改轮播
+export function WebsiteUpdateBanner(data: BannerRequest) {
+    return request<any>({ url: '/api/admin/banner/update', method: 'post', data })
+}
+
+// 删除轮播
+export function WebsiteDelBanner(params: CommIdPlader) {
+    return request<any>({ url: '/api/admin/banner/delete', params })
+}
+
+// 轮播详情
+export function WebsiteBannerDetail(params: CommIdPlader) {
+    return request<any>({ url: '/api/admin/banner/detail', params })
 }
 
 //配置管理
