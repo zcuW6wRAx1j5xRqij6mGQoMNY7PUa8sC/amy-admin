@@ -143,3 +143,8 @@ export function fetchGetRoleDetail(params: any) {
 export function fetchGetRoleListPage() {
   return request<any>({ url: '/api/admin/role/show' });
 }
+
+// 获取无分页的菜单列表
+export function fetchGetMenuList() {
+  return request<any>({ url: '/api/admin/menu/selector' });
+}

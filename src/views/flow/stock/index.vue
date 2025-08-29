@@ -3,7 +3,6 @@ import { NTag } from 'naive-ui';
 import { FlowStockList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import { setBaseUrl } from '@/utils/utils';
 
 const appStore = useAppStore();
 
@@ -76,21 +75,33 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 120,
       render: row => {
         const typeMap: Record<string, { type: string; text: string }> = {
-          deposit: { type: 'success', text: '充值' },
+          // 基础操作类型
+          system: { type: 'default', text: '系统操作' },
+          system_deposit: { type: 'success', text: '系统入金' },
+          system_withdraw: { type: 'error', text: '系统提现' },
+          deposit: { type: 'success', text: '入金' },
           withdraw: { type: 'error', text: '提现' },
-          transfer: { type: 'info', text: '转账' },
-          buy: { type: 'warning', text: '买入' },
-          sell: { type: 'success', text: '卖出' },
-          dividend: { type: 'info', text: '分红' },
-          fee: { type: 'error', text: '手续费' },
-          block_etf_apply: { type: 'warning', text: 'ETF申购' },
-          block_etf_redeem: { type: 'info', text: 'ETF赎回' },
-          ipo_apply: { type: 'warning', text: 'IPO申购' },
-          ipo_refund: { type: 'error', text: 'IPO退款' },
-          otc_buy: { type: 'warning', text: '大宗买入' },
-          otc_sell: { type: 'success', text: '大宗卖出' },
-          margin_call: { type: 'error', text: '保证金追加' },
-          margin_return: { type: 'success', text: '保证金返还' }
+          withdraw_fee: { type: 'error', text: '提现手续费' },
+          withdraw_fee_refund: { type: 'success', text: '提现手续费返还' },
+          withdraw_refund: { type: 'success', text: '提现失败返还' },
+          FlowTypeDeposit: { type: 'success', text: '入金' },
+          block_trade_system_create: { type: 'success', text: '系统建仓' },
+
+          // 大宗交易相关
+          block_trade_apply: { type: 'warning', text: '大宗申请' },
+          block_trade_apply_refund: { type: 'success', text: '大宗审核退款' },
+          block_trade_settlement: { type: 'info', text: '大宗订单结算' },
+          block_trade_extra_income: { type: 'success', text: '大宗额外收益' },
+
+          // IPO相关
+          ipo_subscription: { type: 'warning', text: 'IPO认缴' },
+          ipo_settlement: { type: 'info', text: 'IPO订单结算' },
+
+          // ETF相关
+          block_etf_apply: { type: 'warning', text: '申请ETF' },
+          block_etf_apply_refund: { type: 'success', text: 'ETF审核退款' },
+          etf_subscription: { type: 'warning', text: 'ETF审核缴款' },
+          etf_settlement: { type: 'info', text: 'ETF订单结算' }
         };
         const config = typeMap[row.type] || { type: 'default', text: row.type };
         return <NTag type={config.type}>{config.text}</NTag>;
@@ -141,8 +152,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       title: '创建时间',
       align: 'center',
       width: 160
-    },
-
+    }
   ]
 });
 

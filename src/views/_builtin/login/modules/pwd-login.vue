@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive } from 'vue';
-import { $t } from '@/locales';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { useAuthStore } from '@/store/modules/auth';
+import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import useSocket from '@/hooks/business/useSocket';
+import { $t } from '@/locales';
 const { unConnectHandle } = useSocket();
 onMounted(unConnectHandle);
 defineOptions({

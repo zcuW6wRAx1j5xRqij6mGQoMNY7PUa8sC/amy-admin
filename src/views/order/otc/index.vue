@@ -1,12 +1,28 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
-import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
-import { OrderOtcList } from '@/service/api/order';
+import { NButton, NPopconfirm, NSpace, NTag, useMessage } from 'naive-ui';
+import { OrderOtcList, OrderOtcLockUnlock } from '@/service/api/order';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
+import AuditDrawer from './modules/audit-drawer.vue';
+import CloseDrawer from './modules/close-drawer.vue';
+import CreateDrawer from './modules/create-drawer.vue';
 
 const appStore = useAppStore();
+const message = useMessage();
+
+// 审核弹窗相关
+const auditDrawerVisible = ref(false);
+const auditType = ref<'approve' | 'reject'>('approve');
+const currentRowData = ref<any>(null);
+
+// 平仓弹窗相关
+const closeDrawerVisible = ref(false);
+const closeRowData = ref<any>(null);
+
+// 建仓弹窗相关
+const createDrawerVisible = ref(false);
 
 // 表格相关
 const {
@@ -102,10 +118,9 @@ const {
       width: 100,
       render: row => {
         const statusMap = {
-          wait_subscription: { type: 'warning', text: '等待认购' },
-          pending: { type: 'info', text: '待处理' },
-          open: { type: 'success', text: '开放' },
-          locked: { type: 'warning', text: '锁定' },
+          pending: { type: 'warning', text: '待审核' },
+          open: { type: 'success', text: '持仓中' },
+          locked: { type: 'warning', text: '已锁仓' },
           rejected: { type: 'error', text: '已拒绝' },
           closed: { type: 'error', text: '已平仓' }
         };
@@ -114,7 +129,7 @@ const {
       }
     },
     { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
-    { key: 'updated_at', title: '更新时间', align: 'center', width: 160 },
+
     {
       key: 'actions',
       title: '操作',
@@ -123,32 +138,18 @@ const {
       fixed: 'right',
       render: row => (
         <NSpace>
-          {/* 通过按钮 - 只在状态为等待认购时显示 */}
-          {row.status === 'wait_subscription' && (
-            <NPopconfirm onPositiveClick={() => handleApprove(row.id)}>
-              {{
-                default: () => '确认通过此申请吗？',
-                trigger: () => (
-                  <NButton type="success" ghost size="small">
-                    通过
-                  </NButton>
-                )
-              }}
-            </NPopconfirm>
+          {/* 通过按钮 - 只在状态为待审核时显示 */}
+          {row.status === 'pending' && (
+            <NButton type="success" ghost size="small" onClick={() => handleApprove(row)}>
+              通过
+            </NButton>
           )}
 
-          {/* 拒绝按钮 - 只在状态为等待认购时显示 */}
-          {row.status === 'wait_subscription' && (
-            <NPopconfirm onPositiveClick={() => handleReject(row.id)}>
-              {{
-                default: () => '确认拒绝此申请吗？',
-                trigger: () => (
-                  <NButton type="error" ghost size="small">
-                    拒绝
-                  </NButton>
-                )
-              }}
-            </NPopconfirm>
+          {/* 拒绝按钮 - 只在状态为待审核时显示 */}
+          {row.status === 'pending' && (
+            <NButton type="error" ghost size="small" onClick={() => handleReject(row)}>
+              拒绝
+            </NButton>
           )}
 
           {/* 锁仓按钮 - 只在状态为开放时显示 */}
@@ -181,16 +182,9 @@ const {
 
           {/* 平仓按钮 - 只在状态为开放或锁定时显示 */}
           {(row.status === 'open' || row.status === 'locked') && (
-            <NPopconfirm onPositiveClick={() => handleClose(row.id)}>
-              {{
-                default: () => '确认平仓此订单吗？',
-                trigger: () => (
-                  <NButton type="error" ghost size="small">
-                    平仓
-                  </NButton>
-                )
-              }}
-            </NPopconfirm>
+            <NButton type="error" ghost size="small" onClick={() => handleClose(row)}>
+              平仓
+            </NButton>
           )}
         </NSpace>
       )
@@ -198,44 +192,56 @@ const {
   ]
 });
 
-const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
-  data,
-  getData
-);
+const { checkedRowKeys } = useTableOperate(data, getData);
 
 // 操作函数
-function handleApprove(id: number) {
-  // TODO: 实现通过功能
-  console.log('通过订单:', id);
+function handleApprove(row: any) {
+  currentRowData.value = row;
+  auditType.value = 'approve';
+  auditDrawerVisible.value = true;
 }
 
-function handleReject(id: number) {
-  // TODO: 实现拒绝功能
-  console.log('拒绝订单:', id);
+function handleReject(row: any) {
+  currentRowData.value = row;
+  auditType.value = 'reject';
+  auditDrawerVisible.value = true;
 }
 
-function handleLock(id: number) {
-  // TODO: 实现锁仓功能
-  console.log('锁仓订单:', id);
-}
-
-function handleUnlock(id: number) {
-  // TODO: 实现解锁功能
-  console.log('解锁订单:', id);
-}
-
-async function handleClose(id: number) {
+async function handleLock(id: number) {
   if (loading.value) return;
   loading.value = true;
   try {
-    // TODO: 调用平仓API
-    console.log('平仓订单:', id);
-    loading.value = false;
-    onDeleted();
+    await OrderOtcLockUnlock({ id, status: 'locked' });
+    message.success('订单已锁仓');
+    getData();
   } catch (error) {
+    console.error('锁仓失败:', error);
   } finally {
     loading.value = false;
   }
+}
+
+async function handleUnlock(id: number) {
+  if (loading.value) return;
+  loading.value = true;
+  try {
+    await OrderOtcLockUnlock({ id, status: 'open' });
+    message.success('订单已解锁');
+    getData();
+  } catch (error) {
+    console.error('解锁失败:', error);
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function handleClose(row: any) {
+  closeRowData.value = row;
+  closeDrawerVisible.value = true;
+}
+
+function handleCreate() {
+  createDrawerVisible.value = true;
 }
 </script>
 
@@ -248,8 +254,7 @@ async function handleClose(id: number) {
           v-model:columns="columnChecks"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
-          no-add
-          @add="handleAdd"
+          @add="handleCreate"
           @refresh="getData"
         />
       </template>
@@ -267,6 +272,14 @@ async function handleClose(id: number) {
         class="sm:h-full"
       />
     </NCard>
+    <AuditDrawer
+      v-model:visible="auditDrawerVisible"
+      :audit-type="auditType"
+      :row-data="currentRowData"
+      @submitted="getData"
+    />
+    <CloseDrawer v-model:visible="closeDrawerVisible" :row-data="closeRowData" @submitted="getData" />
+    <CreateDrawer v-model:visible="createDrawerVisible" @submitted="getData" />
   </div>
 </template>
 

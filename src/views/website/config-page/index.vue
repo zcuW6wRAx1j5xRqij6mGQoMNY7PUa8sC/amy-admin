@@ -51,7 +51,7 @@ const {
     },
     { key: 'value', title: '配置值', align: 'center', width: 200, render: row => <span>{row.value || '-'}</span> },
     { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
-    { key: 'updated_at', title: '更新时间', align: 'center', width: 160 },
+
     {
       key: 'actions',
       title: '操作',

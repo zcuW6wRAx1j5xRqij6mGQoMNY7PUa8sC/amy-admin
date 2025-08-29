@@ -49,6 +49,10 @@ const props = defineProps({
   accept: {
     type: String,
     default: 'image/*'
+  },
+  placeholder: {
+    type: String,
+    default: ''
   }
 });
 // 接受祖先传入的参数，加入ts的标识
@@ -150,7 +154,7 @@ defineExpose({
         type="number"
         :disabled="disabled"
         v-bind="$attrs"
-        :placeholder="`请输入${label}`"
+        :placeholder="placeholder || `请输入${label}`"
       >
         <template #prefix>
           <slot name="prefix"></slot>
@@ -165,7 +169,7 @@ defineExpose({
         :value="isPrice ? displayValue : formData"
         :disabled="disabled"
         v-bind="$attrs"
-        :placeholder="`请输入${label}`"
+        :placeholder="placeholder || `请输入${label}`"
         @update:value="handleInput"
       >
         <template #prefix>
@@ -179,7 +183,7 @@ defineExpose({
         v-else-if="formType === 'datetimerange'"
         v-model:value="formData"
         type="datetimerange"
-        :placeholder="`请选择${label}`"
+        :placeholder="placeholder || `请选择${label}`"
         :disabled="disabled"
         v-bind="$attrs"
       />
@@ -187,7 +191,7 @@ defineExpose({
         v-else-if="formType === 'datetime'"
         v-model:value="formData"
         type="datetime"
-        :placeholder="`请选择${label}`"
+        :placeholder="placeholder || `请选择${label}`"
         :disabled="disabled"
         v-bind="$attrs"
       />
@@ -195,7 +199,7 @@ defineExpose({
         v-else-if="formType === 'date'"
         v-model:value="formData"
         type="date"
-        :placeholder="`请选择${label}`"
+        :placeholder="placeholder || `请选择${label}`"
         :disabled="disabled"
         v-bind="$attrs"
       />
@@ -203,14 +207,14 @@ defineExpose({
         v-else-if="formType === 'time'"
         v-model:value="formData"
         type="time"
-        :placeholder="`请选择${label}`"
+        :placeholder="placeholder || `请选择${label}`"
         :disabled="disabled"
         v-bind="$attrs"
       />
       <NSelect
         v-else-if="formType === 'select'"
         v-model:value="formData"
-        :placeholder="`请选择${label}`"
+        :placeholder="placeholder || `请选择${label}`"
         filterable
         :disabled="disabled"
         v-bind="$attrs"

@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { fetchAddMenu, fetchEditMenu, fetchGetMenuListPage } from '@/service/api/rbac';
+import { NButton, NDrawer, NDrawerContent, NSpace } from 'naive-ui';
+import { statusList } from '@/constants/business';
+import { fetchAddMenu, fetchEditMenu, fetchGetMenuList } from '@/service/api/rbac';
 import { isEmpty } from '@/utils/is';
+import MyForm from '@/components/common/my-form.vue';
+import MyFormItem from '@/components/common/my-form-Item.vue';
 
 const categoryList = [
   { label: '菜单', value: 1 },
@@ -9,7 +13,7 @@ const categoryList = [
 ];
 
 defineOptions({
-  name: 'RoleOperateDrawer'
+  name: 'MenuOperateDrawer'
 });
 
 interface Props {
@@ -17,6 +21,8 @@ interface Props {
   operateType: NaiveUI.TableOperateType;
   /** the edit row data */
   rowData?: any;
+  /** the parent node data */
+  parentNode?: any;
 }
 
 const props = defineProps<Props>();
@@ -61,6 +67,9 @@ function handleInitModel() {
   ruleForm.value = createDefaultModel();
   if (props.operateType === 'edit' && props.rowData) {
     Object.assign(ruleForm.value, props.rowData);
+  } else if (props.operateType === 'add' && props.parentNode) {
+    // 新增时，如果有父节点，自动设置父级ID
+    ruleForm.value.parent_id = props.parentNode.id;
   }
 }
 
@@ -106,10 +115,7 @@ async function handleSubmit() {
 const errorObj = ref<Record<string, string>>({});
 const selectMenu = ref([]);
 const getList = () => {
-  fetchGetMenuListPage({
-    page:1,
-    size:100
-  }).then(data => {
+  fetchGetMenuList().then(data => {
     const list = [];
     data.items.forEach(el => {
       list.push({
