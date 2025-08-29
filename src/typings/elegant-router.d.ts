@@ -38,10 +38,14 @@ declare module "@elegant-router/types" {
     "manage_menu": "/manage/menu";
     "manage_role": "/manage/role";
     "order": "/order";
+    "order_despoit": "/order/despoit";
     "order_futures": "/order/futures";
     "order_ipo": "/order/ipo";
     "order_otc": "/order/otc";
     "order_spot": "/order/spot";
+    "order_spot-withdraw": "/order/spot-withdraw";
+    "order_stock-withdraw": "/order/stock-withdraw";
+    "order_tagesstrategie": "/order/tagesstrategie";
     "stock": "/stock";
     "stock_ipo": "/stock/ipo";
     "stock_market": "/stock/market";
@@ -136,10 +140,14 @@ declare module "@elegant-router/types" {
     | "manage_manage"
     | "manage_menu"
     | "manage_role"
+    | "order_despoit"
     | "order_futures"
     | "order_ipo"
     | "order_otc"
+    | "order_spot-withdraw"
     | "order_spot"
+    | "order_stock-withdraw"
+    | "order_tagesstrategie"
     | "stock_ipo"
     | "stock_market"
     | "stock_otc"

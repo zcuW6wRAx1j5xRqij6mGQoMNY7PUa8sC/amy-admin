@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineOptions({
-  name: 'UserSearch'
+  name: 'UserSearchBox'
 });
 
 interface Emits {

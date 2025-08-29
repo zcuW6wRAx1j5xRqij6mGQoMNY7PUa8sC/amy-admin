@@ -77,7 +77,6 @@ function toggleSiderCollapse() {
     </div>
   </DefineMixMenuItem>
   <!-- define component end: MixMenuItem -->
-
   <div class="h-full flex-col-stretch flex-1-hidden">
     <slot></slot>
     <SimpleScrollbar>

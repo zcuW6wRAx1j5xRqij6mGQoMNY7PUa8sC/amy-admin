@@ -122,7 +122,6 @@ function handleDrawerSubmitted() {
 
 // 渲染树节点
 function renderTreeLabel(data) {
-  console.log(data);
   const node = data.option;
   if (!node) {
     return <div>加载中...</div>;

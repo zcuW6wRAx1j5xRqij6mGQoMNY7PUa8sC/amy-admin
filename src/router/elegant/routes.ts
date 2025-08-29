@@ -211,6 +211,15 @@ export const generatedRoutes: GeneratedRoute[] = [
     },
     children: [
       {
+        name: 'order_despoit',
+        path: '/order/despoit',
+        component: 'view.order_despoit',
+        meta: {
+          title: '充值订单',
+          icon: 'mdi:cash-plus'
+        }
+      },
+      {
         name: 'order_futures',
         path: '/order/futures',
         component: 'view.order_futures',
@@ -244,6 +253,33 @@ export const generatedRoutes: GeneratedRoute[] = [
         meta: {
           title: '现货订单',
           icon: 'mdi:tag'
+        }
+      },
+      {
+        name: 'order_spot-withdraw',
+        path: '/order/spot-withdraw',
+        component: 'view.order_spot-withdraw',
+        meta: {
+          title: '现货提现订单',
+          icon: 'mdi:cash-minus'
+        }
+      },
+      {
+        name: 'order_stock-withdraw',
+        path: '/order/stock-withdraw',
+        component: 'view.order_stock-withdraw',
+        meta: {
+          title: '股票提现订单',
+          icon: 'mdi:bank-transfer-out'
+        }
+      },
+      {
+        name: 'order_tagesstrategie',
+        path: '/order/tagesstrategie',
+        component: 'view.order_tagesstrategie',
+        meta: {
+          title: '日内策略订单',
+          icon: 'mdi:chart-timeline-variant'
         }
       }
     ]
@@ -385,7 +421,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/website/banner',
         component: 'view.website_banner',
         meta: {
-          title: 'banner',
+          title: 'Banner管理',
           icon: 'mdi:image'
         }
       },

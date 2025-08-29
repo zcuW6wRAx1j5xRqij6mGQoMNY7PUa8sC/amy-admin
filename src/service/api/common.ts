@@ -7,3 +7,11 @@ export function getUploadApi(data: any) {
     params: data
   });
 }
+
+/** 获取等级选项 */
+export function getLevelOptions() {
+  return request<any>({
+    url: '/api/admin/public/options/level',
+    method: 'get'
+  });
+}
