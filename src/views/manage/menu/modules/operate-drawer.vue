@@ -69,7 +69,7 @@ function handleInitModel() {
     Object.assign(ruleForm.value, props.rowData);
   } else if (props.operateType === 'add' && props.parentNode) {
     // 新增时，如果有父节点，自动设置父级ID
-    ruleForm.value.parent_id = props.parentNode.id;
+    ruleForm.value.parent_id = props.parentNode.id || null;
   }
 }
 
@@ -95,7 +95,7 @@ async function handleSubmit() {
   }
   btnLoading.value = true;
   const action = isEdit.value ? fetchEditMenu : fetchAddMenu;
-  ruleForm.value.parent_id = +ruleForm.value.parent_id;
+  ruleForm.value.parent_id = +ruleForm.value.parent_id || 0;
   ruleForm.value.desc = ruleForm.value.desc || '';
   ruleForm.value.icon = ruleForm.value.icon || 'memory:align-horizontal-center';
   action(ruleForm.value)
@@ -117,7 +117,7 @@ const selectMenu = ref([]);
 const getList = () => {
   fetchGetMenuList().then(data => {
     const list = [];
-    data.items.forEach(el => {
+    data.rows.forEach(el => {
       list.push({
         label: el.show_name,
         value: el.id
