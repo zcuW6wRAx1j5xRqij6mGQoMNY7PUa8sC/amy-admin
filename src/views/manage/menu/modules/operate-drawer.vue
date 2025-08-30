@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { NButton, NDrawer, NDrawerContent, NSpace } from 'naive-ui';
-import { statusList } from '@/constants/business';
 import { fetchAddMenu, fetchEditMenu, fetchGetMenuList } from '@/service/api/rbac';
 import { isEmpty } from '@/utils/is';
-import MyForm from '@/components/common/my-form.vue';
-import MyFormItem from '@/components/common/my-form-Item.vue';
 
 const categoryList = [
   { label: '菜单', value: 1 },
