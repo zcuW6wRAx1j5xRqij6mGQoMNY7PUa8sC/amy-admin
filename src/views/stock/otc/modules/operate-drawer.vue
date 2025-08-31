@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { StockCreateOtc, StockUpdateOtc, StockOtcInfo } from '@/service/api/stock';
+import dayjs from 'dayjs';
+import { StockCreateOtc, StockMarketList, StockOtcInfo, StockUpdateOtc } from '@/service/api/stock';
 import { isEmpty } from '@/utils/is';
 
 defineOptions({
@@ -35,6 +36,9 @@ const title = computed(() => {
 });
 
 const ruleForm = ref(createDefaultModel());
+const btnLoading = ref(false);
+const errorObj = ref<Record<string, string>>({});
+const stockOptions = ref<Array<{ label: string; value: number }>>([]);
 
 function createDefaultModel() {
   return {
@@ -46,21 +50,51 @@ function createDefaultModel() {
     close_price: 0,
     open_fee: 0,
     status: 0,
-    stock_id: 0
+    stock_id: null,
+    discount_status: 0,
+    discount: 1.0,
+    discount_start: null,
+    discount_end: null
   };
+}
+
+// 获取股票列表数据
+async function loadStockOptions() {
+  try {
+    const response = await StockMarketList({ page: 1, size: 1000 });
+    const stocks = response.items || response.rows || [];
+    stockOptions.value = stocks.map((stock: any) => ({
+      label: `${stock.name} (${stock.symbol})`,
+      value: stock.id
+    }));
+  } catch (error) {
+    console.error('获取股票列表失败:', error);
+  }
 }
 
 async function handleInitModel() {
   errorObj.value = {};
   ruleForm.value = createDefaultModel();
 
+  // 加载股票选项
+  await loadStockOptions();
+
   if (props.operateType === 'edit' && props.rowData?.id) {
     try {
       btnLoading.value = true;
       const detailData = await StockOtcInfo({ id: props.rowData.id });
       Object.assign(ruleForm.value, detailData);
+
+      // 处理折扣时间显示，只显示时分秒部分
+      if (detailData.discount_start) {
+        const startDate = new Date(detailData.discount_start);
+        ruleForm.value.discount_start = dayjs(startDate).format('HH:mm:ss');
+      }
+      if (detailData.discount_end) {
+        const endDate = new Date(detailData.discount_end);
+        ruleForm.value.discount_end = dayjs(endDate).format('HH:mm:ss');
+      }
     } catch (error: any) {
-      window.$message?.error('获取详情失败');
       console.error('获取OTC详情失败:', error);
     } finally {
       btnLoading.value = false;
@@ -73,16 +107,17 @@ function closeDrawer() {
   visible.value = false;
 }
 
-const btnLoading = ref(false);
-const errorObj = ref<Record<string, string>>({});
-
 const statusOptions = [
   { label: '关闭', value: 0 },
   { label: '开启', value: 1 }
 ];
 
-async function handleSubmit() {
-  errorObj.value = {};
+const discountStatusOptions = [
+  { label: '禁用', value: 0 },
+  { label: '启用', value: 1 }
+];
+
+function validateBasicFields() {
   if (isEmpty(ruleForm.value.apply_max_quantity)) {
     errorObj.value.apply_max_quantity = '请输入申请最大量';
   }
@@ -104,13 +139,55 @@ async function handleSubmit() {
   if (isEmpty(ruleForm.value.stock_id)) {
     errorObj.value.stock_id = '请输入股票ID';
   }
+}
+
+function validateDiscountFields() {
+  if (ruleForm.value.discount_status === 1) {
+    if (isEmpty(ruleForm.value.discount) || ruleForm.value.discount <= 0 || ruleForm.value.discount > 1) {
+      errorObj.value.discount = '请输入有效的折扣比例(0-1之间)';
+    }
+    if (isEmpty(ruleForm.value.discount_start)) {
+      errorObj.value.discount_start = '请输入折扣开始时间';
+    }
+    if (isEmpty(ruleForm.value.discount_end)) {
+      errorObj.value.discount_end = '请输入折扣结束时间';
+    }
+    if (ruleForm.value.discount_start && ruleForm.value.discount_end) {
+      if (ruleForm.value.discount_start >= ruleForm.value.discount_end) {
+        errorObj.value.discount_end = '折扣结束时间必须大于开始时间';
+      }
+    }
+  }
+}
+
+function processDiscountTime(submitData: any) {
+  if (submitData.discount_start) {
+    const today = dayjs().format('YYYY-MM-DD');
+    submitData.discount_start = `${today} ${submitData.discount_start}:00`;
+  }
+  if (submitData.discount_end) {
+    const today = dayjs().format('YYYY-MM-DD');
+    submitData.discount_end = `${today} ${submitData.discount_end}:00`;
+  }
+  return submitData;
+}
+
+async function handleSubmit() {
+  errorObj.value = {};
+
+  validateBasicFields();
+  validateDiscountFields();
 
   if (Object.values(errorObj.value).some(item => item)) {
     return;
   }
+
+  // 处理折扣时间，拼接当天日期
+  const submitData = processDiscountTime({ ...ruleForm.value });
+
   btnLoading.value = true;
-  const action = ruleForm.value.id ? StockUpdateOtc : StockCreateOtc;
-  action(ruleForm.value)
+  const action = submitData.id ? StockUpdateOtc : StockCreateOtc;
+  action(submitData)
     .then(() => {
       window.$message?.success('操作成功');
       closeDrawer();
@@ -136,7 +213,13 @@ watch(visible, () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="500">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm all-required :error-obj="errorObj">
-        <MyFormItem v-model="ruleForm.stock_id" label="股票ID" prop-name="stock_id" />
+        <MyFormItem
+          v-model="ruleForm.stock_id"
+          label="股票"
+          form-type="select"
+          :data-list="stockOptions"
+          prop-name="stock_id"
+        />
         <MyFormItem v-model="ruleForm.apply_price" label="申请价格" prop-name="apply_price" />
         <MyFormItem v-model="ruleForm.close_price" label="平仓价格" prop-name="close_price" />
         <MyFormItem v-model="ruleForm.apply_min_quantity" label="申请最小量" prop-name="apply_min_quantity" />
@@ -149,6 +232,38 @@ watch(visible, () => {
           form-type="select"
           :data-list="statusOptions"
           prop-name="status"
+        />
+
+        <!-- 折扣相关字段 -->
+        <MyFormItem
+          v-model="ruleForm.discount_status"
+          label="折扣状态"
+          form-type="select"
+          :data-list="discountStatusOptions"
+          prop-name="discount_status"
+        />
+        <MyFormItem
+          v-model="ruleForm.discount"
+          label="折扣比例"
+          prop-name="discount"
+          :disabled="ruleForm.discount_status === 0"
+          placeholder="请输入折扣比例，如8折输入0.8"
+        />
+        <MyFormItem
+          v-model="ruleForm.discount_start"
+          label="折扣开始时间"
+          form-type="time"
+          prop-name="discount_start"
+          :disabled="ruleForm.discount_status === 0"
+          placeholder="请选择折扣开始时间"
+        />
+        <MyFormItem
+          v-model="ruleForm.discount_end"
+          label="折扣结束时间"
+          form-type="time"
+          prop-name="discount_end"
+          :disabled="ruleForm.discount_status === 0"
+          placeholder="请选择折扣结束时间"
         />
       </MyForm>
       <template #footer>

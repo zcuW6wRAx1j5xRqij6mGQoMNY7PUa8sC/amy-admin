@@ -17,6 +17,11 @@ const statusOptions = [
   { label: '开启', value: 1 }
 ];
 
+const discountStatusOptions = [
+  { label: '禁用', value: 0 },
+  { label: '启用', value: 1 }
+];
+
 async function reset() {
   emit('reset');
 }
@@ -37,6 +42,9 @@ async function search() {
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:8 l:6" label="状态" path="status" class="pr-24px">
               <NSelect v-model:value="model.status" placeholder="请选择状态" :options="statusOptions" clearable />
+            </NFormItemGi>
+            <NFormItemGi span="24 s:12 m:8 l:6" label="折扣状态" path="discount_status" class="pr-24px">
+              <NSelect v-model:value="model.discount_status" placeholder="请选择折扣状态" :options="discountStatusOptions" clearable />
             </NFormItemGi>
             <NFormItemGi span="24 m:6" class="pr-24px">
               <NSpace class="w-full">

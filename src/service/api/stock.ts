@@ -41,6 +41,10 @@ export interface OtcPostPlader {
   open_fee: number; // 开盘手续费%
   status: number; // 状态，0 关闭 1开启
   stock_id: number; // 股票ID
+  discount_status?: number; // 折扣价开启状态=1:启用,0:禁用
+  discount?: number; // 折扣比例8折=0.8
+  discount_start?: string; // 折扣开始时间
+  discount_end?: string; // 折扣结束时间
 }
 
 export interface IpoPostPlader {

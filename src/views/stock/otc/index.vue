@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
+import dayjs from 'dayjs';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { StockDelOtc, StockOtcList } from '@/service/api/stock';
 import { useAppStore } from '@/store/modules/app';
@@ -25,104 +25,146 @@ const {
   apiParams: {
     stock_id: null,
     status: null,
+    discount_status: null,
     page: 1,
     size: 20
   },
   columns: () => [
     {
-      key: 'id',
+      key: 'id' as any,
       title: 'ID',
       align: 'center',
       width: 80,
       fixed: 'left'
     },
     {
-      key: 'stock_id',
+      key: 'stock_id' as any,
       title: '股票ID',
       align: 'center',
       width: 100
     },
     {
-      key: 'stock.name',
+      key: 'stock.name' as any,
       title: '股票名称',
       align: 'center',
       width: 120,
-      render: row => row.stock?.name || '-'
+      render: (row: any) => row.stock?.name || '-'
     },
     {
-      key: 'stock.symbol',
+      key: 'stock.symbol' as any,
       title: '股票代码',
       align: 'center',
       width: 120,
-      render: row => row.stock?.symbol || '-'
+      render: (row: any) => row.stock?.symbol || '-'
     },
     {
-      key: 'apply_price',
+      key: 'apply_price' as any,
       title: '申请价格',
       align: 'center',
       width: 120,
-      render: row => <span>{row.apply_price || 0}</span>
+      render: (row: any) => <span>{row.apply_price || 0}</span>
     },
     {
-      key: 'close_price',
+      key: 'close_price' as any,
       title: '平仓价格',
       align: 'center',
       width: 120,
-      render: row => <span>{row.close_price || 0}</span>
+      render: (row: any) => <span>{row.close_price || 0}</span>
     },
     {
-      key: 'apply_min_quantity',
+      key: 'apply_min_quantity' as any,
       title: '申请最小量',
       align: 'center',
       width: 120,
-      render: row => <span>{row.apply_min_quantity || 0}</span>
+      render: (row: any) => <span>{row.apply_min_quantity || 0}</span>
     },
     {
-      key: 'apply_max_quantity',
+      key: 'apply_max_quantity' as any,
       title: '申请最大量',
       align: 'center',
       width: 120,
-      render: row => <span>{row.apply_max_quantity || 0}</span>
+      render: (row: any) => <span>{row.apply_max_quantity || 0}</span>
     },
     {
-      key: 'open_fee',
+      key: 'open_fee' as any,
       title: '开仓手续费%',
       align: 'center',
       width: 120,
-      render: row => <span class="text-red-600">{row.open_fee || 0}%</span>
+      render: (row: any) => <span class="text-red-600">{row.open_fee || 0}%</span>
     },
     {
-      key: 'close_fee',
+      key: 'close_fee' as any,
       title: '平仓手续费%',
       align: 'center',
       width: 120,
-      render: row => <span class="text-red-600">{row.close_fee || 0}%</span>
+      render: (row: any) => <span class="text-red-600">{row.close_fee || 0}%</span>
     },
     {
-      key: 'status',
+      key: 'status' as any,
       title: '状态',
       align: 'center',
       width: 100,
-      render: row => {
+      render: (row: any) => {
         const type = row.status === 0 ? 'error' : 'success';
         const text = row.status === 0 ? '关闭' : '开启';
         return <NTag type={type}>{text}</NTag>;
       }
     },
     {
-      key: 'created_at',
+      key: 'discount_status' as any,
+      title: '折扣状态',
+      align: 'center',
+      width: 100,
+      render: (row: any) => {
+        const type = row.discount_status === 0 ? 'default' : 'warning';
+        const text = row.discount_status === 0 ? '禁用' : '启用';
+        return <NTag type={type}>{text}</NTag>;
+      }
+    },
+    {
+      key: 'discount' as any,
+      title: '折扣比例',
+      align: 'center',
+      width: 120,
+      render: (row: any) => {
+        if (row.discount_status === 0) {
+          return <span>-</span>;
+        }
+        const discountText = row.discount ? `${(row.discount * 10).toFixed(1)}折` : '-';
+        return <span class="text-orange-600">{discountText}</span>;
+      }
+    },
+    {
+      key: 'discount_time' as any,
+      title: '折扣时间',
+      align: 'center',
+      width: 200,
+      render: (row: any) => {
+        if (row.discount_status === 0) {
+          return <span>-</span>;
+        }
+        const startTime = row.discount_start ? dayjs(row.discount_start).format('HH:mm:ss') : '-';
+        const endTime = row.discount_end ? dayjs(row.discount_end).format('HH:mm:ss') : '-';
+        return (
+          <span>
+            {startTime} - {endTime}
+          </span>
+        );
+      }
+    },
+    {
+      key: 'created_at' as any,
       title: '创建时间',
       align: 'center',
       width: 160
     },
-    ,
     {
-      key: 'actions',
+      key: 'actions' as any,
       title: '操作',
       align: 'center',
       width: 120,
       fixed: 'right',
-      render: row => (
+      render: (row: any) => (
         <div class="flex-center gap-12px">
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             编辑
@@ -144,7 +186,7 @@ const {
 });
 
 const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
-  data,
+  data as any,
   getData
 );
 
