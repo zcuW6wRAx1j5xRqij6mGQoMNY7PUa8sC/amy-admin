@@ -121,9 +121,9 @@ export function StockDelOtc(params: CommIdPlader) {
 }
 // 新增大宗
 export function StockCreateOtc(data: OtcPostPlader) {
-  return request<any>({ url: '/api/admin/stock/otc/create', data });
+  return request<any>({ url: '/api/admin/stock/otc/create', method: 'post', data });
 }
 // 修改大宗
 export function StockUpdateOtc(data: OtcPostPlader) {
-  return request<any>({ url: '/api/admin/stock/otc/update', data });
+  return request<any>({ url: '/api/admin/stock/otc/update', method: 'post', data });
 }
