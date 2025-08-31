@@ -238,6 +238,8 @@ function edit(id: number) {
           v-model:columns="columnChecks"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
+          :no-add="true"
+          @add="handleAdd"
           @refresh="getData"
         />
       </template>
