@@ -72,9 +72,9 @@ const {
       width: 120,
       render: row => {
         const statusMap: Record<string, { type: 'warning' | 'success' | 'error'; text: string }> = {
-          待审核: { type: 'warning', text: '待审核' },
-          审核通过: { type: 'success', text: '审核通过' },
-          审核拒绝: { type: 'error', text: '审核拒绝' }
+          pending: { type: 'warning', text: '待审核' },
+          approved: { type: 'success', text: '审核通过' },
+          rejected: { type: 'error', text: '审核拒绝' }
         };
         const status = statusMap[row.status as string] || { type: 'default', text: '未知' };
         return <NTag type={status.type}>{status.text}</NTag>;
@@ -95,7 +95,7 @@ const {
       fixed: 'right',
       render: row => {
         // 只有待审核状态才显示操作按钮
-        if (row.status !== '待审核') {
+        if (row.status !== 'pending') {
           return <span>-</span>;
         }
         return (
