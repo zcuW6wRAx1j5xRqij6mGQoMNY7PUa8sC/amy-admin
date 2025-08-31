@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { StockCreateMarket, StockUpdateMarket, StockMarketInfo } from '@/service/api/stock';
+import { StockCreateMarket, StockMarketInfo, StockUpdateMarket } from '@/service/api/stock';
 import { isEmpty } from '@/utils/is';
 
 defineOptions({
@@ -170,25 +170,37 @@ watch(visible, () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="500">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm all-required :error-obj="errorObj">
-        <MyFormItem v-model="ruleForm.symbol" label="股票代码" prop-name="symbol" />
-        <MyFormItem v-model="ruleForm.name" label="股票名称" prop-name="name" />
-        <MyFormItem v-model="ruleForm.exchange" label="交易所类型" prop-name="exchange" />
-        <MyFormItem v-model="ruleForm.country" label="国家" prop-name="country" />
-        <MyFormItem v-model="ruleForm.isin" label="国际证券识别码" prop-name="isin" />
-        <MyFormItem v-model="ruleForm.price" label="当前价格" prop-name="price" />
-        <MyFormItem v-model="ruleForm.change" label="涨跌幅" prop-name="change" />
-        <MyFormItem v-model="ruleForm.open" label="开盘价" prop-name="open" />
-        <MyFormItem v-model="ruleForm.close" label="收盘价" prop-name="close" />
-        <MyFormItem v-model="ruleForm.high" label="最高价" prop-name="high" />
-        <MyFormItem v-model="ruleForm.low" label="最低价" prop-name="low" />
-        <MyFormItem v-model="ruleForm.volume" label="成交量" prop-name="volume" />
-        <MyFormItem v-model="ruleForm.market_cap" label="成交额" prop-name="market_cap" />
-        <MyFormItem v-model="ruleForm.logo" label="股票Logo" prop-name="logo" />
-        <MyFormItem v-model="ruleForm.kline_query_path" label="K线查询路径" prop-name="kline_query_path" />
-        <MyFormItem v-model="ruleForm.quote_query_path" label="行情查询路径" prop-name="quote_query_path" />
+        <MyFormItem v-model="ruleForm.symbol" label="股票代码" prop-name="symbol" disabled />
+        <MyFormItem v-model="ruleForm.name" label="股票名称" prop-name="name" disabled />
+        <MyFormItem v-model="ruleForm.exchange" label="交易所类型" prop-name="exchange" disabled />
+        <MyFormItem v-model="ruleForm.country" label="国家" prop-name="country" disabled />
+        <MyFormItem v-model="ruleForm.isin" label="国际证券识别码" prop-name="isin" disabled />
+        <MyFormItem v-model="ruleForm.price" label="当前价格" prop-name="price" disabled />
+        <MyFormItem v-model="ruleForm.change" label="涨跌幅" prop-name="change" disabled />
+        <MyFormItem v-model="ruleForm.open" label="开盘价" prop-name="open" disabled />
+        <MyFormItem v-model="ruleForm.close" label="收盘价" prop-name="close" disabled />
+        <MyFormItem v-model="ruleForm.high" label="最高价" prop-name="high" disabled />
+        <MyFormItem v-model="ruleForm.low" label="最低价" prop-name="low" disabled />
+        <MyFormItem v-model="ruleForm.volume" label="成交量" prop-name="volume" disabled />
+        <MyFormItem v-model="ruleForm.market_cap" label="成交额" prop-name="market_cap" disabled />
+        <MyFormItem v-model="ruleForm.logo" label="股票Logo" prop-name="logo" disabled />
+        <MyFormItem v-model="ruleForm.kline_query_path" label="K线查询路径" prop-name="kline_query_path" disabled />
+        <MyFormItem v-model="ruleForm.quote_query_path" label="行情查询路径" prop-name="quote_query_path" disabled />
         <MyFormItem v-model="ruleForm.sort" label="排序" prop-name="sort" />
-        <MyFormItem v-model="ruleForm.is_recommend" label="是否推荐" form-type="select" :data-list="recommendOptions" prop-name="is_recommend" />
-        <MyFormItem v-model="ruleForm.status" label="状态" form-type="select" :data-list="statusOptions" prop-name="status" />
+        <MyFormItem
+          v-model="ruleForm.is_recommend"
+          label="是否推荐"
+          form-type="select"
+          :data-list="recommendOptions"
+          prop-name="is_recommend"
+        />
+        <MyFormItem
+          v-model="ruleForm.status"
+          label="状态"
+          form-type="select"
+          :data-list="statusOptions"
+          prop-name="status"
+        />
       </MyForm>
       <template #footer>
         <NSpace :size="16">
