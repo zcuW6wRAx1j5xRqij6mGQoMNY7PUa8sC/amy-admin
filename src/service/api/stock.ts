@@ -73,11 +73,11 @@ export function StockMarketInfo(params: CommIdPlader) {
 }
 // 添加市场股票
 export function StockCreateMarket(data: MarkPostPlader) {
-  return request<any>({ url: '/api/admin/stock/market/create', data });
+  return request<any>({ url: '/api/admin/stock/market/create', data, method: 'post' });
 }
 // 修改市场股票
 export function StockUpdateMarket(data: MarkPostPlader) {
-  return request<any>({ url: '/api/admin/stock/market/update', data });
+  return request<any>({ url: '/api/admin/stock/market/update', data, method: 'post' });
 }
 // 删除市场股票
 export function StockDelMarket(data: CommIdPlader) {
@@ -99,11 +99,11 @@ export function StockDelIpo(params: CommIdPlader) {
 }
 // 新增ipo
 export function StockCreateIpo(data: IpoPostPlader) {
-  return request<any>({ url: '/api/admin/stock/ipo/create', data });
+  return request<any>({ url: '/api/admin/stock/ipo/create', data, method: 'post' });
 }
 // 修改ipo
 export function StockUpdateIpo(data: IpoPostPlader) {
-  return request<any>({ url: '/api/admin/stock/ipo/update', data });
+  return request<any>({ url: '/api/admin/stock/ipo/update', data, method: 'post' });
 }
 
 /* 大宗 */
