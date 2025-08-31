@@ -15,7 +15,7 @@ export const encodedParams = (obj = {}) => {
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
     .join('&');
 };
-export const baseUrl = 'https://amy-file.infantry5.com';
+export const baseUrl = 'https://s3.infantry5.com';
 
 export function setBaseUrl(url) {
   if (!url) {
