@@ -87,10 +87,12 @@ async function handleInitModel() {
 
       // 处理折扣时间显示，只显示时分秒部分
       if (detailData.discount_start) {
-        ruleForm.value.discount_start = dayjs(detailData.discount_start).format('HH:mm:ss');
+        const startDate = new Date(detailData.discount_start);
+        ruleForm.value.discount_start = dayjs(startDate).format('HH:mm:ss');
       }
       if (detailData.discount_end) {
-        ruleForm.value.discount_end = dayjs(detailData.discount_end).format('HH:mm:ss');
+        const endDate = new Date(detailData.discount_end);
+        ruleForm.value.discount_end = dayjs(endDate).format('HH:mm:ss');
       }
     } catch (error: any) {
       console.error('获取OTC详情失败:', error);
