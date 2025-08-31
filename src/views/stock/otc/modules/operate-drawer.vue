@@ -162,12 +162,12 @@ function validateDiscountFields() {
 
 function processDiscountTime(submitData: any) {
   if (submitData.discount_start) {
-    const today = dayjs().format('YYYY-MM-DD');
-    submitData.discount_start = `${today} ${submitData.discount_start}:00`;
+    const timePart = dayjs(submitData.discount_start).format('HH:mm:ss');
+    submitData.discount_start = `${dayjs().format('YYYY-MM-DD')} ${timePart}`;
   }
   if (submitData.discount_end) {
-    const today = dayjs().format('YYYY-MM-DD');
-    submitData.discount_end = `${today} ${submitData.discount_end}:00`;
+    const timePart = dayjs(submitData.discount_end).format('HH:mm:ss');
+    submitData.discount_end = `${dayjs().format('YYYY-MM-DD')} ${timePart}`;
   }
   return submitData;
 }
