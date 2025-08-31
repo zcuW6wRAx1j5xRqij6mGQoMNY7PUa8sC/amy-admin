@@ -238,7 +238,7 @@ export function DepositOrderList(params: DepositOrderSearchParams) {
 
 // 充值订单审核
 export function DepositOrderAudit(data: DepositOrderAuditRequest) {
-  return request<any>({ url: '/api/admin/order/despoit/update', method: 'POST', data });
+  return request<any>({ url: '/api/admin/order/despoit/audit', method: 'POST', data });
 }
 
 /**
