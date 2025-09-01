@@ -10,23 +10,27 @@ export function setupAppErrorHandle(app: App) {
   };
 }
 
-export function setupAppVersionNotification() {
-  // Update check interval in milliseconds
-  const UPDATE_CHECK_INTERVAL = 3 * 60 * 1000;
+// Update check interval in milliseconds
+const UPDATE_CHECK_INTERVAL = 3 * 60 * 1000;
 
-  const canAutoUpdateApp = import.meta.env.VITE_AUTOMATICALLY_DETECT_UPDATE === 'Y' && import.meta.env.PROD;
+export function setupAppVersionNotification() {
+  const canAutoUpdateApp = import.meta.env.VITE_AUTOMATICALLY_DETECT_UPDATE === 'Y';
+
   if (!canAutoUpdateApp) return;
 
   let isShow = false;
   let updateInterval: ReturnType<typeof setInterval> | undefined;
 
+  // Check if updates should be checked
+  const shouldCheckForUpdates = [!isShow, document.visibilityState === 'visible', !import.meta.env.DEV].every(Boolean);
+
   const checkForUpdates = async () => {
-    if (isShow) return;
+    if (!shouldCheckForUpdates) return;
 
     const buildTime = await getHtmlBuildTime();
 
-    // If failed to get build time or build time hasn't changed, no update is needed.
-    if (!buildTime || buildTime === BUILD_TIME) {
+    // If build time hasn't changed, no update is needed
+    if (buildTime === BUILD_TIME) {
       return;
     }
 
@@ -36,7 +40,29 @@ export function setupAppVersionNotification() {
     const n = window.$notification?.create({
       title: $t('system.updateTitle'),
       content: $t('system.updateContent'),
-      
+      action() {
+        return h('div', { style: { display: 'flex', justifyContent: 'end', gap: '12px', width: '325px' } }, [
+          h(
+            NButton,
+            {
+              onClick() {
+                n?.destroy();
+              }
+            },
+            () => $t('system.updateCancel')
+          ),
+          h(
+            NButton,
+            {
+              type: 'primary',
+              onClick() {
+                location.reload();
+              }
+            },
+            () => $t('system.updateConfirm')
+          )
+        ]);
+      },
       onClose() {
         isShow = false;
       }
@@ -51,7 +77,7 @@ export function setupAppVersionNotification() {
   };
 
   // If updates should be checked, set up the visibility change listener and start the update interval
-  if (!isShow && document.visibilityState === 'visible') {
+  if (shouldCheckForUpdates) {
     // Check for updates when the document is visible
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
@@ -65,21 +91,16 @@ export function setupAppVersionNotification() {
   }
 }
 
-async function getHtmlBuildTime(): Promise<string | null> {
+async function getHtmlBuildTime() {
   const baseUrl = import.meta.env.VITE_BASE_URL || '/';
 
-  try {
-    const res = await fetch(`${baseUrl}index.html?time=${Date.now()}`);
+  const res = await fetch(`${baseUrl}index.html?time=${Date.now()}`);
 
-    if (!res.ok) {
-      return null;
-    }
+  const html = await res.text();
 
-    const html = await res.text();
-    const match = html.match(/<meta name="buildTime" content="(.*)">/);
-    return match?.[1] || null;
-  } catch (error) {
-    window.console.error('getHtmlBuildTime error:', error);
-    return null;
-  }
+  const match = html.match(/<meta name="buildTime" content="(.*)">/);
+
+  const buildTime = match?.[1] || '';
+
+  return buildTime;
 }

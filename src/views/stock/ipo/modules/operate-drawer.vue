@@ -62,6 +62,7 @@ async function handleInitModel() {
       btnLoading.value = true;
       const detailData = await StockIpoInfo({ id: props.rowData.id });
       Object.assign(ruleForm.value, detailData);
+      Reflect.deleteProperty(ruleForm.value, 'stock');
     } catch (error: any) {
       console.error('获取IPO详情失败:', error);
     } finally {
