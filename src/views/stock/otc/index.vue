@@ -62,7 +62,7 @@ const {
       title: '申请价格',
       align: 'center',
       width: 120,
-      render: (row: any) => <span>{row.apply_price || row.stock?.price || 0}</span>
+      render: (row: any) => <span>{row.apply_price > 0 ? row.apply_price : row.stock?.price}</span>
     },
     // {
     //   key: 'close_price' as any,
