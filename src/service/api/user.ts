@@ -31,6 +31,7 @@ export interface UserLevelRequest {
   despoit_money?: number; // 充值金额
   high_yield_rate?: number; // 高收益比例
   high_yield_amount_rate?: number; // 高收益金额比例
+  normal_yield_rate?: number; // 普通收益比例
 }
 
 /**

@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import {
-  type UserLevelRequest,
-  UserLevelAdd,
-  UserLevelDetail,
-  UserLevelUpdate
-} from '@/service/api/user';
+import { UserLevelAdd, UserLevelDetail, type UserLevelRequest, UserLevelUpdate } from '@/service/api/user';
 import { isEmpty } from '@/utils/is';
 
 defineOptions({
@@ -51,7 +46,8 @@ function createDefaultModel(): UserLevelRequest {
     name_kr: '',
     despoit_money: 0,
     high_yield_rate: 0,
-    high_yield_amount_rate: 0
+    high_yield_amount_rate: 0,
+    normal_yield_rate: 0
   };
 }
 
@@ -104,6 +100,9 @@ async function handleSubmit() {
   if (ruleForm.value.high_yield_amount_rate === undefined || ruleForm.value.high_yield_amount_rate === null) {
     errorObj.value.high_yield_amount_rate = '请输入高收益金额比例';
   }
+  if (ruleForm.value.normal_yield_rate === undefined || ruleForm.value.normal_yield_rate === null) {
+    errorObj.value.normal_yield_rate = '请输入普通收益比例';
+  }
   if (Object.values(errorObj.value).some(item => item)) {
     return;
   }
@@ -148,18 +147,25 @@ watch(visible, async () => {
           placeholder="请输入充值金额"
         />
         <MyFormItem
+          v-model="ruleForm.high_yield_amount_rate"
+          label="高收益金额比例%"
+          prop-name="high_yield_amount_rate"
+          form-type="number"
+          placeholder="请输入高收益金额比例"
+        />
+        <MyFormItem
           v-model="ruleForm.high_yield_rate"
-          label="高收益比例"
+          label="高收益比例%"
           prop-name="high_yield_rate"
           form-type="number"
           placeholder="请输入高收益比例"
         />
         <MyFormItem
-          v-model="ruleForm.high_yield_amount_rate"
-          label="高收益金额比例"
-          prop-name="high_yield_amount_rate"
+          v-model="ruleForm.normal_yield_rate"
+          label="普通收益比例%"
+          prop-name="normal_yield_rate"
           form-type="number"
-          placeholder="请输入高收益金额比例"
+          placeholder="请输入普通收益比例"
         />
       </MyForm>
       <template #footer>

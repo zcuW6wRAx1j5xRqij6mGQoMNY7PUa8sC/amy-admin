@@ -59,18 +59,25 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       render: row => <span>{row.despoit_money || 0}</span>
     },
     {
+      key: 'high_yield_amount_rate',
+      title: '高收益金额比例%',
+      align: 'center',
+      width: 140,
+      render: row => <span>{row.high_yield_amount_rate || 0}%</span>
+    },
+    {
       key: 'high_yield_rate',
-      title: '高收益比例',
+      title: '高收益比例%',
       align: 'center',
       width: 120,
       render: row => <span>{row.high_yield_rate || 0}%</span>
     },
     {
-      key: 'high_yield_amount_rate',
-      title: '高收益金额比例',
+      key: 'normal_yield_rate',
+      title: '普通收益比例%',
       align: 'center',
       width: 140,
-      render: row => <span>{row.high_yield_amount_rate || 0}%</span>
+      render: row => <span>{row.normal_yield_rate || 0}%</span>
     },
     { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
     {
