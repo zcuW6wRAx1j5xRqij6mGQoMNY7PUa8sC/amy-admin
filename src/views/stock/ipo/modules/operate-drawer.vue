@@ -116,6 +116,12 @@ async function handleSubmit() {
   }
   btnLoading.value = true;
   const action = ruleForm.value.id ? StockUpdateIpo : StockCreateIpo;
+  if (ruleForm.value.apply_end_at) {
+    ruleForm.value.apply_end_at = dayjs(ruleForm.value.apply_end_at).format('YYYY-MM-DD HH:mm:ss');
+  }
+  if (ruleForm.value.apply_start_at) {
+    ruleForm.value.apply_start_at = dayjs(ruleForm.value.apply_start_at).format('YYYY-MM-DD HH:mm:ss');
+  }
   action(ruleForm.value)
     .then(() => {
       window.$message?.success('操作成功');
