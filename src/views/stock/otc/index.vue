@@ -1,6 +1,6 @@
 <script setup lang="tsx">
-import dayjs from 'dayjs';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import dayjs from 'dayjs';
 import { StockDelOtc, StockOtcList } from '@/service/api/stock';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
@@ -62,15 +62,15 @@ const {
       title: '申请价格',
       align: 'center',
       width: 120,
-      render: (row: any) => <span>{row.apply_price || 0}</span>
+      render: (row: any) => <span>{row.apply_price || row.stock?.price || 0}</span>
     },
-    {
-      key: 'close_price' as any,
-      title: '平仓价格',
-      align: 'center',
-      width: 120,
-      render: (row: any) => <span>{row.close_price || 0}</span>
-    },
+    // {
+    //   key: 'close_price' as any,
+    //   title: '平仓价格',
+    //   align: 'center',
+    //   width: 120,
+    //   render: (row: any) => <span>{row.close_price || 0}</span>
+    // },
     {
       key: 'apply_min_quantity' as any,
       title: '申请最小量',
