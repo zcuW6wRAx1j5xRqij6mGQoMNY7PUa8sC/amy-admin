@@ -39,6 +39,10 @@ const ruleForm = ref(createDefaultModel());
 const btnLoading = ref(false);
 const errorObj = ref<Record<string, string>>({});
 const stockOptions = ref<Array<{ label: string; value: number }>>([]);
+const stockSearchLoading = ref(false);
+const stockSearchKeyword = ref('');
+// 防抖定时器
+const searchTimeout = ref<number | null>(null);
 
 function createDefaultModel() {
   return {
@@ -58,17 +62,60 @@ function createDefaultModel() {
   };
 }
 
-// 获取股票列表数据
-async function loadStockOptions() {
+// 远程搜索股票
+async function searchStocks(keyword: string) {
+  if (!keyword || keyword.trim().length === 0) {
+    stockOptions.value = [];
+    return;
+  }
+
   try {
-    const response = await StockMarketList({ page: 1, size: 1000 });
+    stockSearchLoading.value = true;
+    const response = await StockMarketList({
+      page: 1,
+      size: 20,
+      like: JSON.stringify({ symbol: keyword.trim() })
+    });
     const stocks = response.items || response.rows || [];
     stockOptions.value = stocks.map((stock: any) => ({
       label: `${stock.name} (${stock.symbol})`,
       value: stock.id
     }));
   } catch (error) {
-    console.error('获取股票列表失败:', error);
+    console.error('搜索股票失败:', error);
+    stockOptions.value = [];
+  } finally {
+    stockSearchLoading.value = false;
+  }
+}
+
+// 处理股票搜索输入
+function handleStockSearch(keyword: string) {
+  stockSearchKeyword.value = keyword;
+  // 防抖搜索
+  if (searchTimeout.value) {
+    clearTimeout(searchTimeout.value);
+  }
+  searchTimeout.value = window.setTimeout(() => {
+    searchStocks(keyword);
+  }, 300);
+}
+
+// 获取股票列表数据（用于编辑时显示当前选中的股票）
+async function loadStockOptions() {
+  // 编辑模式下，如果有股票ID，加载对应的股票信息
+  try {
+    const response = await StockMarketList({
+      page: 1,
+      size: 1000
+    });
+    const stocks = response.items || response.rows || [];
+    stockOptions.value = stocks.map((stock: any) => ({
+      label: `${stock.name} (${stock.symbol})`,
+      value: stock.id
+    }));
+  } catch (error) {
+    console.error('获取股票信息失败:', error);
   }
 }
 
@@ -223,8 +270,13 @@ watch(visible, () => {
           v-model="ruleForm.stock_id"
           label="股票"
           form-type="select"
-          :data-list="stockOptions"
           prop-name="stock_id"
+          filterable
+          remote
+          :loading="stockSearchLoading"
+          :data-list="stockOptions"
+          :on-search="handleStockSearch"
+          clearable
         />
         <MyFormItem v-model="ruleForm.apply_price" label="申请价格" prop-name="apply_price" />
         <MyFormItem v-model="ruleForm.close_price" label="平仓价格" prop-name="close_price" />
