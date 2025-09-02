@@ -1,5 +1,4 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { StockDelIpo, StockIpoList } from '@/service/api/stock';
 import { useAppStore } from '@/store/modules/app';
@@ -37,14 +36,34 @@ const {
       fixed: 'left'
     },
     {
-      key: 'stock_id',
-      title: '股票ID',
+      key: 'name',
+      title: '股票名称',
+      align: 'center',
+      width: 80,
+      fixed: 'left'
+    },
+    {
+      key: 'company_id',
+      title: '企业ID',
       align: 'center',
       width: 100
     },
     {
+      key: 'company_name',
+      title: '企业名称',
+      align: 'center',
+      width: 100
+    },
+    {
+      key: 'buy_price',
+      title: '购买价格',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.apply_price || 0}</span>
+    },
+    {
       key: 'apply_price',
-      title: '申请价格',
+      title: '发行价格',
       align: 'center',
       width: 120,
       render: row => <span>{row.apply_price || 0}</span>
@@ -76,6 +95,20 @@ const {
       align: 'center',
       width: 120,
       render: row => <span>{row.issue_quantity || 0}</span>
+    },
+    {
+      key: 'sold_quantity',
+      title: '已售数量',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.sold_quantity || 0}</span>
+    },
+    {
+      key: 'published_at',
+      title: '上市时间',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.published_at || '-'}</span>
     },
     {
       key: 'open_fee',

@@ -44,12 +44,16 @@ function createDefaultModel() {
     apply_price: 0,
     close_fee: 0,
     close_price: 0,
+    company_id: "",
+    company_name: "",
+    apply_end_at: null,
+    apply_start_at: null,
+    published_at: null,
+    issue_quantity: 0,
+    name: "",
     open_fee: 0,
     status: 0,
     stock_id: 0,
-    apply_start_at: null,
-    apply_end_at: null,
-    issue_quantity: 0
   };
 }
 
@@ -107,6 +111,15 @@ async function handleSubmit() {
   if (isEmpty(ruleForm.value.stock_id)) {
     errorObj.value.stock_id = '请输入股票ID';
   }
+  if(isEmpty(ruleForm.value.company_id)) {
+    errorObj.value.company_id = '请输入企业ID';
+  }
+  if (isEmpty(ruleForm.value.company_name)) {
+    errorObj.value.company_name = '请输入企业名称';
+  }
+  if (isEmpty(ruleForm.value.name)) {
+    errorObj.value.name = '请输入股票名称';
+  }
   if (isEmpty(ruleForm.value.issue_quantity)) {
     errorObj.value.issue_quantity = '请输入发行数量';
   }
@@ -121,6 +134,9 @@ async function handleSubmit() {
   }
   if (ruleForm.value.apply_start_at) {
     ruleForm.value.apply_start_at = dayjs(ruleForm.value.apply_start_at).format('YYYY-MM-DD HH:mm:ss');
+  }
+  if (ruleForm.value.published_at) {
+    ruleForm.value.published_at = dayjs(ruleForm.value.published_at).format('YYYY-MM-DD HH:mm:ss');
   }
   action(ruleForm.value)
     .then(() => {
@@ -149,6 +165,9 @@ watch(visible, () => {
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm all-required :error-obj="errorObj">
         <MyFormItem v-model="ruleForm.stock_id" label="股票ID" prop-name="stock_id" />
+        <MyFormItem v-model="ruleForm.name" label="股票名称" prop-name="name" />
+        <MyFormItem v-model="ruleForm.company_id" label="企业ID" prop-name="company_id" />
+        <MyFormItem v-model="ruleForm.company_name" label="企业名称" prop-name="company_name" />
         <MyFormItem v-model="ruleForm.apply_price" label="申请价格" prop-name="apply_price" />
         <MyFormItem v-model="ruleForm.close_price" label="平仓价格" prop-name="close_price" />
         <MyFormItem v-model="ruleForm.apply_min_quantity" label="申请最小量" prop-name="apply_min_quantity" />
@@ -162,6 +181,7 @@ watch(visible, () => {
           prop-name="apply_start_at"
           form-type="datetime"
         />
+        <MyFormItem v-model="ruleForm.published_at" label="上市时间" prop-name="published_at" form-type="datetime" />
         <MyFormItem v-model="ruleForm.apply_end_at" label="结束时间" prop-name="apply_end_at" form-type="datetime" />
         <MyFormItem
           v-model="ruleForm.status"

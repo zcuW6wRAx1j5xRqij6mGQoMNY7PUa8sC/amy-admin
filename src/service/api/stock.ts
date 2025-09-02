@@ -49,17 +49,21 @@ export interface OtcPostPlader {
 
 export interface IpoPostPlader {
   id?: number;
-  apply_end_at?: string; // 结束时间
-  apply_max_quantity?: number; // 申请最大量
-  apply_min_quantity?: number; // 申请最小量
-  apply_price?: number; // 发行价格
-  apply_start_at?: string; // 开始时间
-  close_fee?: number; // 出盘手续费%
-  close_price?: number; // 平仓价格
-  issue_quantity?: number; // 发行数量
-  open_fee?: number; // 进盘手续费%
-  status?: number; // 状态，0 关闭 1开启
   stock_id?: number; // 股票ID
+  name?: string; //股票名称
+  company_id?: string; // 企业ID
+  company_name?: string; // 企业名称
+  apply_price: number; // 发行价格
+  apply_min_quantity: number; // 申请最小量
+  apply_max_quantity: number; // 申请最大量
+  close_price: number; // 平仓价格
+  open_fee: number; // 开盘手续费%
+  close_fee: number; // 平仓手续费%
+  apply_start_at: string; // 申请开始时间
+  apply_end_at: string; // 申请结束时间
+  issue_quantity: number; // 发行数量
+  published_at: string; // 上市时间
+  status: number; // 状态，0 关闭 1开启
 }
 
 /* 市场股票 */
