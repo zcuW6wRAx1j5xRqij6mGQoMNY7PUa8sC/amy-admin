@@ -80,8 +80,8 @@ const {
         return <NTag type={tagMap[row.status as number]}>{label}</NTag>;
       }
     },
-    { key: 'register_ip', title: '注册IP', align: 'center', width: 120 },
-    { key: 'regsiter_device', title: '注册设备', align: 'center', width: 120 },
+    // { key: 'register_ip', title: '注册IP', align: 'center', width: 120 },
+    // { key: 'regsiter_device', title: '注册设备', align: 'center', width: 120 },
     {
       key: 'last_login_at',
       title: '最近登录',
@@ -89,8 +89,8 @@ const {
       width: 160,
       render: row => <span>{row.last_login_at || '-'}</span>
     },
-    { key: 'last_login_ip', title: '最后登录IP', align: 'center', width: 120 },
-    { key: 'last_login_device', title: '最后登录设备', align: 'center', width: 120 },
+    // { key: 'last_login_ip', title: '最后登录IP', align: 'center', width: 120 },
+    // { key: 'last_login_device', title: '最后登录设备', align: 'center', width: 120 },
     { key: 'remark', title: '备注', align: 'center', width: 120, render: row => <span>{row.remark || '-'}</span> },
     {
       key: 'created_at',
