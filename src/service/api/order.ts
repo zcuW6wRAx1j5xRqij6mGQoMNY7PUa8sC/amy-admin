@@ -33,6 +33,37 @@ export function OrderIPOList(params: CommListPlader) {
   return request<any>({ url: '/api/admin/order/ipo/list', params });
 }
 
+// ipo平仓
+export function OrderClosed(id: number) {
+  return request<any>({ url: '/api/admin/order/ipo/closed', method: 'POST', data: { id } });
+}
+
+// IPO锁仓/解锁
+export function OrderIPOLock(id:number) {
+  return request<any>({ url: '/api/admin/order/ipo/lock', method: 'POST', data: { id } });
+}
+
+export interface OrderIpoAuditRequest {
+  id: number;
+  apply_status: number;
+  match_quantity?: number
+}
+
+// ipo订单审核
+export function OrderIPOLockAudit(data: OrderIpoAuditRequest) {
+  return request<any>({ url: '/api/admin/order/ipo/audit', method: 'POST', data });
+}
+
+export interface OrderIPOLockPriceRequest {
+  id: number;
+  price: number;
+}
+
+// IPO锁仓/解锁
+export function OrderIPOLockPrice(data: OrderIPOLockPriceRequest) {
+  return request<any>({ url: '/api/admin/order/ipo/set-sell-price', method: 'POST', data });
+}
+
 // OTC订单锁仓/解锁
 export interface OtcLockUnlockRequest {
   id: number;

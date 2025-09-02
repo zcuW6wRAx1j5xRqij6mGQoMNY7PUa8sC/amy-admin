@@ -1,7 +1,8 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
+import { ref } from "vue"
+import { isEmpty } from '@/utils/is';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
-import { OrderIPOList } from '@/service/api/order';
+import { OrderIPOList, OrderIPOLock, OrderClosed, OrderIPOLockPrice, OrderIPOLockAudit } from '@/service/api/order';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
@@ -133,7 +134,8 @@ const {
       width: 100,
       render: row => {
         const statusMap = {
-          normal: { type: 'success', text: '正常' },
+          oepn: { type: 'success', text: '持仓中' },
+          pending: { type: 'info', text: '待审核' },
           locked: { type: 'warning', text: '锁定' },
           closed: { type: 'error', text: '已平仓' }
         };
@@ -180,7 +182,7 @@ const {
           )}
 
           {/* 锁仓按钮 - 只在状态为正常时显示 */}
-          {row.status === 'normal' && (
+          {row.status === 'pending' && row.apply_status === 1 && (
             <NPopconfirm onPositiveClick={() => handleLock(row.id)}>
               {{
                 default: () => '确认锁仓此订单吗？',
@@ -194,8 +196,8 @@ const {
           )}
 
           {/* 解锁按钮 - 只在状态为锁定时显示 */}
-          {row.status === 'locked' && (
-            <NPopconfirm onPositiveClick={() => handleUnlock(row.id)}>
+          {row.status === 'locked' && row.apply_status === 1 && (
+            <NPopconfirm onPositiveClick={() => handleLock(row.id)}>
               {{
                 default: () => '确认解锁此订单吗？',
                 trigger: () => (
@@ -207,8 +209,21 @@ const {
             </NPopconfirm>
           )}
 
+          {(row.status === 'pending' || row.status === 'open') && row.apply_status === 1 && (
+            <NPopconfirm onPositiveClick={() => handlePrice(row)}>
+              {{
+                default: () => '确认设置卖出价格？',
+                trigger: () => (
+                  <NButton type="error" ghost size="small">
+                    预设卖出价
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          )}
+
           {/* 平仓按钮 - 只在状态为正常或锁定时显示，且申请状态为已中签 */}
-          {(row.status === 'normal' || row.status === 'locked') && row.apply_status === 1 && (
+          {(row.status === 'pending' || row.status === 'locked') && row.apply_status === 1 && (
             <NPopconfirm onPositiveClick={() => handleClose(row.id)}>
               {{
                 default: () => '确认平仓此订单吗？',
@@ -231,25 +246,48 @@ const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedR
   getData
 );
 
+const title = ref('')
+const model = ref({})
 // 操作函数
-function handleApprove(id: number) {
+function handleApprove(id: number, match_quantity: number) {
   // TODO: 实现通过功能
-  console.log('通过订单:', id);
+  if (!match_quantity) {
+    visible.value = true
+    title.value = '通过审核'
+    model.value = {
+      id,
+      match_quantity: 0,
+      apply_status: 1,
+    }
+    return
+  }
 }
 
 function handleReject(id: number) {
   // TODO: 实现不通过功能
-  console.log('不通过订单:', id);
+  OrderIPOLockAudit({ id, apply_status: 2 })
+}
+const priceText = "预设卖出价"
+async function handlePrice(data: object) {
+  visible.value = true
+  title.value = priceText
+  model.value = {
+    id:data.id,
+    price:data.close_price,
+  }
 }
 
-function handleLock(id: number) {
-  // TODO: 实现锁仓功能
-  console.log('锁仓订单:', id);
-}
-
-function handleUnlock(id: number) {
-  // TODO: 实现解锁功能
-  console.log('解锁订单:', id);
+async function handleLock(id: number) {
+  if (loading.value) return;
+  loading.value = true;
+  try {
+    await OrderIPOLock(id)
+    loading.value = false;
+    onDeleted();
+  } catch (error) {
+  } finally {
+    loading.value = false;
+  }
 }
 
 async function handleClose(id: number) {
@@ -257,12 +295,51 @@ async function handleClose(id: number) {
   loading.value = true;
   try {
     // TODO: 调用平仓API
-    console.log('平仓订单:', id);
+    await OrderClosed({ id })
     loading.value = false;
     onDeleted();
   } catch (error) {
   } finally {
     loading.value = false;
+  }
+}
+
+const btnLoading = ref(false);
+const visible = defineModel<boolean>('visible', {
+  default: false
+});
+
+function closeDrawer() {
+  btnLoading.value = false;
+  visible.value = false;
+}
+const errorObj = ref({})
+async function handleSubmit() {
+  errorObj.value = {};
+  if (title.value === priceText) {
+    if (isEmpty(model.value.price)) {
+      errorObj.value.price = '请输入价格';
+    }
+  } else {
+    if (isEmpty(model.value.match_quantity)) {
+      errorObj.value.match_quantity = '请输入数量';
+    }
+  }
+  if (Object.values(errorObj.value).some(item => item)) {
+    return;
+  }
+  btnLoading.value = true;
+  const action = title.value === priceText ? OrderIPOLockPrice : OrderIPOLockAudit;
+  try {
+    console.log(model.value)
+    await action(model.value);
+    window.$message?.success('操作成功');
+    getData()
+    closeDrawer();
+  } catch (error) {
+    errorObj.value = error;
+  } finally {
+    btnLoading.value = false;
   }
 }
 </script>
@@ -272,29 +349,28 @@ async function handleClose(id: number) {
     <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard title="IPO订单管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <TableHeaderOperation
-          v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
-          :loading="loading"
-          no-add
-          @add="handleAdd"
-          @refresh="getData"
-        />
+        <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
+          :loading="loading" no-add @add="handleAdd" @refresh="getData" />
       </template>
-      <NDataTable
-        v-model:checked-row-keys="checkedRowKeys"
-        :columns="columns"
-        :data="data"
-        size="small"
-        :flex-height="!appStore.isMobile"
-        :scroll-x="4000"
-        :loading="loading"
-        remote
-        :row-key="row => row.id"
-        :pagination="mobilePagination"
-        class="sm:h-full"
-      />
+      <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
+        :flex-height="!appStore.isMobile" :scroll-x="4000" :loading="loading" remote :row-key="row => row.id"
+        :pagination="mobilePagination" class="sm:h-full" />
     </NCard>
+    <NDrawer v-model:show="visible" display-directive="show" :width="360">
+      <NDrawerContent :title="title" :native-scrollbar="false" closable>
+        <MyForm all-required :error-obj="errorObj">
+          <MyFormItem v-if="priceText === title" v-model="model.price" label="请填写价格" prop-name="price" />
+          <MyFormItem v-if="priceText !== title" v-model="model.match_quantity" label="请填写数量"
+            prop-name="match_quantity" />
+        </MyForm>
+        <template #footer>
+          <NSpace :size="16">
+            <NButton :loading="btnLoading" @click="closeDrawer">取消</NButton>
+            <NButton type="primary" :loading="btnLoading" @click="handleSubmit">确定</NButton>
+          </NSpace>
+        </template>
+      </NDrawerContent>
+    </NDrawer>
   </div>
 </template>
 
