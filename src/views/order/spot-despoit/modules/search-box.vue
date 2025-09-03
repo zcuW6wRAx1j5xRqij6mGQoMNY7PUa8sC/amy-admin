@@ -14,10 +14,10 @@ const model = defineModel('model', { required: true });
 
 const statusOptions = [
   { label: '全部', value: null },
-  { label: '待处理', value: 'pending' },
-  { label: '已确认', value: 'confirmed' },
-  { label: '已拒绝', value: 'rejected' },
-  { label: '已取消', value: 'cancelled' }
+  { label: '待审核', value: 0 },
+  { label: '已拒绝', value: 1 },
+  { label: '已通过', value: 2 },
+  { label: '已结清', value: 3 }
 ];
 
 async function reset() {

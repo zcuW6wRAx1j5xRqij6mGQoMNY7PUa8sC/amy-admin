@@ -87,3 +87,13 @@ export function EtfOrderList(params: {
 }) {
   return request<any>({ url: '/api/admin/order/etf/list', params });
 }
+
+// ETF订单审核
+export interface EtfOrderAuditRequest {
+  id: number;
+  status: number; // 1拒绝 2通过
+}
+
+export function EtfOrderAudit(data: EtfOrderAuditRequest) {
+  return request<any>({ url: '/api/admin/order/etf/audit', method: 'post', data });
+}

@@ -255,6 +255,16 @@ export function CryptoDepositList(params: {
   return request<any>({ url: '/api/admin/order/crypto/deposit/list', params });
 }
 
+// 数字货币充值订单审核
+export interface CryptoDepositAuditRequest {
+  id: number;
+  status: number; // 1拒绝 2通过
+}
+
+export function CryptoDepositAudit(data: CryptoDepositAuditRequest) {
+  return request<any>({ url: '/api/admin/order/crypto/deposit/audit', method: 'post', data });
+}
+
 // 数字货币提现订单列表
 export function CryptoWithdrawList(params: {
   uid?: number;

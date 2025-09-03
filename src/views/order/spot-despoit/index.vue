@@ -1,6 +1,6 @@
 <script setup lang="tsx">
-import { NTag } from 'naive-ui';
-import { CryptoDepositList } from '@/service/api/crypto';
+import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { CryptoDepositAudit, CryptoDepositList } from '@/service/api/crypto';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
@@ -85,10 +85,10 @@ const {
       width: 100,
       render: row => {
         const statusMap = {
-          pending: { type: 'warning', text: '待处理' },
-          confirmed: { type: 'success', text: '已确认' },
-          rejected: { type: 'error', text: '已拒绝' },
-          cancelled: { type: 'info', text: '已取消' }
+          0: { type: 'warning', text: '待审核' },
+          1: { type: 'error', text: '已拒绝' },
+          2: { type: 'success', text: '已通过' },
+          3: { type: 'info', text: '已结清' }
         };
         const status = statusMap[row.status] || { type: 'default', text: '未知' };
         return <NTag type={status.type}>{status.text}</NTag>;
@@ -100,9 +100,62 @@ const {
       align: 'center',
       width: 200,
       render: row => <span class="text-xs">{row.coin?.deposit_address || '-'}</span>
+    },
+    {
+      key: 'actions',
+      title: '操作',
+      align: 'center',
+      width: 120,
+      fixed: 'right',
+      render: row => {
+        // 只有待审核状态的订单才显示审核按钮
+        if (row.status === 0) {
+          return (
+            <div class="flex-center gap-12px">
+              <NPopconfirm onPositiveClick={() => handleAudit(row.id, 2)} positiveText="确定" negativeText="取消">
+                {{
+                  trigger: () => (
+                    <NButton size="small" type="success">
+                      通过
+                    </NButton>
+                  ),
+                  default: () => '确定要通过这个充值订单吗？'
+                }}
+              </NPopconfirm>
+              <NPopconfirm onPositiveClick={() => handleAudit(row.id, 1)} positiveText="确定" negativeText="取消">
+                {{
+                  trigger: () => (
+                    <NButton size="small" type="error">
+                      拒绝
+                    </NButton>
+                  ),
+                  default: () => '确定要拒绝这个充值订单吗？'
+                }}
+              </NPopconfirm>
+            </div>
+          );
+        }
+        return <span>-</span>;
+      }
     }
   ]
 });
+
+// 处理审核操作
+async function handleAudit(orderId: number, type: 1 | 2) {
+  try {
+    await CryptoDepositAudit({
+      id: orderId,
+      status: type
+    });
+
+    const successMsg = type === 2 ? '审核通过成功' : '审核拒绝成功';
+    window.$message?.success(successMsg);
+    getData(); // 刷新列表
+  } catch (error: any) {
+    console.error('审核失败:', error);
+  }
+}
 </script>
 
 <template>
@@ -117,7 +170,7 @@ const {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="1600"
+        :scroll-x="1800"
         :loading="loading"
         remote
         :row-key="row => row.id"

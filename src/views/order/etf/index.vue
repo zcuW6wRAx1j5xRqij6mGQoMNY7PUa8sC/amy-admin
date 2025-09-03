@@ -1,6 +1,6 @@
 <script setup lang="tsx">
-import { NTag } from 'naive-ui';
-import { EtfOrderList } from '@/service/api/etf';
+import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { EtfOrderAudit, EtfOrderList } from '@/service/api/etf';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
@@ -108,9 +108,62 @@ const {
       width: 160,
       render: row => <span>{row.settlement_at || '-'}</span>
     },
-    { key: 'created_at', title: '创建时间', align: 'center', width: 160 }
+    { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
+    {
+      key: 'actions',
+      title: '操作',
+      align: 'center',
+      width: 120,
+      fixed: 'right',
+      render: row => {
+        // 只有待审核状态的订单才显示审核按钮
+        if (row.status === 0) {
+          return (
+            <div class="flex-center gap-12px">
+              <NPopconfirm onPositiveClick={() => handleAudit(row.id, 2)} positiveText="确定" negativeText="取消">
+                {{
+                  trigger: () => (
+                    <NButton size="small" type="success">
+                      通过
+                    </NButton>
+                  ),
+                  default: () => '确定要通过这个ETF订单吗？'
+                }}
+              </NPopconfirm>
+              <NPopconfirm onPositiveClick={() => handleAudit(row.id, 1)} positiveText="确定" negativeText="取消">
+                {{
+                  trigger: () => (
+                    <NButton size="small" type="error">
+                      拒绝
+                    </NButton>
+                  ),
+                  default: () => '确定要拒绝这个ETF订单吗？'
+                }}
+              </NPopconfirm>
+            </div>
+          );
+        }
+        return <span>-</span>;
+      }
+    }
   ]
 });
+
+// 处理审核操作
+async function handleAudit(orderId: number, type: 1 | 2) {
+  try {
+    await EtfOrderAudit({
+      id: orderId,
+      status: type
+    });
+
+    const successMsg = type === 2 ? '审核通过成功' : '审核拒绝成功';
+    window.$message?.success(successMsg);
+    getData(); // 刷新列表
+  } catch (error: any) {
+    console.error('审核失败:', error);
+  }
+}
 </script>
 
 <template>
@@ -126,7 +179,7 @@ const {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="1800"
+        :scroll-x="2000"
         :loading="loading"
         remote
         :row-key="row => row.id"
