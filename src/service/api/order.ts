@@ -39,14 +39,14 @@ export function OrderClosed(id: number) {
 }
 
 // IPO锁仓/解锁
-export function OrderIPOLock(id:number) {
+export function OrderIPOLock(id: number) {
   return request<any>({ url: '/api/admin/order/ipo/lock', method: 'POST', data: { id } });
 }
 
 export interface OrderIpoAuditRequest {
   id: number;
   apply_status: number;
-  match_quantity?: number
+  match_quantity?: number;
 }
 
 // ipo订单审核
@@ -264,12 +264,12 @@ export interface DepositOrderAuditRequest {
 
 // 充值订单列表
 export function DepositOrderList(params: DepositOrderSearchParams) {
-  return request<any>({ url: '/api/admin/order/despoit/list', params });
+  return request<any>({ url: '/api/admin/order/deposit/list', params });
 }
 
 // 充值订单审核
 export function DepositOrderAudit(data: DepositOrderAuditRequest) {
-  return request<any>({ url: '/api/admin/order/despoit/audit', method: 'POST', data });
+  return request<any>({ url: '/api/admin/order/deposit/audit', method: 'POST', data });
 }
 
 /**
