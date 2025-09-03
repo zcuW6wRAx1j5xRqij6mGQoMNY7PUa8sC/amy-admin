@@ -1,10 +1,9 @@
 <script setup lang="tsx">
 // import { ref } from 'vue';
-import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { NButton, NTag } from 'naive-ui';
 import { WalletLoanList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import { setBaseUrl } from '@/utils/utils';
 import OperateDrawer from './modules/operate-drawer.vue';
 import SearchBox from './modules/search-box.vue';
 
@@ -137,30 +136,27 @@ const {
       align: 'center',
       width: 160
     },
-
+    {
+      key: 'actions',
+      title: '操作',
+      align: 'center',
+      width: 120,
+      fixed: 'right',
+      render: row => (
+        <div class="flex-center gap-12px">
+          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+            设置
+          </NButton>
+        </div>
+      )
+    }
   ]
 });
 
-const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
+const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys } = useTableOperate(
   data,
   getData
 );
-
-// 删除
-async function handleDelete(id: number) {
-  if (loading.value) return;
-  loading.value = true;
-  try {
-    // 这里可以添加实际的删除API调用
-    window.$message?.success('删除成功');
-    loading.value = false;
-    onDeleted();
-  } catch (error) {
-    window.$message?.error('删除失败');
-  } finally {
-    loading.value = false;
-  }
-}
 
 function edit(_id: number) {
   handleEdit(_id);
@@ -198,7 +194,7 @@ function edit(_id: number) {
         v-model:visible="drawerVisible"
         :operate-type="operateType"
         :row-data="editingData"
-        @submitted="getDataByPage"
+        @submitted="getData"
       />
     </NCard>
   </div>

@@ -188,10 +188,12 @@ const routeMap: RouteMap = {
   "manage_role": "/manage/role",
   "order": "/order",
   "order_despoit": "/order/despoit",
+  "order_etf": "/order/etf",
   "order_futures": "/order/futures",
   "order_ipo": "/order/ipo",
   "order_otc": "/order/otc",
   "order_spot": "/order/spot",
+  "order_spot-despoit": "/order/spot-despoit",
   "order_spot-withdraw": "/order/spot-withdraw",
   "order_stock-withdraw": "/order/stock-withdraw",
   "order_tagesstrategie": "/order/tagesstrategie",
@@ -210,7 +212,8 @@ const routeMap: RouteMap = {
   "wallet_stock": "/wallet/stock",
   "website": "/website",
   "website_banner": "/website/banner",
-  "website_config-page": "/website/config-page"
+  "website_config-page": "/website/config-page",
+  "website_platform": "/website/platform"
 };
 
 /**

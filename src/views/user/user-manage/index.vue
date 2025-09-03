@@ -7,6 +7,7 @@ import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
 import UserEditDrawer from './modules/user-edit-drawer.vue';
+import UserCreateDrawer from './modules/user-create-drawer.vue';
 import ResetPasswordDrawer from './modules/reset-password-drawer.vue';
 
 const appStore = useAppStore();
@@ -103,7 +104,7 @@ const {
       key: 'actions',
       title: '操作',
       align: 'center',
-      width: 300,
+      width: 280,
       fixed: 'right',
       render: row => (
         <div class="flex-center gap-12px">
@@ -122,10 +123,10 @@ const {
   ]
 });
 
-const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
-  data,
-  getData
-);
+const { drawerVisible, editingData, handleEdit, checkedRowKeys } = useTableOperate(data, getData);
+
+// 创建用户抽屉相关
+const createUserDrawerVisible = ref(false);
 
 // 重置密码抽屉相关
 const resetPasswordDrawerVisible = ref(false);
@@ -134,6 +135,17 @@ const resetPasswordType = ref<'password' | 'trade-password'>('password');
 
 function edit(id: number) {
   handleEdit(id);
+}
+
+// 处理创建用户
+function handleCreateUser() {
+  createUserDrawerVisible.value = true;
+}
+
+// 处理创建用户提交成功
+function handleCreateUserSubmitted() {
+  createUserDrawerVisible.value = false;
+  getDataByPage(); // 刷新列表
 }
 
 // 重置密码
@@ -165,8 +177,7 @@ function handleResetPasswordSubmitted() {
           v-model:columns="columnChecks"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
-          no-add
-          @add="handleAdd"
+          @add="handleCreateUser"
           @refresh="getData"
         />
       </template>
@@ -184,6 +195,9 @@ function handleResetPasswordSubmitted() {
         class="sm:h-full"
       />
     </NCard>
+
+    <!-- 创建用户抽屉 -->
+    <UserCreateDrawer v-model:visible="createUserDrawerVisible" @submitted="handleCreateUserSubmitted" />
 
     <!-- 用户编辑抽屉 -->
     <UserEditDrawer v-model:visible="drawerVisible" :row-data="editingData" @submitted="getDataByPage" />

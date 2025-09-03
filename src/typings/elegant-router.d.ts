@@ -42,10 +42,12 @@ declare module "@elegant-router/types" {
     "manage_role": "/manage/role";
     "order": "/order";
     "order_despoit": "/order/despoit";
+    "order_etf": "/order/etf";
     "order_futures": "/order/futures";
     "order_ipo": "/order/ipo";
     "order_otc": "/order/otc";
     "order_spot": "/order/spot";
+    "order_spot-despoit": "/order/spot-despoit";
     "order_spot-withdraw": "/order/spot-withdraw";
     "order_stock-withdraw": "/order/stock-withdraw";
     "order_tagesstrategie": "/order/tagesstrategie";
@@ -65,6 +67,7 @@ declare module "@elegant-router/types" {
     "website": "/website";
     "website_banner": "/website/banner";
     "website_config-page": "/website/config-page";
+    "website_platform": "/website/platform";
   };
 
   /**
@@ -147,9 +150,11 @@ declare module "@elegant-router/types" {
     | "manage_menu"
     | "manage_role"
     | "order_despoit"
+    | "order_etf"
     | "order_futures"
     | "order_ipo"
     | "order_otc"
+    | "order_spot-despoit"
     | "order_spot-withdraw"
     | "order_spot"
     | "order_stock-withdraw"
@@ -166,6 +171,7 @@ declare module "@elegant-router/types" {
     | "wallet_stock"
     | "website_banner"
     | "website_config-page"
+    | "website_platform"
   >;
 
   /**

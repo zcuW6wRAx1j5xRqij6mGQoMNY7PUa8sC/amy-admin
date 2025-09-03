@@ -1,4 +1,4 @@
-import { request } from '../request';
+import { request } from '@/service/request';
 import type { CommIdPlader } from './typescript/comm-plader';
 
 export interface CryptoPostCoinPlader {
@@ -242,4 +242,40 @@ export function CryptoSymbolInfo(params: CommIdPlader) {
 // 删除symbol
 export function CryptoDelSymbol(params: CommIdPlader) {
   return request<any>({ url: '/api/admin/crypto/symbol/delete', params });
+}
+
+// 数字货币充值订单列表
+export function CryptoDepositList(params: {
+  uid?: number;
+  coin_id?: number;
+  status?: string;
+  page?: number;
+  size?: number;
+}) {
+  return request<any>({ url: '/api/admin/order/crypto/deposit/list', params });
+}
+
+// 数字货币提现订单列表
+export function CryptoWithdrawList(params: {
+  uid?: number;
+  coin_id?: number;
+  status?: string;
+  page?: number;
+  size?: number;
+}) {
+  return request<any>({ url: '/api/admin/order/crypto/withdraw/list', params });
+}
+
+// 币种列表
+export function CoinList(params: {
+  status?: number;
+  page?: number;
+  size?: number;
+}) {
+  return request<any>({ url: '/api/admin/coin/list', params });
+}
+
+// 币种详情
+export function CoinDetail(params: { id: number }) {
+  return request<any>({ url: '/api/admin/coin/detail', params });
 }

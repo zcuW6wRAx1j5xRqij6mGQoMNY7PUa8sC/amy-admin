@@ -35,6 +35,57 @@ export interface UserLevelRequest {
 }
 
 /**
+ * 创建用户请求接口
+ */
+export interface UserCreateRequest {
+  /**
+   * 注册类型
+   */
+  account_type: 'email' | 'phone';
+  /**
+   * 邮箱，根据注册类型展示
+   */
+  email?: string;
+  /**
+   * 邀请码
+   */
+  invite_code: string;
+  /**
+   * 密码
+   */
+  password: string;
+  /**
+   * 手机号码，根据注册类型展示
+   */
+  phone?: number;
+  /**
+   * 姓名
+   */
+  name?: string;
+  /**
+   * 昵称
+   */
+  nickname?: string;
+  /**
+   * 上级ID
+   */
+  parent_id?: number;
+  /**
+   * 用户等级ID
+   */
+  level_id?: number;
+  /**
+   * 状态，1-正常，0-禁用
+   */
+  status?: number;
+  /**
+   * 备注
+   */
+  remark?: string;
+  [property: string]: any;
+}
+
+/**
  * 用户更新请求接口
  */
 export interface UserUpdateRequest {
@@ -141,6 +192,11 @@ export function fetchGetUserInfo(params: CommIdPlader) {
 // 用户更新
 export function fetchUpdateUser(data: UserUpdateRequest) {
   return request({ url: '/api/admin/users/user/update', method: 'post', data });
+}
+
+// 创建用户
+export function fetchCreateUser(data: UserCreateRequest) {
+  return request({ url: '/api/admin/users/user/create', method: 'post', data });
 }
 
 // 重置密码

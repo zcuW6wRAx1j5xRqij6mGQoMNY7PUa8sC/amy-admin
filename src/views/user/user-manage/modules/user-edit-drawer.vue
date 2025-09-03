@@ -48,7 +48,6 @@ function createDefaultModel() {
 }
 
 async function handleInitModel() {
-  errorObj.value = {};
   ruleForm.value = createDefaultModel();
 
   if (props.rowData?.id) {
@@ -98,12 +97,6 @@ const kycOptions = [
   { label: '是', value: 1 }
 ];
 
-const roleOptions = [
-  { label: '普通用户', value: 1 },
-  { label: 'VIP用户', value: 2 },
-  { label: '管理员', value: 3 }
-];
-
 async function handleSubmit() {
   errorObj.value = {};
   btnLoading.value = true;
@@ -119,11 +112,7 @@ async function handleSubmit() {
     closeDrawer();
     emit('submitted');
   } catch (error: any) {
-    if (error?.message) {
-      window.$message?.error(error.message);
-    } else {
-      window.$message?.error('更新失败');
-    }
+    errorObj.value = error;
     console.error('更新用户失败:', error);
   } finally {
     btnLoading.value = false;
@@ -142,7 +131,7 @@ watch(visible, () => {
 <template>
   <NDrawer v-model:show="visible" display-directive="show" :width="500">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
-      <MyForm all-required :error-obj="errorObj">
+      <MyForm :error-obj="errorObj">
         <MyFormItem v-model="ruleForm.name" label="姓名" prop-name="name" />
         <MyFormItem v-model="ruleForm.email" label="邮箱" prop-name="email" />
         <MyFormItem v-model="ruleForm.phone" label="手机号" prop-name="phone" />

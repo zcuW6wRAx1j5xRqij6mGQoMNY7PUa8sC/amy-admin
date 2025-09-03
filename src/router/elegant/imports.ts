@@ -35,9 +35,11 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   manage_menu: () => import("@/views/manage/menu/index.vue"),
   manage_role: () => import("@/views/manage/role/index.vue"),
   order_despoit: () => import("@/views/order/despoit/index.vue"),
+  order_etf: () => import("@/views/order/etf/index.vue"),
   order_futures: () => import("@/views/order/futures/index.vue"),
   order_ipo: () => import("@/views/order/ipo/index.vue"),
   order_otc: () => import("@/views/order/otc/index.vue"),
+  "order_spot-despoit": () => import("@/views/order/spot-despoit/index.vue"),
   "order_spot-withdraw": () => import("@/views/order/spot-withdraw/index.vue"),
   order_spot: () => import("@/views/order/spot/index.vue"),
   "order_stock-withdraw": () => import("@/views/order/stock-withdraw/index.vue"),
@@ -54,4 +56,5 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   wallet_stock: () => import("@/views/wallet/stock/index.vue"),
   website_banner: () => import("@/views/website/banner/index.vue"),
   "website_config-page": () => import("@/views/website/config-page/index.vue"),
+  website_platform: () => import("@/views/website/platform/index.vue"),
 };

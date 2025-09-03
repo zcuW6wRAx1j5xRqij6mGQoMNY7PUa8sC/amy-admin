@@ -88,7 +88,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/etf',
     component: 'layout.base',
     meta: {
-      title: 'ETF管理'
+      title: 'ETF管理',
+      icon: 'mdi:trending-up'
     },
     children: [
       {
@@ -96,7 +97,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/etf/config',
         component: 'view.etf_config',
         meta: {
-          title: 'ETF配置'
+          title: 'ETF配置',
+          icon: 'mdi:tune'
         }
       },
       {
@@ -104,7 +106,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/etf/product',
         component: 'view.etf_product',
         meta: {
-          title: 'ETF产品'
+          title: 'ETF产品',
+          icon: 'mdi:package-variant'
         }
       }
     ]
@@ -246,6 +249,15 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
+        name: 'order_etf',
+        path: '/order/etf',
+        component: 'view.order_etf',
+        meta: {
+          title: 'ETF订单',
+          icon: 'mdi:clipboard-text'
+        }
+      },
+      {
         name: 'order_futures',
         path: '/order/futures',
         component: 'view.order_futures',
@@ -279,6 +291,15 @@ export const generatedRoutes: GeneratedRoute[] = [
         meta: {
           title: '现货订单',
           icon: 'mdi:tag'
+        }
+      },
+      {
+        name: 'order_spot-despoit',
+        path: '/order/spot-despoit',
+        component: 'view.order_spot-despoit',
+        meta: {
+          title: '数字货币充值订单',
+          icon: 'mdi:bitcoin'
         }
       },
       {
@@ -458,6 +479,15 @@ export const generatedRoutes: GeneratedRoute[] = [
         meta: {
           title: '配置管理',
           icon: 'mdi:tune'
+        }
+      },
+      {
+        name: 'website_platform',
+        path: '/website/platform',
+        component: 'view.website_platform',
+        meta: {
+          title: '平台设置',
+          icon: 'mdi:server'
         }
       }
     ]

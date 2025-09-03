@@ -76,3 +76,14 @@ export function EtfSettingUpdate(data: EtfSettingRequest & { id: number }) {
 export function EtfSettingDelete(params: { id: number }) {
   return request<any>({ url: '/api/admin/etf/setting/delete', params });
 }
+
+// ETF订单列表
+export function EtfOrderList(params: {
+  uid?: number;
+  product_id?: number;
+  status?: number;
+  page?: number;
+  size?: number;
+}) {
+  return request<any>({ url: '/api/admin/order/etf/list', params });
+}

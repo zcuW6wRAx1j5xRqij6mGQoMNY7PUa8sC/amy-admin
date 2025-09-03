@@ -9,6 +9,15 @@ export function FlowStockList(params: CommListPlader) {
 export function WalletStockList(params: CommListPlader) {
   return request<any>({ url: '/api/admin/wallet/stock/list', params });
 }
+
+// 股票钱包金额变动
+export function WalletStockFundChange(data: {
+  id: number;
+  amount: number;
+  type: string;
+}) {
+  return request<any>({ url: '/api/admin/wallet/stock/fund', method: 'post', data });
+}
 // 合约钱包列表
 export function WalletFuturesList(params: CommListPlader) {
   return request<any>({ url: '/api/admin/wallet/crypto-futures/list', params });
@@ -24,6 +33,15 @@ export function FlowLoanList(params: CommListPlader) {
 // 贷款钱包列表
 export function WalletLoanList(params: CommListPlader) {
   return request<any>({ url: '/api/admin/wallet/loan/list', params });
+}
+
+// 贷款钱包设置
+export function WalletLoanSet(data: {
+  id: number;
+  amount_total: number;
+  status: 'enabled' | 'disabled';
+}) {
+  return request<any>({ url: '/api/admin/wallet/loan/set', method: 'post', data });
 }
 // 合约钱包
 export function FlowFuturesList(params: CommListPlader) {

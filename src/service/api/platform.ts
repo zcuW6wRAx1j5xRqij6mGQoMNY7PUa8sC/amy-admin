@@ -1,39 +1,42 @@
-import { request } from "../request"
-import { type CommListPlader, type CommIdPlader } from "./typescript/comm-plader"
+import { request } from '@/service/request';
 
-/**
- * 平台配置项
- */
-export interface SetFormPlader {
-    id?:string;
-    group?: string; //配置分组
-    key?: string; //配置键
-    value?: string; //配置值
-    value_type?: string; //string, integer, boolean, json
+// 平台设置列表
+export function PlatformSettingList(params: {
+  group?: string;
+  key?: string;
+  page?: number;
+  size?: number;
+}) {
+  return request<any>({ url: '/api/admin/platform/setting/list', params });
 }
 
-// 配置管理列表
-export function PlatFormConfigList(params:CommListPlader) {
-    return request<any>({url:'/api/admin/platform/config/list', params})
-}
-// 添加管理
-export function PlatCreateFormConfig(data:SetFormPlader) {
-    return request<any>({url:'/api/admin/platform/config/create', data})
-}
-// 修改管理
-export function PlatUpdateFormConfig(data:SetFormPlader) {
-    return request<any>({url:'/api/admin/platform/config/update', data})
-}
-// 管理详情
-export function PlatFormConfigInfo(params:CommIdPlader) {
-    return request<any>({url:'/api/admin/platform/config/detail', params})
-}
-// 删除管理
-export function PlatDeleteFormConfig(params:CommIdPlader) {
-    return request<any>({url:'/api/admin/platform/config/delete', params})
+// 平台设置详情
+export function PlatformSettingDetail(params: { id: number }) {
+  return request<any>({ url: '/api/admin/platform/setting/detail', params });
 }
 
-// banner
-export function PlatBannerList(params: CommListPlader) {
-    return request<any>({url:'/api/admin/banner/list', params})
+// 创建平台设置
+export function PlatformSettingCreate(data: {
+  group: string;
+  key: string;
+  name: string;
+  value: string;
+}) {
+  return request<any>({ url: '/api/admin/platform/setting/create', method: 'post', data });
+}
+
+// 更新平台设置
+export function PlatformSettingUpdate(data: {
+  id: number;
+  group: string;
+  key: string;
+  name: string;
+  value: string;
+}) {
+  return request<any>({ url: '/api/admin/platform/setting/update', method: 'post', data });
+}
+
+// 删除平台设置
+export function PlatformSettingDelete(params: { id: number }) {
+  return request<any>({ url: '/api/admin/platform/setting/delete', params });
 }
