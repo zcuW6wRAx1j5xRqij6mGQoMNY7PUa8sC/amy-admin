@@ -84,6 +84,32 @@ export const generatedRoutes: GeneratedRoute[] = [
     ]
   },
   {
+    name: 'etf',
+    path: '/etf',
+    component: 'layout.base',
+    meta: {
+      title: 'ETF管理'
+    },
+    children: [
+      {
+        name: 'etf_config',
+        path: '/etf/config',
+        component: 'view.etf_config',
+        meta: {
+          title: 'ETF配置'
+        }
+      },
+      {
+        name: 'etf_product',
+        path: '/etf/product',
+        component: 'view.etf_product',
+        meta: {
+          title: 'ETF产品'
+        }
+      }
+    ]
+  },
+  {
     name: 'flow',
     path: '/flow',
     component: 'layout.base',

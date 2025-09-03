@@ -25,6 +25,9 @@ declare module "@elegant-router/types" {
     "crypto_futures": "/crypto/futures";
     "crypto_spot": "/crypto/spot";
     "crypto_symbol": "/crypto/symbol";
+    "etf": "/etf";
+    "etf_config": "/etf/config";
+    "etf_product": "/etf/product";
     "flow": "/flow";
     "flow_futures": "/flow/futures";
     "flow_loan": "/flow/loan";
@@ -97,6 +100,7 @@ declare module "@elegant-router/types" {
     | "404"
     | "500"
     | "crypto"
+    | "etf"
     | "flow"
     | "home"
     | "iframe-page"
@@ -132,6 +136,8 @@ declare module "@elegant-router/types" {
     | "crypto_futures"
     | "crypto_spot"
     | "crypto_symbol"
+    | "etf_config"
+    | "etf_product"
     | "flow_futures"
     | "flow_loan"
     | "flow_spot"
