@@ -37,13 +37,6 @@ const {
       fixed: 'left'
     },
     {
-      key: 'name',
-      title: '股票名称',
-      align: 'center',
-      width: 80,
-      fixed: 'left'
-    },
-    {
       key: 'company_id',
       title: '企业ID',
       align: 'center',

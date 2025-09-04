@@ -44,7 +44,6 @@ const ruleForm = ref<IpoStockRequest>(createDefaultModel());
 function createDefaultModel(): IpoStockRequest {
   return {
     id: undefined,
-    name: '',
     company_id: '',
     company_name: '',
     buy_price: 0,
@@ -93,7 +92,6 @@ const statusOptions = [
 function validateForm() {
   const errors: Record<string, string> = {};
   const requiredFields = [
-    { key: 'name', message: '请输入股票名称' },
     { key: 'buy_price', message: '请输入购买价格' },
     { key: 'apply_max_quantity', message: '请输入申请最大量' },
     { key: 'apply_min_quantity', message: '请输入申请最小量' },
@@ -175,7 +173,6 @@ watch(visible, () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="500">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm all-required :error-obj="errorObj">
-        <MyFormItem v-model="ruleForm.name" label="股票名称" prop-name="name" />
         <MyFormItem v-model="ruleForm.buy_price" label="购买价格" prop-name="buy_price" />
         <MyFormItem v-model="ruleForm.company_id" label="企业ID" prop-name="company_id" />
         <MyFormItem v-model="ruleForm.company_name" label="企业名称" prop-name="company_name" />
