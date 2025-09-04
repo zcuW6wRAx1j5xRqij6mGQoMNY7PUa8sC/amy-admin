@@ -38,6 +38,7 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   order_etf: () => import("@/views/order/etf/index.vue"),
   order_futures: () => import("@/views/order/futures/index.vue"),
   order_ipo: () => import("@/views/order/ipo/index.vue"),
+  order_loan: () => import("@/views/order/loan/index.vue"),
   order_otc: () => import("@/views/order/otc/index.vue"),
   "order_spot-despoit": () => import("@/views/order/spot-despoit/index.vue"),
   "order_spot-withdraw": () => import("@/views/order/spot-withdraw/index.vue"),

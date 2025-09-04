@@ -191,6 +191,7 @@ const routeMap: RouteMap = {
   "order_etf": "/order/etf",
   "order_futures": "/order/futures",
   "order_ipo": "/order/ipo",
+  "order_loan": "/order/loan",
   "order_otc": "/order/otc",
   "order_spot": "/order/spot",
   "order_spot-despoit": "/order/spot-despoit",

@@ -278,7 +278,8 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
         authStore.resetStore();
         return;
       }
-      const home = routes[0].name;
+      const filterRoutes = routes[0]?.children;
+      const home = filterRoutes[0].name;
       addAuthRoutes(routes);
 
       handleConstantAndAuthRoutes();

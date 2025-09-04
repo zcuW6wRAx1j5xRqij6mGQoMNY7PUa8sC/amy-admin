@@ -458,3 +458,169 @@ export function SpotWithdrawList(params: SpotWithdrawSearchParams) {
 export function SpotWithdrawAudit(data: SpotWithdrawAuditRequest) {
   return request<any>({ url: '/api/admin/order/spot/withdraw/audit', method: 'POST', data });
 }
+
+/**
+ * 贷款订单信息
+ */
+export interface LoanOrderInfo {
+  /**
+   * 管理员ID
+   */
+  admin_id?: number;
+  /**
+   * 申请金额
+   */
+  apply_amount?: number;
+  /**
+   * 审批金额
+   */
+  approved_amount?: number;
+  /**
+   * 审批时间
+   */
+  approved_at?: string;
+  /**
+   * 取消时间
+   */
+  cancelled_at?: string;
+  /**
+   * 完成时间
+   */
+  completed_at?: string;
+  created_at?: string;
+  deleted_at?: string;
+  /**
+   * 待还总金额
+   */
+  due_amount: number;
+  id?: number;
+  /**
+   * 利率%
+   */
+  interest_rate?: number;
+  /**
+   * 订单编号
+   */
+  order_no?: string;
+  /**
+   * 拒绝原因
+   */
+  reject_reason?: string;
+  /**
+   * 取消时间
+   */
+  rejected_at?: string;
+  /**
+   * 备注
+   */
+  remark?: string;
+  /**
+   * 还款金额
+   */
+  repayment_amount?: number;
+  /**
+   * 还款状态
+   */
+  repayment_status?: 'unpaid' | 'partial' | 'paid' | 'overdue' | 'cancelled' | 'written_off';
+  /**
+   * 状态
+   */
+  status?: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'completed';
+  /**
+   * 用户id
+   */
+  uid?: number;
+  updated_at?: string;
+  user: UserInfo;
+  [property: string]: any;
+}
+
+/**
+ * 贷款订单搜索参数
+ */
+export interface LoanOrderSearchParams extends CommListPlader {
+  uid?: string;
+  status?: string | null;
+  repayment_status?: string | null;
+}
+
+/**
+ * 贷款订单审核请求
+ */
+export interface LoanOrderAuditRequest {
+  /**
+   * 审批金额
+   */
+  approved_amount?: number;
+  /**
+   * ID
+   */
+  id?: number;
+  /**
+   * 利率%
+   */
+  interest_rate?: number;
+  /**
+   * 拒绝原因
+   */
+  reject_reason?: string;
+  /**
+   * 备注
+   */
+  remark?: string;
+  /**
+   * 状态
+   */
+  status?: 'approved' | 'rejected';
+  [property: string]: any;
+}
+
+// 贷款订单列表
+export function LoanOrderList(params: LoanOrderSearchParams) {
+  return request<any>({ url: '/api/admin/order/loan/list', params });
+}
+
+// 贷款订单审核
+export function LoanOrderAudit(data: LoanOrderAuditRequest) {
+  return request<any>({ url: '/api/admin/order/loan/audit', method: 'POST', data });
+}
+
+/**
+ * 贷款订单还款状态更新请求
+ */
+export interface LoanRepaymentStatusRequest {
+  /**
+   * ID
+   */
+  id: number;
+  /**
+   * 还款状态
+   */
+  status: 'paid' | 'overdue' | 'cancelled' | 'written_off';
+  [property: string]: any;
+}
+
+// 贷款订单还款状态更新
+export function LoanRepaymentStatusUpdate(data: LoanRepaymentStatusRequest) {
+  return request<any>({ url: '/api/admin/order/loan/repayment-status', method: 'POST', data });
+}
+
+/**
+ * 贷款订单还款请求
+ */
+export interface LoanRepaymentRequest {
+  /**
+   * 金额
+   */
+  amount: number;
+  /**
+   * ID 编号，ID 编号
+   */
+  id: number;
+  [property: string]: any;
+}
+
+// 贷款订单还款
+export function LoanRepayment(data: LoanRepaymentRequest) {
+  return request<any>({ url: '/api/admin/order/loan/repayment', method: 'POST', data });
+}

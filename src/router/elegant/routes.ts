@@ -276,6 +276,15 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
+        name: 'order_loan',
+        path: '/order/loan',
+        component: 'view.order_loan',
+        meta: {
+          title: '贷款订单',
+          icon: 'mdi:candy'
+        }
+      },
+      {
         name: 'order_otc',
         path: '/order/otc',
         component: 'view.order_otc',
