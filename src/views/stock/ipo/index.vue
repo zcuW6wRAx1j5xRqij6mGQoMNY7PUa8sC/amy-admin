@@ -3,6 +3,7 @@ import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { StockDelIpo, StockIpoList } from '@/service/api/stock';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
+import type { IpoStock } from '@/typings/stock';
 import OperateDrawer from './modules/operate-drawer.vue';
 import SearchBox from './modules/search-box.vue';
 
@@ -59,91 +60,91 @@ const {
       title: '购买价格',
       align: 'center',
       width: 120,
-      render: row => <span>{row.apply_price || 0}</span>
+      render: (row: IpoStock) => <span>{row.buy_price || 0}</span>
     },
     {
       key: 'apply_price',
       title: '发行价格',
       align: 'center',
       width: 120,
-      render: row => <span>{row.apply_price || 0}</span>
+      render: (row: IpoStock) => <span>{row.apply_price || 0}</span>
     },
     {
       key: 'close_price',
       title: '平仓价格',
       align: 'center',
       width: 120,
-      render: row => <span>{row.close_price || 0}</span>
+      render: (row: IpoStock) => <span>{row.close_price || 0}</span>
     },
     {
       key: 'apply_min_quantity',
       title: '申请最小量',
       align: 'center',
       width: 120,
-      render: row => <span>{row.apply_min_quantity || 0}</span>
+      render: (row: IpoStock) => <span>{row.apply_min_quantity || 0}</span>
     },
     {
       key: 'apply_max_quantity',
       title: '申请最大量',
       align: 'center',
       width: 120,
-      render: row => <span>{row.apply_max_quantity || 0}</span>
+      render: (row: IpoStock) => <span>{row.apply_max_quantity || 0}</span>
     },
     {
       key: 'issue_quantity',
       title: '发行数量',
       align: 'center',
       width: 120,
-      render: row => <span>{row.issue_quantity || 0}</span>
+      render: (row: IpoStock) => <span>{row.issue_quantity || 0}</span>
     },
     {
       key: 'sold_quantity',
       title: '已售数量',
       align: 'center',
       width: 120,
-      render: row => <span>{row.sold_quantity || 0}</span>
+      render: (row: IpoStock) => <span>{row.sold_quantity || 0}</span>
     },
     {
       key: 'published_at',
       title: '上市时间',
       align: 'center',
       width: 120,
-      render: row => <span>{row.published_at || '-'}</span>
+      render: (row: IpoStock) => <span>{row.published_at || '-'}</span>
     },
     {
       key: 'open_fee',
       title: '开仓手续费%',
       align: 'center',
       width: 120,
-      render: row => <span class="text-red-600">{row.open_fee || 0}%</span>
+      render: (row: IpoStock) => <span class="text-red-600">{row.open_fee || 0}%</span>
     },
     {
       key: 'close_fee',
       title: '平仓手续费%',
       align: 'center',
       width: 120,
-      render: row => <span class="text-red-600">{row.close_fee || 0}%</span>
+      render: (row: IpoStock) => <span class="text-red-600">{row.close_fee || 0}%</span>
     },
     {
       key: 'apply_start_at',
       title: '开始时间',
       align: 'center',
       width: 160,
-      render: row => <span>{row.apply_start_at || '-'}</span>
+      render: (row: IpoStock) => <span>{row.apply_start_at || '-'}</span>
     },
     {
       key: 'apply_end_at',
       title: '结束时间',
       align: 'center',
       width: 160,
-      render: row => <span>{row.apply_end_at || '-'}</span>
+      render: (row: IpoStock) => <span>{row.apply_end_at || '-'}</span>
     },
     {
       key: 'status',
       title: '状态',
       align: 'center',
       width: 100,
-      render: row => {
+      render: (row: IpoStock) => {
         const type = row.status === 1 ? 'success' : 'error';
         const text = row.status === 1 ? '开启' : '关闭';
         return <NTag type={type}>{text}</NTag>;
@@ -155,12 +156,12 @@ const {
       align: 'center',
       width: 120,
       fixed: 'right',
-      render: row => (
+      render: (row: IpoStock) => (
         <div class="flex-center gap-12px">
-          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+          <NButton type="primary" ghost size="small" onClick={() => edit(row.id!)}>
             编辑
           </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+          <NPopconfirm onPositiveClick={() => handleDelete(row.id!)}>
             {{
               default: () => '确认删除吗？',
               trigger: () => (
@@ -176,10 +177,8 @@ const {
   ]
 });
 
-const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
-  data,
-  getData
-);
+const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } =
+  useTableOperate<IpoStock>(data, getData);
 
 // 删除
 async function handleDelete(id: number) {
@@ -230,7 +229,7 @@ function edit(id: number) {
       <OperateDrawer
         v-model:visible="drawerVisible"
         :operate-type="operateType"
-        :row-data="editingData"
+        :row-data="editingData || undefined"
         @submitted="getDataByPage"
       />
     </NCard>

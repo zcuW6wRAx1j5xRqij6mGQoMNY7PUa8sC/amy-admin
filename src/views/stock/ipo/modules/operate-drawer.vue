@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue';
 import dayjs from 'dayjs';
 import { StockCreateIpo, StockIpoInfo, StockUpdateIpo } from '@/service/api/stock';
 import { isEmpty } from '@/utils/is';
+import type { IpoStock, IpoStockRequest } from '@/typings/stock';
 
 defineOptions({
   name: 'IpoOperateDrawer'
@@ -12,7 +13,7 @@ interface Props {
   /** the type of operation */
   operateType: NaiveUI.TableOperateType;
   /** the edit row data */
-  rowData?: any;
+  rowData?: IpoStock;
 }
 
 const props = defineProps<Props>();
@@ -27,6 +28,9 @@ const visible = defineModel<boolean>('visible', {
   default: false
 });
 
+const btnLoading = ref(false);
+const errorObj = ref<Record<string, string>>({});
+
 const title = computed(() => {
   const titles: Record<NaiveUI.TableOperateType, string> = {
     add: '新增IPO股票',
@@ -35,23 +39,25 @@ const title = computed(() => {
   return titles[props.operateType];
 });
 
-const ruleForm = ref(createDefaultModel());
+const ruleForm = ref<IpoStockRequest>(createDefaultModel());
 
-function createDefaultModel() {
+function createDefaultModel(): IpoStockRequest {
   return {
     id: undefined,
-    apply_max_quantity: 0,
-    apply_min_quantity: 0,
-    apply_price: 0,
-    close_fee: 0,
-    close_price: 0,
+    name: '',
     company_id: '',
     company_name: '',
-    apply_end_at: null,
-    apply_start_at: null,
-    published_at: null,
+    buy_price: 0,
+    apply_price: 0,
+    close_price: 0,
+    apply_min_quantity: 0,
+    apply_max_quantity: 0,
     issue_quantity: 0,
     open_fee: 0,
+    close_fee: 0,
+    apply_start_at: null,
+    apply_end_at: null,
+    published_at: null,
     status: 0
   };
 }
@@ -79,59 +85,71 @@ function closeDrawer() {
   visible.value = false;
 }
 
-const btnLoading = ref(false);
-const errorObj = ref<Record<string, string>>({});
-
 const statusOptions = [
   { label: '关闭', value: 0 },
   { label: '开启', value: 1 }
 ];
 
+function validateForm() {
+  const errors: Record<string, string> = {};
+  const requiredFields = [
+    { key: 'name', message: '请输入股票名称' },
+    { key: 'buy_price', message: '请输入购买价格' },
+    { key: 'apply_max_quantity', message: '请输入申请最大量' },
+    { key: 'apply_min_quantity', message: '请输入申请最小量' },
+    { key: 'apply_price', message: '请输入申请价格' },
+    { key: 'close_fee', message: '请输入平仓手续费%' },
+    { key: 'close_price', message: '请输入平仓价格' },
+    { key: 'open_fee', message: '请输入开仓手续费%' },
+    { key: 'company_id', message: '请输入企业ID' },
+    { key: 'company_name', message: '请输入企业名称' },
+    { key: 'issue_quantity', message: '请输入发行数量' }
+  ];
+
+  requiredFields.forEach(({ key, message }) => {
+    if (isEmpty(ruleForm.value[key as keyof IpoStockRequest])) {
+      errors[key] = message;
+    }
+  });
+
+  return errors;
+}
+
 async function handleSubmit() {
-  errorObj.value = {};
-  if (isEmpty(ruleForm.value.apply_max_quantity)) {
-    errorObj.value.apply_max_quantity = '请输入申请最大量';
-  }
-  if (isEmpty(ruleForm.value.apply_min_quantity)) {
-    errorObj.value.apply_min_quantity = '请输入申请最小量';
-  }
-  if (isEmpty(ruleForm.value.apply_price)) {
-    errorObj.value.apply_price = '请输入申请价格';
-  }
-  if (isEmpty(ruleForm.value.close_fee)) {
-    errorObj.value.close_fee = '请输入平仓手续费%';
-  }
-  if (isEmpty(ruleForm.value.close_price)) {
-    errorObj.value.close_price = '请输入平仓价格';
-  }
-  if (isEmpty(ruleForm.value.open_fee)) {
-    errorObj.value.open_fee = '请输入开仓手续费%';
-  }
-  if (isEmpty(ruleForm.value.company_id)) {
-    errorObj.value.company_id = '请输入企业ID';
-  }
-  if (isEmpty(ruleForm.value.company_name)) {
-    errorObj.value.company_name = '请输入企业名称';
-  }
-  if (isEmpty(ruleForm.value.issue_quantity)) {
-    errorObj.value.issue_quantity = '请输入发行数量';
-  }
+  errorObj.value = validateForm();
 
   if (Object.values(errorObj.value).some(item => item)) {
     return;
   }
   btnLoading.value = true;
   const action = ruleForm.value.id ? StockUpdateIpo : StockCreateIpo;
-  if (ruleForm.value.apply_end_at) {
-    ruleForm.value.apply_end_at = dayjs(ruleForm.value.apply_end_at).format('YYYY-MM-DD HH:mm:ss');
+
+  // 准备提交数据，确保必填字段不为undefined
+  const submitData = {
+    ...ruleForm.value,
+    apply_price: ruleForm.value.apply_price || 0,
+    apply_min_quantity: ruleForm.value.apply_min_quantity || 0,
+    apply_max_quantity: ruleForm.value.apply_max_quantity || 0,
+    close_price: ruleForm.value.close_price || 0,
+    open_fee: ruleForm.value.open_fee || 0,
+    close_fee: ruleForm.value.close_fee || 0,
+    issue_quantity: ruleForm.value.issue_quantity || 0,
+    status: ruleForm.value.status || 0,
+    apply_start_at: ruleForm.value.apply_start_at || '',
+    apply_end_at: ruleForm.value.apply_end_at || '',
+    published_at: ruleForm.value.published_at || ''
+  };
+
+  if (submitData.apply_end_at) {
+    submitData.apply_end_at = dayjs(submitData.apply_end_at).format('YYYY-MM-DD HH:mm:ss');
   }
-  if (ruleForm.value.apply_start_at) {
-    ruleForm.value.apply_start_at = dayjs(ruleForm.value.apply_start_at).format('YYYY-MM-DD HH:mm:ss');
+  if (submitData.apply_start_at) {
+    submitData.apply_start_at = dayjs(submitData.apply_start_at).format('YYYY-MM-DD HH:mm:ss');
   }
-  if (ruleForm.value.published_at) {
-    ruleForm.value.published_at = dayjs(ruleForm.value.published_at).format('YYYY-MM-DD HH:mm:ss');
+  if (submitData.published_at) {
+    submitData.published_at = dayjs(submitData.published_at).format('YYYY-MM-DD HH:mm:ss');
   }
-  action(ruleForm.value)
+  action(submitData)
     .then(() => {
       window.$message?.success('操作成功');
       closeDrawer();
@@ -157,6 +175,8 @@ watch(visible, () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="500">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm all-required :error-obj="errorObj">
+        <MyFormItem v-model="ruleForm.name" label="股票名称" prop-name="name" />
+        <MyFormItem v-model="ruleForm.buy_price" label="购买价格" prop-name="buy_price" />
         <MyFormItem v-model="ruleForm.company_id" label="企业ID" prop-name="company_id" />
         <MyFormItem v-model="ruleForm.company_name" label="企业名称" prop-name="company_name" />
         <MyFormItem v-model="ruleForm.apply_price" label="申请价格" prop-name="apply_price" />
