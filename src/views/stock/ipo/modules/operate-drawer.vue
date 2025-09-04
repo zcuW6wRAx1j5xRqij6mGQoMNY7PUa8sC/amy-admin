@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import dayjs from 'dayjs';
 import { StockCreateIpo, StockIpoInfo, StockUpdateIpo } from '@/service/api/stock';
 import { isEmpty } from '@/utils/is';
 
@@ -44,16 +45,14 @@ function createDefaultModel() {
     apply_price: 0,
     close_fee: 0,
     close_price: 0,
-    company_id: "",
-    company_name: "",
+    company_id: '',
+    company_name: '',
     apply_end_at: null,
     apply_start_at: null,
     published_at: null,
     issue_quantity: 0,
-    name: "",
     open_fee: 0,
-    status: 0,
-    stock_id: 0,
+    status: 0
   };
 }
 
@@ -108,17 +107,11 @@ async function handleSubmit() {
   if (isEmpty(ruleForm.value.open_fee)) {
     errorObj.value.open_fee = '请输入开仓手续费%';
   }
-  if (isEmpty(ruleForm.value.stock_id)) {
-    errorObj.value.stock_id = '请输入股票ID';
-  }
-  if(isEmpty(ruleForm.value.company_id)) {
+  if (isEmpty(ruleForm.value.company_id)) {
     errorObj.value.company_id = '请输入企业ID';
   }
   if (isEmpty(ruleForm.value.company_name)) {
     errorObj.value.company_name = '请输入企业名称';
-  }
-  if (isEmpty(ruleForm.value.name)) {
-    errorObj.value.name = '请输入股票名称';
   }
   if (isEmpty(ruleForm.value.issue_quantity)) {
     errorObj.value.issue_quantity = '请输入发行数量';
@@ -164,8 +157,6 @@ watch(visible, () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="500">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm all-required :error-obj="errorObj">
-        <MyFormItem v-model="ruleForm.stock_id" label="股票ID" prop-name="stock_id" />
-        <MyFormItem v-model="ruleForm.name" label="股票名称" prop-name="name" />
         <MyFormItem v-model="ruleForm.company_id" label="企业ID" prop-name="company_id" />
         <MyFormItem v-model="ruleForm.company_name" label="企业名称" prop-name="company_name" />
         <MyFormItem v-model="ruleForm.apply_price" label="申请价格" prop-name="apply_price" />
