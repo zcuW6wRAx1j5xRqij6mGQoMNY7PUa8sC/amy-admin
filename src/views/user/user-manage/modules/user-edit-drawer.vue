@@ -32,7 +32,6 @@ const ruleForm = ref(createDefaultModel());
 function createDefaultModel() {
   return {
     id: undefined,
-    name: '',
     email: '',
     phone: '',
     phone_code: '',
@@ -102,11 +101,6 @@ async function handleSubmit() {
   btnLoading.value = true;
 
   try {
-    if (isEmpty(ruleForm.value.name)) {
-      errorObj.value.name = '请输入姓名';
-      return;
-    }
-
     await fetchUpdateUser(ruleForm.value);
     window.$message?.success('更新成功');
     closeDrawer();
@@ -132,7 +126,6 @@ watch(visible, () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="500">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm :error-obj="errorObj">
-        <MyFormItem v-model="ruleForm.name" label="姓名" prop-name="name" />
         <MyFormItem v-model="ruleForm.email" label="邮箱" prop-name="email" />
         <MyFormItem v-model="ruleForm.phone" label="手机号" prop-name="phone" />
         <MyFormItem v-model="ruleForm.phone_code" label="国际区号" prop-name="phone_code" />

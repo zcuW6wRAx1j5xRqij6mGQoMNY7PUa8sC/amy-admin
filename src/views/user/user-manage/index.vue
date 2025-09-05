@@ -40,7 +40,6 @@ const {
   },
   columns: () => [
     { key: 'id', title: 'UID', align: 'center', width: 80, fixed: 'left' },
-    { key: 'name', title: '姓名', align: 'center', width: 100 },
     { key: 'email', title: '邮箱', align: 'center', width: 150 },
     {
       key: 'phone',
