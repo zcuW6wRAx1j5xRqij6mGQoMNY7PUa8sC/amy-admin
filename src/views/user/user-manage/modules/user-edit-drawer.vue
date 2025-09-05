@@ -53,7 +53,7 @@ async function handleInitModel() {
       btnLoading.value = true;
       const detailData = await fetchGetUserInfo({ id: props.rowData.id });
       Object.keys(ruleForm.value).forEach(key => {
-        ruleForm.value[key] = String(detailData[key]);
+        ruleForm.value[key] = detailData[key];
       });
     } catch (error: any) {
       console.error('获取用户详情失败:', error);
