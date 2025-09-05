@@ -120,7 +120,7 @@ function edit(id: number) {
         v-model:visible="drawerVisible"
         :operate-type="operateType"
         :row-data="editingData"
-        @submitted="getDataByPage"
+        @submitted="getData"
       />
     </NCard>
   </div>

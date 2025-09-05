@@ -177,7 +177,7 @@ const assignHandleConfirm = () => {
         v-model:visible="drawerVisible"
         :operate-type="operateType"
         :row-data="editingData"
-        @submitted="getDataByPage"
+        @submitted="getData"
       />
     </NCard>
     <ObDialog v-model:visible="assignVisible" title="权限分配" :handle-confirm="assignHandleConfirm">

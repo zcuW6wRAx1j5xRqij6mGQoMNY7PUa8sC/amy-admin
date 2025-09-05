@@ -209,7 +209,7 @@ getRoleList();
         v-model:visible="drawerVisible"
         :operate-type="operateType"
         :row-data="editingData"
-        @submitted="getDataByPage"
+        @submitted="getData"
       />
       <!-- <BindLeaderDrawer v-model:visible="bindLeaderVisible" :row-data="currentRow" @submitted="getData" /> -->
     </NCard>

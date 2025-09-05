@@ -199,7 +199,7 @@ function handleResetPasswordSubmitted() {
     <UserCreateDrawer v-model:visible="createUserDrawerVisible" @submitted="handleCreateUserSubmitted" />
 
     <!-- 用户编辑抽屉 -->
-    <UserEditDrawer v-model:visible="drawerVisible" :row-data="editingData" @submitted="getDataByPage" />
+    <UserEditDrawer v-model:visible="drawerVisible" :row-data="editingData" @submitted="getData" />
 
     <!-- 重置密码抽屉 -->
     <ResetPasswordDrawer
