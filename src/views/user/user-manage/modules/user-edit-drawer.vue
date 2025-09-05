@@ -53,7 +53,7 @@ async function handleInitModel() {
       btnLoading.value = true;
       const detailData = await fetchGetUserInfo({ id: props.rowData.id });
       Object.keys(ruleForm.value).forEach(key => {
-        ruleForm.value[key] = detailData[key];
+        ruleForm.value[key] = String(detailData[key]);
       });
     } catch (error: any) {
       console.error('获取用户详情失败:', error);
@@ -79,8 +79,8 @@ async function fetchLevelOptions() {
   try {
     const data = await getLevelOptions();
     levelOptions.value = data.map((item: any) => ({
-      label: item.name || item.slug,
-      value: item.id
+      label: item.label,
+      value: item.value
     }));
   } catch (error) {
     console.error('获取等级选项失败:', error);
