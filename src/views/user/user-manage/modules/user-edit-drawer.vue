@@ -41,8 +41,7 @@ function createDefaultModel() {
     credit: 0,
     is_kyc: 0,
     status: 1,
-    remark: '',
-    role_id: null
+    remark: ''
   };
 }
 
@@ -53,7 +52,9 @@ async function handleInitModel() {
     try {
       btnLoading.value = true;
       const detailData = await fetchGetUserInfo({ id: props.rowData.id });
-      Object.assign(ruleForm.value, detailData);
+      Object.keys(ruleForm.value).forEach(key => {
+        ruleForm.value[key] = detailData[key];
+      });
     } catch (error: any) {
       console.error('获取用户详情失败:', error);
     } finally {
