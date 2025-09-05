@@ -48,7 +48,6 @@ function createDefaultModel(): IpoStockRequest {
     company_name: '',
     buy_price: 0,
     apply_price: 0,
-    close_price: 0,
     apply_min_quantity: 0,
     apply_max_quantity: 0,
     issue_quantity: 0,
@@ -97,7 +96,6 @@ function validateForm() {
     { key: 'apply_min_quantity', message: '请输入申请最小量' },
     { key: 'apply_price', message: '请输入申请价格' },
     { key: 'close_fee', message: '请输入平仓手续费%' },
-    { key: 'close_price', message: '请输入平仓价格' },
     { key: 'open_fee', message: '请输入开仓手续费%' },
     { key: 'company_id', message: '请输入企业ID' },
     { key: 'company_name', message: '请输入企业名称' },
@@ -128,7 +126,6 @@ async function handleSubmit() {
     apply_price: ruleForm.value.apply_price || 0,
     apply_min_quantity: ruleForm.value.apply_min_quantity || 0,
     apply_max_quantity: ruleForm.value.apply_max_quantity || 0,
-    close_price: ruleForm.value.close_price || 0,
     open_fee: ruleForm.value.open_fee || 0,
     close_fee: ruleForm.value.close_fee || 0,
     issue_quantity: ruleForm.value.issue_quantity || 0,
@@ -177,7 +174,6 @@ watch(visible, () => {
         <MyFormItem v-model="ruleForm.company_id" label="企业ID" prop-name="company_id" />
         <MyFormItem v-model="ruleForm.company_name" label="企业名称" prop-name="company_name" />
         <MyFormItem v-model="ruleForm.apply_price" label="申请价格" prop-name="apply_price" />
-        <MyFormItem v-model="ruleForm.close_price" label="平仓价格" prop-name="close_price" />
         <MyFormItem v-model="ruleForm.apply_min_quantity" label="申请最小量" prop-name="apply_min_quantity" />
         <MyFormItem v-model="ruleForm.apply_max_quantity" label="申请最大量" prop-name="apply_max_quantity" />
         <MyFormItem v-model="ruleForm.issue_quantity" label="发行数量" prop-name="issue_quantity" />
