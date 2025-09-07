@@ -126,7 +126,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/financial/order',
         component: 'view.financial_order',
         meta: {
-          title: '理财订单',
+          title: '日内订单',
           icon: 'mdi:receipt'
         }
       },
@@ -135,7 +135,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/financial/product',
         component: 'view.financial_product',
         meta: {
-          title: '理财产品',
+          title: '日内产品',
           icon: 'mdi:package-variant-closed'
         }
       }

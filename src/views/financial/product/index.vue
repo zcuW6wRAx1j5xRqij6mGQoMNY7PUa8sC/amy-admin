@@ -1,8 +1,8 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
+import { fetchGetProductList } from '@/service/api/financial';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import { fetchGetProductList } from '@/service/api/financial';
 import { setBaseUrl } from '@/utils/utils';
 import SearchBox from './modules/search-box.vue';
 import OperateDrawer from './modules/operate-drawer.vue';
@@ -115,7 +115,7 @@ const { drawerVisible, operateType, editingData, handleAdd, handleEdit } = useTa
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <!-- <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" /> -->
-    <NCard title="理财产品管理" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
+    <NCard title="日内产品管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <NSpace>
           <TableHeaderOperation v-model:columns="columnChecks" :loading="loading" @refresh="getData" @add="handleAdd" />
