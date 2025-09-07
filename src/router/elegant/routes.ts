@@ -113,6 +113,35 @@ export const generatedRoutes: GeneratedRoute[] = [
     ]
   },
   {
+    name: 'financial',
+    path: '/financial',
+    component: 'layout.base',
+    meta: {
+      title: '理财管理',
+      icon: 'mdi:finance'
+    },
+    children: [
+      {
+        name: 'financial_order',
+        path: '/financial/order',
+        component: 'view.financial_order',
+        meta: {
+          title: '理财订单',
+          icon: 'mdi:receipt'
+        }
+      },
+      {
+        name: 'financial_product',
+        path: '/financial/product',
+        component: 'view.financial_product',
+        meta: {
+          title: '理财产品',
+          icon: 'mdi:package-variant-closed'
+        }
+      }
+    ]
+  },
+  {
     name: 'flow',
     path: '/flow',
     component: 'layout.base',
