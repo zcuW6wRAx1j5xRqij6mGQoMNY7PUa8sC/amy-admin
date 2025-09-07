@@ -39,7 +39,7 @@ const ruleForm = ref(createDefaultModel());
 function createDefaultModel(): UserLevelRequest {
   return {
     id: undefined,
-    slug: '',
+    slug: 0,
     name_en: '',
     name_es: '',
     name_jp: '',
@@ -134,7 +134,13 @@ watch(visible, async () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="500">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm all-required :error-obj="errorObj">
-        <MyFormItem v-model="ruleForm.slug" label="等级标识" prop-name="slug" placeholder="请输入等级标识" />
+        <MyFormItem
+          v-model="ruleForm.slug"
+          label="等级标识"
+          prop-name="slug"
+          placeholder="请输入等级标识"
+          form-type="number"
+        />
         <MyFormItem v-model="ruleForm.name_en" label="英文名称" prop-name="name_en" placeholder="请输入英文名称" />
         <MyFormItem v-model="ruleForm.name_es" label="西班牙名称" prop-name="name_es" placeholder="请输入西班牙名称" />
         <MyFormItem v-model="ruleForm.name_jp" label="日语名称" prop-name="name_jp" placeholder="请输入日语名称" />

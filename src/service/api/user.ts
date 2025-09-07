@@ -23,7 +23,7 @@ export interface UserListPlader extends CommIdPlader {
 
 export interface UserLevelRequest {
   id?: number;
-  slug?: string; // 等级标识
+  slug?: number; // 等级标识
   name_en?: string; // 英文名称
   name_es?: string; // 西班牙名称
   name_jp?: string; // 日语名称
