@@ -109,14 +109,14 @@ const {
       title: '开仓手续费%',
       align: 'center',
       width: 120,
-      render: (row: IpoStock) => <span class="text-red-600">{row.open_fee || 0}%</span>
+      render: (row: IpoStock) => <span class="text-red-600">{row.open_fee?.toFixed(2) || 0}%</span>
     },
     {
       key: 'close_fee',
       title: '平仓手续费%',
       align: 'center',
       width: 120,
-      render: (row: IpoStock) => <span class="text-red-600">{row.close_fee || 0}%</span>
+      render: (row: IpoStock) => <span class="text-red-600">{row.close_fee?.toFixed(2) || 0}%</span>
     },
     {
       key: 'apply_start_at',
