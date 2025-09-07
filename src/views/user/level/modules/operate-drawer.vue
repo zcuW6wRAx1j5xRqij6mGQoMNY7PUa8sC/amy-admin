@@ -138,7 +138,7 @@ watch(visible, async () => {
           v-model="ruleForm.slug"
           label="等级标识"
           prop-name="slug"
-          placeholder="请输入等级标识"
+          placeholder="请输入等级标识(数字)"
           form-type="number"
         />
         <MyFormItem v-model="ruleForm.name_en" label="英文名称" prop-name="name_en" placeholder="请输入英文名称" />
