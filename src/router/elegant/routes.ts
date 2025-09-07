@@ -117,7 +117,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/financial',
     component: 'layout.base',
     meta: {
-      title: '理财管理',
+      title: '日内管理',
       icon: 'mdi:finance'
     },
     children: [
