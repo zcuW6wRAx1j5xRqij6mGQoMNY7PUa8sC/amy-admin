@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { fetchGetUserList } from '@/service/api/user';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import SearchBox from './modules/search-box.vue';
+// import SearchBox from './modules/search-box.vue';
 import UserEditDrawer from './modules/user-edit-drawer.vue';
 import UserCreateDrawer from './modules/user-create-drawer.vue';
 import ResetPasswordDrawer from './modules/reset-password-drawer.vue';
@@ -27,9 +27,7 @@ const {
   apiFn: fetchGetUserList,
   apiParams: {
     uid: '',
-    name: '',
     email: '',
-    phone: '',
     invite_code: '',
     status: null,
     role_type: null,
@@ -169,7 +167,7 @@ function handleResetPasswordSubmitted() {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
+    <!-- <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" /> -->
     <NCard title="用户管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation

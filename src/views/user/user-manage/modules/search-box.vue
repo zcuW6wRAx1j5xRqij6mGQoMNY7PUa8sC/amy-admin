@@ -51,14 +51,8 @@ async function search() {
             <NFormItemGi span="24 s:12 m:8 l:6" label="用户ID" path="uid" class="pr-24px">
               <NInput v-model:value="model.uid" placeholder="请输入用户ID" />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:8 l:6" label="姓名" path="name" class="pr-24px">
-              <NInput v-model:value="model.name" placeholder="请输入姓名" />
-            </NFormItemGi>
             <NFormItemGi span="24 s:12 m:8 l:6" label="邮箱" path="email" class="pr-24px">
               <NInput v-model:value="model.email" placeholder="请输入邮箱" />
-            </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:8 l:6" label="手机号" path="phone" class="pr-24px">
-              <NInput v-model:value="model.phone" placeholder="请输入手机号" />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:8 l:6" label="邀请码" path="invite_code" class="pr-24px">
               <NInput v-model:value="model.invite_code" placeholder="请输入邀请码" />
@@ -66,14 +60,21 @@ async function search() {
             <NFormItemGi span="24 s:12 m:8 l:6" label="状态" path="status" class="pr-24px">
               <NSelect v-model:value="model.status" placeholder="请选择状态" :options="statusOptions" clearable />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:8 l:6" label="角色类型" path="role_type" class="pr-24px">
-              <NSelect v-model:value="model.role_type" placeholder="请选择角色类型" :options="roleTypeOptions" clearable />
-            </NFormItemGi>
             <NFormItemGi span="24 s:12 m:8 l:6" label="是否实名" path="is_verified_identity" class="pr-24px">
-              <NSelect v-model:value="model.is_verified_identity" placeholder="请选择是否实名" :options="identityOptions" clearable />
+              <NSelect
+                v-model:value="model.is_verified_identity"
+                placeholder="请选择是否实名"
+                :options="identityOptions"
+                clearable
+              />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:8 l:6" label="资金锁定" path="funds_lock" class="pr-24px">
-              <NSelect v-model:value="model.funds_lock" placeholder="请选择资金锁定" :options="fundsLockOptions" clearable />
+              <NSelect
+                v-model:value="model.funds_lock"
+                placeholder="请选择资金锁定"
+                :options="fundsLockOptions"
+                clearable
+              />
             </NFormItemGi>
             <NFormItemGi span="24 m:6" class="pr-24px">
               <NSpace class="w-full">
