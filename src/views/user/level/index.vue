@@ -15,7 +15,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
     size: 20
   },
   columns: () => [
-    { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
+    // { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
     {
       key: 'slug',
       title: '等级标识',

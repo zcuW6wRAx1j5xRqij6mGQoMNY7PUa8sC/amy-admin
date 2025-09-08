@@ -37,7 +37,7 @@ const {
     size: 20
   },
   columns: () => [
-    // { key: 'id', title: 'UID', align: 'center', width: 80, fixed: 'left' },
+    { key: 'id', title: 'UID', align: 'center', width: 80, fixed: 'left' },
     { key: 'email', title: '邮箱', align: 'center', width: 150 },
     {
       key: 'phone',
