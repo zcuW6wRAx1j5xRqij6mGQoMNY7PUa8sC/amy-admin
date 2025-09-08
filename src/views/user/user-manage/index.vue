@@ -50,9 +50,15 @@ const {
         </NText>
       )
     },
-    { key: 'nickname', title: '昵称', align: 'center', width: 100 },
+    // { key: 'nickname', title: '昵称', align: 'center', width: 100 },
     { key: 'parent_id', title: '组长码', align: 'center', width: 100 },
-    { key: 'level_id', title: 'VIP等级', align: 'center', width: 100 },
+    {
+      key: 'level_id',
+      title: 'VIP等级',
+      align: 'center',
+      width: 100,
+      render: row => <span>{row.level?.name_en || '-'}</span>
+    },
     { key: 'credit', title: '信用分', align: 'center', width: 100, render: row => <span>{row.credit || 0}</span> },
     {
       key: 'is_kyc',
@@ -80,6 +86,7 @@ const {
     },
     // { key: 'register_ip', title: '注册IP', align: 'center', width: 120 },
     // { key: 'regsiter_device', title: '注册设备', align: 'center', width: 120 },
+    { key: 'remark', title: '备注', align: 'center', width: 120, render: row => <span>{row.remark || '-'}</span> },
     {
       key: 'last_login_at',
       title: '最近登录',
@@ -89,7 +96,6 @@ const {
     },
     // { key: 'last_login_ip', title: '最后登录IP', align: 'center', width: 120 },
     // { key: 'last_login_device', title: '最后登录设备', align: 'center', width: 120 },
-    { key: 'remark', title: '备注', align: 'center', width: 120, render: row => <span>{row.remark || '-'}</span> },
     {
       key: 'created_at',
       title: '注册时间',
