@@ -79,7 +79,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 140,
       render: row => <span>{row.normal_yield_rate || 0}%</span>
     },
-    { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
+    // { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
     {
       key: 'actions',
       title: '操作',
