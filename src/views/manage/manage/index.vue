@@ -43,6 +43,15 @@ const {
       minWidth: 120
     },
     {
+      key: 'invite_code',
+      title: '邀请码',
+      align: 'center',
+      minWidth: 120,
+      render: row => {
+        return row.invite_code || '-'
+      }
+    },
+    {
       key: 'status',
       title: '状态',
       align: 'center',
