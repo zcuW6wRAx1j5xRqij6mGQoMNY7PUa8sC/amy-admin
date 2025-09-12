@@ -91,7 +91,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             编辑
           </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+          {/* <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
               default: () => '确认删除吗？',
               trigger: () => (
@@ -100,7 +100,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
                 </NButton>
               )
             }}
-          </NPopconfirm>
+          </NPopconfirm> */}
         </div>
       )
     }
