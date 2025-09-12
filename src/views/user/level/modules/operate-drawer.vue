@@ -137,6 +137,7 @@ watch(visible, async () => {
         <MyFormItem
           v-model="ruleForm.slug"
           label="等级标识"
+          :disabled="props.operateType === 'edit'"
           prop-name="slug"
           placeholder="请输入等级标识(数字)"
           form-type="number"
