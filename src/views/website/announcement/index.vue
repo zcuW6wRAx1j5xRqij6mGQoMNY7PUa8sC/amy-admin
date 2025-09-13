@@ -4,7 +4,6 @@ import { NButton, NPopconfirm, NTag, NImage } from 'naive-ui';
 import { WebsiteNoticeList, WebsiteDelNotice } from '@/service/api/website';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import { setBaseUrl } from '@/utils/utils';
 import OperateDrawer from './modules/operate-drawer.vue';
 
 const appStore = useAppStore();
@@ -35,7 +34,16 @@ const {
       key: 'content',
       title: '内容',
       align: 'center',
-      width: 80,
+      width: 200,
+      render: row => {
+        // 移除 HTML 标签，只保留纯文本内容
+        const plainText = row.content?.replace(/<[^>]*>/g, '') || '';
+        return (
+          <div class="text-ellipsis-2">
+            {plainText}
+          </div>
+        );
+      }
     },
     {
       key: 'status',
