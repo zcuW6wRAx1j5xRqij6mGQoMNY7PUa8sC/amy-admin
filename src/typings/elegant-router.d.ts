@@ -43,17 +43,18 @@ declare module "@elegant-router/types" {
     "manage_manage": "/manage/manage";
     "manage_menu": "/manage/menu";
     "manage_role": "/manage/role";
+    "money": "/money";
+    "money_despoit": "/money/despoit";
+    "money_spot-despoit": "/money/spot-despoit";
+    "money_spot-withdraw": "/money/spot-withdraw";
+    "money_stock-withdraw": "/money/stock-withdraw";
     "order": "/order";
-    "order_despoit": "/order/despoit";
     "order_etf": "/order/etf";
     "order_futures": "/order/futures";
     "order_ipo": "/order/ipo";
     "order_loan": "/order/loan";
     "order_otc": "/order/otc";
     "order_spot": "/order/spot";
-    "order_spot-despoit": "/order/spot-despoit";
-    "order_spot-withdraw": "/order/spot-withdraw";
-    "order_stock-withdraw": "/order/stock-withdraw";
     "order_tagesstrategie": "/order/tagesstrategie";
     "stock": "/stock";
     "stock_ipo": "/stock/ipo";
@@ -114,6 +115,7 @@ declare module "@elegant-router/types" {
     | "iframe-page"
     | "login"
     | "manage"
+    | "money"
     | "order"
     | "stock"
     | "user"
@@ -156,16 +158,16 @@ declare module "@elegant-router/types" {
     | "manage_manage"
     | "manage_menu"
     | "manage_role"
-    | "order_despoit"
+    | "money_despoit"
+    | "money_spot-despoit"
+    | "money_spot-withdraw"
+    | "money_stock-withdraw"
     | "order_etf"
     | "order_futures"
     | "order_ipo"
     | "order_loan"
     | "order_otc"
-    | "order_spot-despoit"
-    | "order_spot-withdraw"
     | "order_spot"
-    | "order_stock-withdraw"
     | "order_tagesstrategie"
     | "stock_ipo"
     | "stock_market"
