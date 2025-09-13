@@ -1,7 +1,7 @@
 import { onBeforeUnmount, ref } from 'vue';
 import { localStg } from '@/utils/storage';
 const socketInfo = {
-  url: 'wss://ws.vitaxon.com/connection/websocket'
+  url: 'wss://ws.amy.finance/connection/websocket'
 };
 let centrifuge = null;
 // url: 订阅的频道 fn 处理数据的函数

@@ -4,7 +4,7 @@ import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { OrderFuturesList } from '@/service/api/order';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-
+import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 const appStore = useAppStore();
 
 // 表格相关
@@ -254,10 +254,11 @@ const {
       title: '创建时间',
       align: 'center',
       width: 160
-    },
-
+    }
   ]
 });
+// 如果收到通知，则刷新页面
+usePageRefresh('order_futures', getData);
 
 const { checkedRowKeys } = useTableOperate(data, getData);
 </script>

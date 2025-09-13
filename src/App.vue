@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { NConfigProvider, darkTheme } from 'naive-ui';
+import { NConfigProvider, NNotificationProvider, darkTheme } from 'naive-ui';
 import type { WatermarkProps } from 'naive-ui';
 import { useAppStore } from './store/modules/app';
 import { useThemeStore } from './store/modules/theme';
@@ -55,10 +55,12 @@ const watermarkProps = computed<WatermarkProps>(() => {
     :date-locale="naiveDateLocale"
     class="h-full"
   >
-    <AppProvider>
-      <RouterView class="bg-layout" />
-      <NWatermark v-if="themeStore.watermark.visible" v-bind="watermarkProps" />
-    </AppProvider>
+    <NNotificationProvider>
+      <AppProvider>
+        <RouterView class="bg-layout" />
+        <NWatermark v-if="themeStore.watermark.visible" v-bind="watermarkProps" />
+      </AppProvider>
+    </NNotificationProvider>
   </NConfigProvider>
 </template>
 
