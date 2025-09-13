@@ -273,7 +273,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/money/despoit',
         component: 'view.money_despoit',
         meta: {
-          title: '充值订单',
+          title: '股票充值订单',
           icon: 'mdi:cash-plus'
         }
       },
