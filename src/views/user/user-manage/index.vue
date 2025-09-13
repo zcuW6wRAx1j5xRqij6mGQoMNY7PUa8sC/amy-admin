@@ -120,14 +120,15 @@ const {
           <NButton size="small" type="error" onClick={() => handleResetTradePassword(row.id)}>
             重置交易密码
           </NButton>
-          <NButton type="primary" ghost size="small" onClick={() => send(row)}>
-            发送站内信
-          </NButton>
         </div>
       )
     }
   ]
 });
+
+/* <NButton type="primary" ghost size="small" onClick={() => send(row)}>
+            发送站内信
+          </NButton> */
 
 // 站内信
 const fromData = reactive({
@@ -270,7 +271,7 @@ function handleResetPasswordSubmitted() {
       <MyForm all-required :error-obj="errorObj">
         <MyFormItem v-model="fromData.subject" label="消息主题" prop-name="subject" />
         <MyFormItem label="消息内容" form-type="others" prop-name="content">
-          <ObRichText key="content" v-model="fromData.content" height="280px" />
+          <!-- <ObRichText key="content" v-model="fromData.content" height="280px" /> -->
         </MyFormItem>
       </MyForm>
     </ObDialog>
