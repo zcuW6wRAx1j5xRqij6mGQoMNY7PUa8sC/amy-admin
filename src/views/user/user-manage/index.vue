@@ -1,8 +1,8 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
+import { ref,reactive } from 'vue';
 import { NButton, NTag, NText } from 'naive-ui';
 import dayjs from 'dayjs';
-import { fetchGetUserList } from '@/service/api/user';
+import { fetchGetUserList, fetchSendMessage } from '@/service/api/user';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 // import SearchBox from './modules/search-box.vue';
@@ -120,11 +120,57 @@ const {
           <NButton size="small" type="error" onClick={() => handleResetTradePassword(row.id)}>
             重置交易密码
           </NButton>
+          <NButton type="primary" ghost size="small" onClick={() => send(row)}>
+            发送站内信
+          </NButton>
         </div>
       )
     }
   ]
 });
+
+// 站内信
+const fromData = reactive({
+  uid: '', // [必填][numeric] .用户UID
+  subject: '', // [必填] [string] 消息主题
+  content: '' // [必填][string] 消息内容 (富文本)
+});
+const msgVisible = ref(false);
+const btnLoading = ref(false);
+const errorObj = reactive({
+  subject: '',
+  content: ''
+});
+const send = row => {
+  fromData.uid = row.id;
+  fromData.subject = '';
+  fromData.content = '';
+  msgVisible.value = true;
+};
+
+const handleMsg = async () => {
+  errorObj.value = {};
+  if (!fromData.subject) {
+    errorObj.value.subject = '请输入消息主题';
+    return;
+  }
+  if (!fromData.content) {
+    errorObj.value.content = '请输入消息内容';
+    return;
+  }
+  btnLoading.value = true;
+  return fetchSendMessage(fromData)
+    .then(() => {
+      window.$message?.success('发送成功');
+      msgVisible.value = false;
+    })
+    .catch(error => {
+      errorObj.value = error;
+    })
+    .finally(() => {
+      btnLoading.value = false;
+    });
+};
 
 const { drawerVisible, editingData, handleEdit, checkedRowKeys } = useTableOperate(data, getData);
 
@@ -212,6 +258,23 @@ function handleResetPasswordSubmitted() {
       :reset-type="resetPasswordType"
       @submitted="handleResetPasswordSubmitted"
     />
+
+    <!-- 站内信 -->
+    <ObDialog
+      v-model:visible="msgVisible"
+      title="发送站内信"
+      :loading="btnLoading"
+      width="420px"
+      :handle-confirm="handleMsg"
+    >
+      <MyForm all-required :error-obj="errorObj">
+        <MyFormItem v-model="fromData.subject" label="消息主题" prop-name="subject" />
+        <MyFormItem label="消息内容" form-type="others" prop-name="content">
+          <ObRichText key="content" v-model="fromData.content" height="280px" />
+        </MyFormItem>
+      </MyForm>
+    </ObDialog>
+
   </div>
 </template>
 

@@ -70,6 +70,7 @@ declare module "@elegant-router/types" {
     "wallet_spot": "/wallet/spot";
     "wallet_stock": "/wallet/stock";
     "website": "/website";
+    "website_announcement": "/website/announcement";
     "website_banner": "/website/banner";
     "website_config-page": "/website/config-page";
     "website_platform": "/website/platform";
@@ -179,6 +180,7 @@ declare module "@elegant-router/types" {
     | "wallet_loan"
     | "wallet_spot"
     | "wallet_stock"
+    | "website_announcement"
     | "website_banner"
     | "website_config-page"
     | "website_platform"

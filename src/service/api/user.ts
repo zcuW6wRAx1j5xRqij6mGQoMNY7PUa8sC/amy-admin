@@ -248,3 +248,12 @@ export function UserLevelDelete(params: CommIdPlader) {
 export function UserLevelDetail(params: CommIdPlader) {
   return request({ url: '/api/admin/users/level/detail', params });
 }
+
+// 发送站内信
+export function fetchSendMessage(params:{
+  user_id: number,
+  subject: string,
+  content: string,
+}) {
+  return request({ url: '/api/admin/user/inbox/send', method: 'POST', data: params });
+}
