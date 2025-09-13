@@ -3,8 +3,8 @@ import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { CryptoDepositAudit, CryptoDepositList } from '@/service/api/crypto';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
+import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 import SearchBox from './modules/search-box.vue';
-
 const appStore = useAppStore();
 
 // 表格相关
@@ -140,7 +140,8 @@ const {
     }
   ]
 });
-
+// 如果收到通知，则刷新页面
+usePageRefresh('money_spot-despoit', getData);
 // 处理审核操作
 async function handleAudit(orderId: number, type: 1 | 2) {
   try {

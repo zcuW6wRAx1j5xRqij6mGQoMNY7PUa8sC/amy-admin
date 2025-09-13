@@ -1,9 +1,15 @@
 import { onBeforeUnmount, ref } from 'vue';
 import { localStg } from '@/utils/storage';
 const socketInfo = {
-  url: 'wss://ws.vitaxon.com/connection/websocket'
+  url: 'wss://ws.amy.finance/connection/websocket'
 };
 let centrifuge = null;
+// 存储已订阅的频道，避免重复订阅
+const subscribedChannels = new Set();
+// 存储频道对应的处理函数
+const channelHandlers = new Map();
+// 存储所有订阅对象
+const globalSubscriptions = new Map();
 // url: 订阅的频道 fn 处理数据的函数
 export default function useSocket(url, fn) {
   if (!centrifuge) {
@@ -11,8 +17,6 @@ export default function useSocket(url, fn) {
       token: localStg.get('ws_token')
     });
   }
-  const subscriptions = [];
-  const btcSub = ref();
   function connectHandle(scriptUrl) {
     try {
       if (!centrifuge) return;
@@ -39,16 +43,38 @@ export default function useSocket(url, fn) {
   // 再次订阅其他的
   function setSub(subUrl, subFn) {
     try {
-      btcSub.value = centrifuge.newSubscription(subUrl);
-      if (!btcSub.value) {
+      // 检查是否已经订阅过这个频道
+      if (subscribedChannels.has(subUrl)) {
+        console.log(`频道 ${subUrl} 已经订阅过了，更新处理函数`);
+        console.log(`当前处理函数:`, `${subFn.toString().substring(0, 100)}...`);
+        // 更新处理函数
+        channelHandlers.set(subUrl, subFn);
         return;
       }
-      subscriptions.push(btcSub.value);
-      btcSub.value
+
+      console.log(`开始订阅新频道: ${subUrl}`);
+      console.log(`处理函数:`, `${subFn.toString().substring(0, 100)}...`);
+
+      const subscription = centrifuge.newSubscription(subUrl);
+      if (!subscription) {
+        return;
+      }
+
+      // 标记为已订阅
+      subscribedChannels.add(subUrl);
+      // 存储处理函数
+      channelHandlers.set(subUrl, subFn);
+      // 存储订阅对象
+      globalSubscriptions.set(subUrl, subscription);
+
+      subscription
         .on('publication', function (ctx) {
-          // 收到消息
-          // console.log('收到消息', ctx)
-          subFn && subFn(ctx);
+          // 收到消息，使用存储的处理函数
+          const handler = channelHandlers.get(subUrl);
+          console.log(`频道 ${subUrl} 收到消息，调用处理函数:`, handler ? '存在' : '不存在');
+          if (handler) {
+            handler(ctx);
+          }
         })
         .on('subscribing', function (ctx) {
           // 订阅中
@@ -56,7 +82,7 @@ export default function useSocket(url, fn) {
         })
         .on('subscribed', function (ctx) {
           // 订阅成功
-          console.log('subscribed', ctx);
+          console.log(`频道 ${subUrl} 订阅成功`, ctx);
         })
         .on('unsubscribed', function (ctx) {
           // 取消订阅
@@ -69,24 +95,30 @@ export default function useSocket(url, fn) {
 
   // 添加取消特定频道订阅的方法
   function unsubscribeChannel(channelUrl) {
-    const index = subscriptions.findIndex(item => item.channel === channelUrl);
-    if (index !== -1) {
-      const subscription = subscriptions[index];
+    const subscription = globalSubscriptions.get(channelUrl);
+    if (subscription) {
       subscription.unsubscribe();
-      subscriptions.splice(index, 1); // 从数组中移除订阅
-      centrifuge.removeSubscription(subscription); // 如果需要，从 centrifuge 客户端中移除订阅
+      centrifuge.removeSubscription(subscription);
+      // 从已订阅列表中移除
+      subscribedChannels.delete(channelUrl);
+      // 移除处理函数
+      channelHandlers.delete(channelUrl);
+      // 移除订阅对象
+      globalSubscriptions.delete(channelUrl);
     }
   }
 
   // 取消所有订阅的函数
   function unsubscribeAll() {
-    subscriptions.forEach(subscription => {
+    globalSubscriptions.forEach(subscription => {
       if (subscription) {
         subscription.unsubscribe();
         centrifuge.removeSubscription(subscription);
       }
     });
-    subscriptions.length = 0; // 清空数组
+    globalSubscriptions.clear(); // 清空订阅对象映射
+    subscribedChannels.clear(); // 清空已订阅列表
+    channelHandlers.clear(); // 清空处理函数映射
   }
   onBeforeUnmount(() => {
     unsubscribeAll();
@@ -100,5 +132,5 @@ export default function useSocket(url, fn) {
       centrifuge = null;
     }
   }
-  return { connectHandle, btcSub, setSub, unsubscribeChannel, unsubscribeAll, unConnectHandle };
+  return { connectHandle, setSub, unsubscribeChannel, unsubscribeAll, unConnectHandle };
 }

@@ -3,6 +3,7 @@ import { NTag } from 'naive-ui';
 import { OrderSpot } from '@/service/api/order';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
+import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 // import SearchBox from './modules/search-box.vue';
 
 const appStore = useAppStore();
@@ -165,11 +166,11 @@ const {
       title: '创建时间',
       align: 'center',
       width: 160
-    },
-
+    }
   ]
 });
-
+// 如果收到通知，则刷新页面
+usePageRefresh('order_spot', getData);
 const { checkedRowKeys } = useTableOperate(data, getData);
 </script>
 

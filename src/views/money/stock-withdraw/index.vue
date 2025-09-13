@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import { StockWithdrawList } from '@/service/api/order';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
+import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 import SearchBox from './modules/search-box.vue';
 import AuditDrawer from './modules/audit-drawer.vue';
 
@@ -133,7 +134,8 @@ const {
     }
   ]
 });
-
+// 如果收到通知，则刷新页面
+usePageRefresh('money_stock-withdraw', getData);
 const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
   data,
   getData

@@ -260,6 +260,53 @@ export const generatedRoutes: GeneratedRoute[] = [
     ]
   },
   {
+    name: 'money',
+    path: '/money',
+    component: 'layout.base',
+    meta: {
+      title: '出入金管理',
+      icon: 'mdi:bank-transfer'
+    },
+    children: [
+      {
+        name: 'money_despoit',
+        path: '/money/despoit',
+        component: 'view.money_despoit',
+        meta: {
+          title: '股票充值订单',
+          icon: 'mdi:cash-plus'
+        }
+      },
+      {
+        name: 'money_spot-despoit',
+        path: '/money/spot-despoit',
+        component: 'view.money_spot-despoit',
+        meta: {
+          title: '现货充值订单',
+          icon: 'mdi:bitcoin'
+        }
+      },
+      {
+        name: 'money_spot-withdraw',
+        path: '/money/spot-withdraw',
+        component: 'view.money_spot-withdraw',
+        meta: {
+          title: '现货提现订单',
+          icon: 'mdi:cash-minus'
+        }
+      },
+      {
+        name: 'money_stock-withdraw',
+        path: '/money/stock-withdraw',
+        component: 'view.money_stock-withdraw',
+        meta: {
+          title: '股票提现订单',
+          icon: 'mdi:bank-transfer-out'
+        }
+      }
+    ]
+  },
+  {
     name: 'order',
     path: '/order',
     component: 'layout.base',
@@ -268,15 +315,6 @@ export const generatedRoutes: GeneratedRoute[] = [
       icon: 'mdi:clipboard-list'
     },
     children: [
-      {
-        name: 'order_despoit',
-        path: '/order/despoit',
-        component: 'view.order_despoit',
-        meta: {
-          title: '充值订单',
-          icon: 'mdi:cash-plus'
-        }
-      },
       {
         name: 'order_etf',
         path: '/order/etf',
@@ -329,33 +367,6 @@ export const generatedRoutes: GeneratedRoute[] = [
         meta: {
           title: '现货订单',
           icon: 'mdi:tag'
-        }
-      },
-      {
-        name: 'order_spot-despoit',
-        path: '/order/spot-despoit',
-        component: 'view.order_spot-despoit',
-        meta: {
-          title: '数字货币充值订单',
-          icon: 'mdi:bitcoin'
-        }
-      },
-      {
-        name: 'order_spot-withdraw',
-        path: '/order/spot-withdraw',
-        component: 'view.order_spot-withdraw',
-        meta: {
-          title: '现货提现订单',
-          icon: 'mdi:cash-minus'
-        }
-      },
-      {
-        name: 'order_stock-withdraw',
-        path: '/order/stock-withdraw',
-        component: 'view.order_stock-withdraw',
-        meta: {
-          title: '股票提现订单',
-          icon: 'mdi:bank-transfer-out'
         }
       },
       {

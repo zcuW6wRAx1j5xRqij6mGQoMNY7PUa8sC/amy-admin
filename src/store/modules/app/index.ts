@@ -19,6 +19,9 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
   const breakpoints = useBreakpoints(breakpointsTailwind);
   const { bool: themeDrawerVisible, setTrue: openThemeDrawer, setFalse: closeThemeDrawer } = useBoolean();
   const { bool: reloadFlag, setBool: setReloadFlag } = useBoolean(true);
+
+  // 页面刷新通知状态
+  const pageRefreshTrigger = ref<string>('');
   const { bool: fullContent, toggle: toggleFullContent } = useBoolean();
   const { bool: contentXScrollable, setBool: setContentXScrollable } = useBoolean();
   const { bool: siderCollapse, setBool: setSiderCollapse, toggle: toggleSiderCollapse } = useBoolean();
@@ -50,6 +53,19 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
     if (themeStore.resetCacheStrategy === 'refresh') {
       routeStore.resetRouteCache();
     }
+  }
+
+  /**
+   * Trigger page refresh notification
+   *
+   * @param path Route path to refresh
+   */
+  function triggerPageRefresh(path: string) {
+    pageRefreshTrigger.value = path;
+    // 重置触发状态，避免重复触发
+    setTimeout(() => {
+      pageRefreshTrigger.value = '';
+    }, 100);
   }
 
   const locale = ref<App.I18n.LangType>(localStg.get('lang') || 'zh-CN');
@@ -164,6 +180,8 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
     toggleSiderCollapse,
     mixSiderFixed,
     setMixSiderFixed,
-    toggleMixSiderFixed
+    toggleMixSiderFixed,
+    pageRefreshTrigger,
+    triggerPageRefresh
   };
 });
