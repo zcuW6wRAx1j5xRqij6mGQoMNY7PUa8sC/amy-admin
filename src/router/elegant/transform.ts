@@ -215,6 +215,7 @@ const routeMap: RouteMap = {
   "wallet_spot": "/wallet/spot",
   "wallet_stock": "/wallet/stock",
   "website": "/website",
+  "website_announcement": "/website/announcement",
   "website_banner": "/website/banner",
   "website_config-page": "/website/config-page",
   "website_platform": "/website/platform"

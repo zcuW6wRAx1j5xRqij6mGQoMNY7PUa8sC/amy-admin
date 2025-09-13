@@ -57,6 +57,7 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   wallet_loan: () => import("@/views/wallet/loan/index.vue"),
   wallet_spot: () => import("@/views/wallet/spot/index.vue"),
   wallet_stock: () => import("@/views/wallet/stock/index.vue"),
+  website_announcement: () => import("@/views/website/announcement/index.vue"),
   website_banner: () => import("@/views/website/banner/index.vue"),
   "website_config-page": () => import("@/views/website/config-page/index.vue"),
   website_platform: () => import("@/views/website/platform/index.vue"),

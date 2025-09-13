@@ -502,6 +502,14 @@ export const generatedRoutes: GeneratedRoute[] = [
     },
     children: [
       {
+        name: 'website_announcement',
+        path: '/website/announcement',
+        component: 'view.website_announcement',
+        meta: {
+          title: '公告管理'
+        }
+      },
+      {
         name: 'website_banner',
         path: '/website/banner',
         component: 'view.website_banner',
