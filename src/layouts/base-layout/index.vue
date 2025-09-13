@@ -23,7 +23,18 @@ const themeStore = useThemeStore();
 // 初始化 Naive UI 通知实例
 const notification = useNotification();
 
-useSocket('public:admin_event', socketHandle);
+// 使用 useSocket 监听事件
+const socketHandleId = Math.random().toString(36).substr(2, 9);
+console.log(`BaseLayout 组件初始化 [${socketHandleId}]，开始 Socket 监听: public:admin_event`);
+
+// 添加防重复机制
+let isSocketInitialized = false;
+if (!isSocketInitialized) {
+  useSocket('public:admin_event', socketHandle);
+  isSocketInitialized = true;
+} else {
+  console.log(`[${socketHandleId}] Socket 已经初始化过了，跳过重复初始化`);
+}
 const playAudioSrc = ref<string>('');
 const audioElement = ref<HTMLAudioElement | null>(null);
 
@@ -31,11 +42,33 @@ function getImageUrl(imageName: string, type = 'mp3') {
   return new URL(`./mp3/${imageName}.${type}`, import.meta.url).href;
 }
 
+// 防抖机制，避免重复处理同一个事件
+const processedEvents = new Set();
+
 function socketHandle(data: any) {
   const eventName = data.data.event;
-  // console.log('eventName', eventName);
+  console.log(`[${socketHandleId}] 收到 Socket 事件:`, eventName, data);
+
   if (eventName === 'admin_notify') {
     const payload = data.data.payload;
+
+    // 创建更精确的事件唯一标识，基于事件内容
+    const eventId = `${data.channel}_${payload?.module}_${JSON.stringify(payload)}`;
+
+    // 检查是否已经处理过这个事件
+    if (processedEvents.has(eventId)) {
+      console.log(`[${socketHandleId}] 重复事件已处理过，跳过:`, eventId);
+      return;
+    }
+
+    // 标记为已处理
+    processedEvents.add(eventId);
+    console.log(`[${socketHandleId}] 新事件，开始处理:`, eventId);
+
+    // 10秒后清理事件记录，避免内存泄漏
+    setTimeout(() => {
+      processedEvents.delete(eventId);
+    }, 10000);
     let path = '';
     let message = '';
     let audioSrc = '';
@@ -61,12 +94,12 @@ function socketHandle(data: any) {
       audioSrc = getImageUrl('withdraw');
     } else if (payload.module === 'new_stock_deposit') {
       message = '新的股票充值订单';
-      path = 'money_stock-despoit';
+      path = 'money_despoit';
       audioSrc = getImageUrl('deposit');
     }
     // 使用 appStore 来通知页面刷新
     appStore.triggerPageRefresh(path);
-
+    console.log('path', path);
     // 显示 Naive UI 通知
     notification.warning({
       title: '系统通知',
@@ -74,7 +107,36 @@ function socketHandle(data: any) {
       duration: 5000,
       keepAliveOnHover: true,
       onAfterEnter: () => {
-        // console.log('通知已显示');
+        // 通知显示后，添加点击事件
+        nextTick(() => {
+          // 查找最新的通知元素
+          const notifications = document.querySelectorAll('.n-notification');
+          const latestNotification = notifications[notifications.length - 1] as HTMLElement;
+
+          if (latestNotification) {
+            // 设置鼠标指针样式
+            latestNotification.style.cursor = 'pointer';
+
+            // 添加点击事件
+            const clickHandler = () => {
+              console.log('clickHandler', path);
+              _routerPushByKey(path as any);
+            };
+
+            latestNotification.addEventListener('click', clickHandler);
+
+            // 在通知消失时移除事件监听器
+            setTimeout(() => {
+              latestNotification.removeEventListener('click', clickHandler);
+            }, 5000);
+          }
+        });
+      },
+      onClose: () => {
+        // 通知关闭时的回调
+      },
+      onLeave: () => {
+        // 通知离开时的回调
       }
     });
 

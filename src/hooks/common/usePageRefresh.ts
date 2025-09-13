@@ -15,6 +15,8 @@ export function usePageRefresh(routeName: string, refreshCallback: () => void) {
   watch(
     () => appStore.pageRefreshTrigger,
     newPath => {
+      console.log('newPath', newPath);
+      console.log('routeName', routeName);
       if (newPath === routeName) {
         console.log(`页面 ${routeName} 收到刷新通知`);
         refreshCallback();
