@@ -109,7 +109,7 @@ const {
       fixed: 'right',
       render: row => {
         // 只有待审核状态的订单才显示审核按钮
-        if (row.status === 0) {
+        if (row.status == 0) {
           return (
             <div class="flex-center gap-12px">
               <NPopconfirm onPositiveClick={() => handleAudit(row.id, 2)} positiveText="确定" negativeText="取消">
