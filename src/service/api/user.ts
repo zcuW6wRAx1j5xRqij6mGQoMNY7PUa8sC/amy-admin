@@ -255,5 +255,5 @@ export function fetchSendMessage(params:{
   subject: string,
   content: string,
 }) {
-  return request({ url: '/api/admin/user/inbox/send', method: 'POST', data: params });
+  return request({ url: '/api/admin/users/user/inbox/send', method: 'POST', data: params });
 }
