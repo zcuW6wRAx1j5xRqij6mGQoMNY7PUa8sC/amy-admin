@@ -1,8 +1,9 @@
 <script setup lang="tsx">
-import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { NButton, NPopconfirm, NTag, NImage } from 'naive-ui';
 import { CryptoDepositAudit, CryptoDepositList } from '@/service/api/crypto';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
+import { setBaseUrl } from '@/utils/utils';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 import SearchBox from './modules/search-box.vue';
 const appStore = useAppStore();
@@ -75,8 +76,19 @@ const {
       key: 'receipt',
       title: '凭证',
       align: 'center',
-      width: 200,
-      render: row => <span>{row.receipt || '-'}</span>
+      width: 60,
+      render: row => {
+        if (row.receipt) {
+          return (
+            <NImage
+              src={setBaseUrl(row.receipt)}
+              style={{ width: '100%', height: '100%' }}
+              preview-src-list={[setBaseUrl(row.receipt)]}
+            />
+          );
+        }
+        return <span>-</span>;
+      }
     },
     {
       key: 'status',
