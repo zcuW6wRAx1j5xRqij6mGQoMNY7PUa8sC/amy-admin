@@ -24,7 +24,7 @@ export function WalletSpotList(params: CommListPlader) {
 }
 // 股票钱包金额变动
 export function WalletSpotFundChange(data: { id: number; amount: number; type: string }) {
-  return request<any>({ url: '/api/admin/wallet/spot/fund', method: 'post', data });
+  return request<any>({ url: '/api/admin/wallet/crypto-spot/fund', method: 'post', data });
 }
 // 贷款钱包流水
 export function FlowLoanList(params: CommListPlader) {
