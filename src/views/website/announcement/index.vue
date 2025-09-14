@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
-import { NButton, NPopconfirm, NTag, NImage } from 'naive-ui';
-import { WebsiteNoticeList, WebsiteDelNotice } from '@/service/api/website';
+import { NButton, NImage, NPopconfirm, NTag } from 'naive-ui';
+import { WebsiteDelNotice, WebsiteNoticeList } from '@/service/api/website';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import OperateDrawer from './modules/operate-drawer.vue';
@@ -9,14 +9,7 @@ import OperateDrawer from './modules/operate-drawer.vue';
 const appStore = useAppStore();
 
 // 表格相关
-const {
-  columns,
-  columnChecks,
-  data,
-  loading,
-  getData,
-  mobilePagination
-} = useTable({
+const { columns, columnChecks, data, loading, getData, mobilePagination } = useTable({
   apiFn: WebsiteNoticeList,
   apiParams: {
     page: 1,
@@ -28,7 +21,7 @@ const {
       key: 'subject',
       title: '主题',
       align: 'center',
-      width: 200,
+      width: 200
     },
     {
       key: 'content',
@@ -38,11 +31,7 @@ const {
       render: row => {
         // 移除 HTML 标签，只保留纯文本内容
         const plainText = row.content?.replace(/<[^>]*>/g, '') || '';
-        return (
-          <div class="text-ellipsis-2">
-            {plainText}
-          </div>
-        );
+        return <div class="text-ellipsis-2">{plainText}</div>;
       }
     },
     {
@@ -149,4 +138,12 @@ function edit(id: number) {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.text-ellipsis-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+</style>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import {  WebsiteAddNotice, WebsiteNoticeDetail, WebsiteUpdateNotice } from '@/service/api/website';
-import { isEmpty } from '@/utils/is';
 import dayjs from 'dayjs';
+import { WebsiteAddNotice, WebsiteNoticeDetail, WebsiteUpdateNotice } from '@/service/api/website';
+import { isEmpty } from '@/utils/is';
 
 defineOptions({
   name: 'BannerOperateDrawer'
@@ -97,11 +97,11 @@ async function handleSubmit() {
   }
   btnLoading.value = true;
   if (ruleForm.value.start_time) {
-      ruleForm.value.start_time = dayjs(ruleForm.value.start_time).format('YYYY-MM-DD HH:mm:ss');
-    }
-    if (ruleForm.value.end_time) {
-      ruleForm.value.end_time = dayjs(ruleForm.value.end_time).format('YYYY-MM-DD HH:mm:ss');
-    }
+    ruleForm.value.start_time = dayjs(ruleForm.value.start_time).format('YYYY-MM-DD HH:mm:ss');
+  }
+  if (ruleForm.value.end_time) {
+    ruleForm.value.end_time = dayjs(ruleForm.value.end_time).format('YYYY-MM-DD HH:mm:ss');
+  }
   const action = props.operateType === 'add' ? WebsiteAddNotice : WebsiteUpdateNotice;
   action(ruleForm.value)
     .then(() => {
@@ -130,9 +130,15 @@ watch(visible, async () => {
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm :error-obj="errorObj">
         <MyFormItem v-model="ruleForm.subject" label="主题" prop-name="subject" placeholder="请输入主题" />
-        <MyFormItem v-model="ruleForm.content" label="内容" prop-name="content" placeholder="请输入内容" />
-        <MyFormItem v-model="ruleForm.start_time" label="开始时间" prop-name="start_time"  type="datetime" />
-        <MyFormItem v-model="ruleForm.end_time" label="结束时间" prop-name="end_time"  type="datetime" />
+        <MyFormItem
+          v-model="ruleForm.content"
+          label="内容"
+          prop-name="content"
+          placeholder="请输入内容"
+          type="textarea"
+        />
+        <MyFormItem v-model="ruleForm.start_time" label="开始时间" prop-name="start_time" type="datetime" />
+        <MyFormItem v-model="ruleForm.end_time" label="结束时间" prop-name="end_time" type="datetime" />
         <MyFormItem
           v-model="ruleForm.status"
           is-required
