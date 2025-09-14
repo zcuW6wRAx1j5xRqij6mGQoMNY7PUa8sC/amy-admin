@@ -1,4 +1,5 @@
 <script setup lang="tsx">
+import { ref } from 'vue';
 import { NTag } from 'naive-ui';
 import { WalletSpotList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
