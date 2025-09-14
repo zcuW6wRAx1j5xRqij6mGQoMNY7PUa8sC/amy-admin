@@ -28,10 +28,13 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       title: '内容',
       align: 'center',
       width: 200,
+      ellipsis: {
+        tooltip: true
+      },
       render: row => {
         // 移除 HTML 标签，只保留纯文本内容
         const plainText = row.content?.replace(/<[^>]*>/g, '') || '';
-        return <div class="text-ellipsis-2">{plainText}</div>;
+        return plainText;
       }
     },
     {
@@ -41,17 +44,17 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 100,
       render: row => {
         const statusMap = {
-          1: { type: 'error', text: '正常' },
-          2: { type: 'success', text: '禁用' }
+          1: { type: 'success', text: '正常' },
+          2: { type: 'error', text: '禁用' }
         };
         const config = statusMap[row.status] || { type: 'default', text: '未知' };
         return <NTag type={config.type}>{config.text}</NTag>;
       }
     },
-    { key: 'start_time', title: '开始时间', align: 'center', width: 160 },
-    { key: 'end_time', title: '结束时间', align: 'center', width: 160 },
-    { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
-    { key: 'updated_at', title: '更新时间', align: 'center', width: 160 },
+    { key: 'start_time', title: '开始时间', align: 'center', width: 170 },
+    { key: 'end_time', title: '结束时间', align: 'center', width: 170 },
+    { key: 'created_at', title: '创建时间', align: 'center', width: 170 },
+    { key: 'updated_at', title: '更新时间', align: 'center', width: 170 },
     {
       key: 'actions',
       title: '操作',

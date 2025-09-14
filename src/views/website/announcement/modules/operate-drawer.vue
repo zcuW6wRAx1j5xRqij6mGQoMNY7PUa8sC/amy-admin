@@ -35,11 +35,6 @@ const title = computed(() => {
   return titles[props.operateType];
 });
 
-const platformList = ref([
-  { value: 'app', label: 'APP' },
-  { value: 'web', label: 'WEB' }
-]);
-
 const statusList = ref([
   { value: 1, label: '正常' },
   { value: 2, label: '禁用' }
@@ -64,11 +59,13 @@ async function handleInitModel() {
   if (props.operateType === 'edit' && props.rowData?.id) {
     try {
       const detailData = await WebsiteNoticeDetail({ id: props.rowData.id });
-      Object.assign(ruleForm.value, detailData);
+      Object.keys(ruleForm.value).forEach(key => {
+        ruleForm.value[key] = detailData[key] || null;
+      });
     } catch (error) {
-      console.error('获取Banner详情失败:', error);
-      // 如果详情接口失败，使用传入的rowData作为备选
-      Object.assign(ruleForm.value, props.rowData);
+      Object.keys(ruleForm.value).forEach(key => {
+        ruleForm.value[key] = props.rowData[key] || null;
+      });
     }
   }
 }
@@ -136,9 +133,10 @@ watch(visible, async () => {
           prop-name="content"
           placeholder="请输入内容"
           type="textarea"
+          :rows="4"
         />
-        <MyFormItem v-model="ruleForm.start_time" label="开始时间" prop-name="start_time" type="datetime" />
-        <MyFormItem v-model="ruleForm.end_time" label="结束时间" prop-name="end_time" type="datetime" />
+        <MyFormItem v-model="ruleForm.start_time" label="开始时间" prop-name="start_time" form-type="datetime" />
+        <MyFormItem v-model="ruleForm.end_time" label="结束时间" prop-name="end_time" form-type="datetime" />
         <MyFormItem
           v-model="ruleForm.status"
           is-required
