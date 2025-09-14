@@ -4,6 +4,7 @@ import { WalletSpotList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { setBaseUrl } from '@/utils/utils';
+import SpotFundDrawer from './modules/fund-drawer.vue';
 
 const appStore = useAppStore();
 
@@ -132,11 +133,32 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       align: 'center',
       width: 160
     },
-
+    {
+      key: 'actions',
+      title: '操作',
+      align: 'center',
+      width: 120,
+      fixed: 'right',
+      render: row => (
+        <div class="flex-center gap-12px">
+          <NButton type="primary" ghost size="small" onClick={() => handleFundChange(row.id)}>
+            金额变动
+          </NButton>
+        </div>
+      )
+    }
   ]
 });
 
 const { checkedRowKeys } = useTableOperate(data, getData);
+// 金额变动相关
+const fundDrawerVisible = ref(false);
+const currentWalletId = ref<number | null>(null);
+
+function handleFundChange(id: number) {
+  currentWalletId.value = id;
+  fundDrawerVisible.value = true;
+}
 </script>
 
 <template>
@@ -165,6 +187,8 @@ const { checkedRowKeys } = useTableOperate(data, getData);
         class="sm:h-full"
       />
     </NCard>
+    <!-- 金额变动抽屉 -->
+    <SpotFundDrawer v-model:visible="fundDrawerVisible" :wallet-id="currentWalletId" @success="getData" />
   </div>
 </template>
 
