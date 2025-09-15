@@ -90,7 +90,7 @@ const {
       key: 'created_at',
       title: '创建时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <NText>{row.created_at}</NText>
     },
 

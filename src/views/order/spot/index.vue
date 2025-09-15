@@ -158,14 +158,14 @@ const {
       key: 'match_time',
       title: '成交时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span class="text-gray-600">{row.match_time || '-'}</span>
     },
     {
       key: 'created_at',
-      title: '创建时间',
+      title: '申请时间',
       align: 'center',
-      width: 160
+      width: 170
     }
   ]
 });

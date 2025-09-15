@@ -92,7 +92,7 @@ const { columns, data, loading, getDataByPage, mobilePagination, searchParams, r
       key: 'verified_at',
       title: '审核时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <NText>{row.verified_at || '-'}</NText>
     },
     {
@@ -106,7 +106,7 @@ const { columns, data, loading, getDataByPage, mobilePagination, searchParams, r
       key: 'created_at',
       title: '申请时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <NText>{row.created_at}</NText>
     },
     {

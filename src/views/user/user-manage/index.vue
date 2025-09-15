@@ -91,7 +91,7 @@ const {
       key: 'last_login_at',
       title: '最近登录',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span>{row.last_login_at || '-'}</span>
     },
     // { key: 'last_login_ip', title: '最后登录IP', align: 'center', width: 120 },
@@ -100,7 +100,7 @@ const {
       key: 'created_at',
       title: '注册时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <NText>{row.created_at && dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')}</NText>
     },
     {

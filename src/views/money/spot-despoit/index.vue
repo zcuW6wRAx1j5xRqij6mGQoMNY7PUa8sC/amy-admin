@@ -1,10 +1,10 @@
 <script setup lang="tsx">
-import { NButton, NPopconfirm, NTag, NImage } from 'naive-ui';
+import { NButton, NImage, NPopconfirm, NTag } from 'naive-ui';
 import { CryptoDepositAudit, CryptoDepositList } from '@/service/api/crypto';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
-import { setBaseUrl } from '@/utils/utils';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
+import { setBaseUrl } from '@/utils/utils';
 import SearchBox from './modules/search-box.vue';
 const appStore = useAppStore();
 
@@ -112,6 +112,13 @@ const {
       align: 'center',
       width: 200,
       render: row => <span class="text-xs">{row.coin?.deposit_address || '-'}</span>
+    },
+    {
+      key: 'created_at',
+      title: '充值时间',
+      align: 'center',
+      width: 170,
+      render: row => <span class="text-gray-600">{row.created_at || '-'}</span>
     },
     {
       key: 'actions',

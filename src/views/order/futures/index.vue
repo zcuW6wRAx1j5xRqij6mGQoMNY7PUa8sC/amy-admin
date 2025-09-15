@@ -239,14 +239,14 @@ const {
       key: 'match_time',
       title: '成交时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span class="text-gray-600">{row.match_time || '-'}</span>
     },
     {
       key: 'close_time',
       title: '平仓时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span class="text-gray-600">{row.close_time || '-'}</span>
     },
     {
