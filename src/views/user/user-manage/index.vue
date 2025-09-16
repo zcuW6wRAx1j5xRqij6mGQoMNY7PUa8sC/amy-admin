@@ -52,7 +52,7 @@ const {
     },
     // { key: 'nickname', title: '昵称', align: 'center', width: 100 },
     { key: 'parent_id', title: '组长码', align: 'center', width: 100 },
-    { key: 'agent.invite_code', title: '邀请码', align: 'center', width: 100 },
+    { key: 'agent.invite_code', title: '业务员邀请码', align: 'center', width: 120 },
     {
       key: 'level_id',
       title: 'VIP等级',
