@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { ref,reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { NButton, NTag, NText } from 'naive-ui';
 import dayjs from 'dayjs';
 import { fetchGetUserList, fetchSendMessage } from '@/service/api/user';
@@ -52,6 +52,7 @@ const {
     },
     // { key: 'nickname', title: '昵称', align: 'center', width: 100 },
     { key: 'parent_id', title: '组长码', align: 'center', width: 100 },
+    { key: 'agent.invite_code', title: '邀请码', align: 'center', width: 100 },
     {
       key: 'level_id',
       title: 'VIP等级',
@@ -275,7 +276,6 @@ function handleResetPasswordSubmitted() {
         </MyFormItem>
       </MyForm>
     </ObDialog>
-
   </div>
 </template>
 
