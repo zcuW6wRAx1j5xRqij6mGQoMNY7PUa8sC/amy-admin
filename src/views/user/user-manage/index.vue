@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { ref,reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { NButton, NTag, NText } from 'naive-ui';
 import dayjs from 'dayjs';
 import { fetchGetUserList, fetchSendMessage } from '@/service/api/user';
@@ -51,7 +51,8 @@ const {
       )
     },
     // { key: 'nickname', title: '昵称', align: 'center', width: 100 },
-    { key: 'parent_id', title: '组长码', align: 'center', width: 100 },
+    // { key: 'parent_id', title: '组长码', align: 'center', width: 100 },
+    { key: 'agent.invite_code', title: '业务员邀请码', align: 'center', width: 120 },
     {
       key: 'level_id',
       title: 'VIP等级',
@@ -91,7 +92,7 @@ const {
       key: 'last_login_at',
       title: '最近登录',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span>{row.last_login_at || '-'}</span>
     },
     // { key: 'last_login_ip', title: '最后登录IP', align: 'center', width: 120 },
@@ -100,7 +101,7 @@ const {
       key: 'created_at',
       title: '注册时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <NText>{row.created_at && dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')}</NText>
     },
     {
@@ -275,7 +276,6 @@ function handleResetPasswordSubmitted() {
         </MyFormItem>
       </MyForm>
     </ObDialog>
-
   </div>
 </template>
 

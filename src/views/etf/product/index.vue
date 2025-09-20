@@ -35,14 +35,14 @@ const {
       key: 'order_start_at',
       title: '开始时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span>{row.order_start_at || '-'}</span>
     },
     {
       key: 'order_end_at',
       title: '结束时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span>{row.order_end_at || '-'}</span>
     },
     {

@@ -159,37 +159,14 @@ const {
       key: 'match_time',
       title: '成交时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span class="text-gray-600">{row.match_time || '-'}</span>
     },
     {
       key: 'created_at',
-      title: '创建时间',
+      title: '申请时间',
       align: 'center',
-      width: 160
-    },
-    {
-      key: 'operate',
-      title: '操作',
-      align: 'center',
-      width: 120,
-      fixed: 'right',
-      render: row => {
-        return (
-          <div class="flex-center gap-12px">
-            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
-              {{
-                default: () => '确认删除吗？',
-                trigger: () => (
-                  <NButton type="info" ghost size="small">
-                    删除
-                  </NButton>
-                )
-              }}
-            </NPopconfirm>
-          </div>
-        );
-      }
+      width: 170
     }
   ]
 });

@@ -141,14 +141,14 @@ const {
       key: 'approved_at',
       title: '审批时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span>{row.approved_at || '-'}</span>
     },
     {
       key: 'completed_at',
       title: '完成时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span>{row.completed_at || '-'}</span>
     },
     { key: 'created_at', title: '创建时间', align: 'center', width: 160 },

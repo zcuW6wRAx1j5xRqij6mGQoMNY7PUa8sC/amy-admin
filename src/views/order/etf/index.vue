@@ -99,14 +99,14 @@ const {
       key: 'next_settlement_at',
       title: '下次结算时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span>{row.next_settlement_at || '-'}</span>
     },
     {
       key: 'settlement_at',
       title: '结单日期',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span>{row.settlement_at || '-'}</span>
     },
     { key: 'created_at', title: '创建时间', align: 'center', width: 160 },

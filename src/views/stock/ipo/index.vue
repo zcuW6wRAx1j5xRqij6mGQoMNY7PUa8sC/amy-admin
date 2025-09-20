@@ -122,14 +122,14 @@ const {
       key: 'apply_start_at',
       title: '开始时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: (row: IpoStock) => <span>{row.apply_start_at || '-'}</span>
     },
     {
       key: 'apply_end_at',
       title: '结束时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: (row: IpoStock) => <span>{row.apply_end_at || '-'}</span>
     },
     {

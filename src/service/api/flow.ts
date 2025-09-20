@@ -11,11 +11,7 @@ export function WalletStockList(params: CommListPlader) {
 }
 
 // 股票钱包金额变动
-export function WalletStockFundChange(data: {
-  id: number;
-  amount: number;
-  type: string;
-}) {
+export function WalletStockFundChange(data: { id: number; amount: number; type: string }) {
   return request<any>({ url: '/api/admin/wallet/stock/fund', method: 'post', data });
 }
 // 合约钱包列表
@@ -25,6 +21,10 @@ export function WalletFuturesList(params: CommListPlader) {
 // 数字货币现货钱包列表
 export function WalletSpotList(params: CommListPlader) {
   return request<any>({ url: '/api/admin/wallet/crypto-spot/list', params });
+}
+// 股票钱包金额变动
+export function WalletSpotFundChange(data: { id: number; amount: number; type: string }) {
+  return request<any>({ url: '/api/admin/wallet/crypto-spot/fund', method: 'post', data });
 }
 // 贷款钱包流水
 export function FlowLoanList(params: CommListPlader) {
@@ -36,11 +36,7 @@ export function WalletLoanList(params: CommListPlader) {
 }
 
 // 贷款钱包设置
-export function WalletLoanSet(data: {
-  id: number;
-  amount_total: number;
-  status: 'enabled' | 'disabled';
-}) {
+export function WalletLoanSet(data: { id: number; amount_total: number; status: 'enabled' | 'disabled' }) {
   return request<any>({ url: '/api/admin/wallet/loan/set', method: 'post', data });
 }
 // 合约钱包

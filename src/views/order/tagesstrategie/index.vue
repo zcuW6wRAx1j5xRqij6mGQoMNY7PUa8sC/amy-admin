@@ -84,7 +84,7 @@ const {
       key: 'created_at',
       title: '申请时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <NText>{row.created_at && dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')}</NText>
     },
     {

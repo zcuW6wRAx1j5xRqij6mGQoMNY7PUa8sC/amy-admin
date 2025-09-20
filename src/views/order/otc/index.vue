@@ -92,7 +92,7 @@ const {
       key: 'close_time',
       title: '平仓时间',
       align: 'center',
-      width: 160,
+      width: 170,
       render: row => <span>{row.close_time || '-'}</span>
     },
     { key: 'leverage', title: '杠杆', align: 'center', width: 100, render: row => <span>{row.leverage || 0}x</span> },
@@ -129,7 +129,7 @@ const {
         return <NTag type={status.type}>{status.text}</NTag>;
       }
     },
-    { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
+    { key: 'created_at', title: '申请时间', align: 'center', width: 160 },
 
     {
       key: 'actions',
