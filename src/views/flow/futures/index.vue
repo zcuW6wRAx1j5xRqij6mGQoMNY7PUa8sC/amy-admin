@@ -1,8 +1,9 @@
 <script setup lang="tsx">
-import { NTag } from 'naive-ui';
+import { NTag,NPopconfirm,NButton } from 'naive-ui';
 import { FlowFuturesList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
+import { hiddenFuturesOrder } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -146,9 +147,37 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       title: '创建时间',
       align: 'center',
       width: 160
+    },
+    {
+      key: 'operate',
+      title: '操作',
+      align: 'center',
+      width: 120,
+      fixed: 'right',
+      render: row => {
+        return (
+          <div class="flex-center gap-12px">
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          </div>
+        );
+      }
     }
   ]
 });
+
+const handleHidden = async (id: number) => {
+  await hiddenFuturesOrder({ id });
+  getData();
+}
 
 const { checkedRowKeys } = useTableOperate(data, getData);
 </script>

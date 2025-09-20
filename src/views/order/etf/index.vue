@@ -4,6 +4,7 @@ import { EtfOrderAudit, EtfOrderList } from '@/service/api/etf';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
+import { hiddenEtf } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -140,14 +141,42 @@ const {
                   default: () => '确定要拒绝这个ETF订单吗？'
                 }}
               </NPopconfirm>
+              <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+                {{
+                  default: () => '确认删除吗？',
+                  trigger: () => (
+                    <NButton type="info" ghost size="small">
+                      删除
+                    </NButton>
+                  )
+                }}
+              </NPopconfirm>
             </div>
           );
         }
-        return <span>-</span>;
+        return (
+          <div class="flex-center gap-12px">
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          </div>
+        );
       }
     }
   ]
 });
+
+const handleHidden = async (id: number) => {
+  await hiddenEtf({ id });
+  getData();
+}
 
 // 处理审核操作
 async function handleAudit(orderId: number, type: 1 | 2) {

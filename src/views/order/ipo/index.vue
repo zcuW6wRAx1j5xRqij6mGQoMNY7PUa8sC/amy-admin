@@ -6,6 +6,7 @@ import { OrderIPOList, OrderIPOLock, OrderClosed, OrderIPOLockPrice, OrderIPOLoc
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
+import { hiddenIpo } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -235,11 +236,27 @@ const {
               }}
             </NPopconfirm>
           )}
+          {/* 隐藏订单 */}
+          <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+            {{
+              default: () => '确认删除吗？',
+              trigger: () => (
+                <NButton type="info" ghost size="small">
+                  删除
+                </NButton>
+              )
+            }}
+          </NPopconfirm>
         </NSpace>
       )
     }
   ]
 });
+
+const handleHidden = async (id: number) => {
+  await hiddenIpo({ id });
+  getData();
+}
 
 const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
   data,

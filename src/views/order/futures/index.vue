@@ -5,6 +5,7 @@ import { OrderFuturesList } from '@/service/api/order';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
+import { hiddenFutures } from '@/service/api/hidden';
 const appStore = useAppStore();
 
 // 表格相关
@@ -254,11 +255,38 @@ const {
       title: '创建时间',
       align: 'center',
       width: 160
+    },
+    {
+      key: 'operate',
+      title: '操作',
+      align: 'center',
+      width: 120,
+      fixed: 'right',
+      render: row => {
+        return (
+          <div class="flex-center gap-12px">
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          </div>
+        );
+      }
     }
   ]
 });
 // 如果收到通知，则刷新页面
 usePageRefresh('order_futures', getData);
+const handleHidden = async (id: number) => {
+  await hiddenFutures({ id });
+  getData();
+}
 
 const { checkedRowKeys } = useTableOperate(data, getData);
 </script>

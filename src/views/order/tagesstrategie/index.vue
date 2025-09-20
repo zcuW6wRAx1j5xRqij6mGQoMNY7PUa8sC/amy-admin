@@ -6,6 +6,7 @@ import { DayStrategyAudit, DayStrategyList } from '@/service/api/order';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
+import { hiddenApply } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -95,7 +96,20 @@ const {
       render: row => {
         // 只有待审核状态才显示操作按钮
         if (row.status !== 0) {
-          return <span>-</span>;
+          return (
+            <div class="flex-center gap-12px">
+              <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+                {{
+                  default: () => '确认删除吗？',
+                  trigger: () => (
+                    <NButton type="info" ghost size="small">
+                      删除
+                    </NButton>
+                  )
+                }}
+              </NPopconfirm>
+            </div>
+          );
         }
         return (
           <div class="flex-center gap-12px">
@@ -119,12 +133,27 @@ const {
                 )
               }}
             </NPopconfirm>
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
           </div>
         );
       }
     }
   ]
 });
+
+const handleHidden = async (id: number) => {
+  await hiddenApply({ id });
+  getDataByPage();
+}
 
 const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
   data,

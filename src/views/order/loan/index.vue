@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
-import { NButton, NTag } from 'naive-ui';
+import { NButton, NTag, NPopconfirm } from 'naive-ui';
 import { LoanOrderList } from '@/service/api/order';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
@@ -8,6 +8,7 @@ import SearchBox from './modules/search-box.vue';
 import RepaymentModal from './modules/repayment-modal.vue';
 import StatusModal from './modules/status-modal.vue';
 import AuditModal from './modules/audit-modal.vue';
+import { hiddenLoan } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -184,16 +185,43 @@ const {
             </NButton>
           );
         }
-
+        // 隐藏订单
+        actions.push(
+          <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+            {{
+              default: () => '确认删除吗？',
+              trigger: () => (
+                <NButton type="info" ghost size="small">
+                  删除
+                </NButton>
+              )
+            }}
+          </NPopconfirm>
+        )
+        
         if (actions.length === 0) {
-          return <span>-</span>;
+          return <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+            {{
+              default: () => '确认删除吗？',
+              trigger: () => (
+                <NButton type="info" ghost size="small">
+                  删除
+                </NButton>
+              )
+            }}
+          </NPopconfirm>;
         }
-
         return <div class="flex-center flex-wrap gap-8px">{actions}</div>;
       }
     }
   ]
 });
+
+
+const handleHidden = async (id: number) => {
+  await hiddenLoan({ id });
+  getData();
+}
 
 // 打开审核弹窗
 function openAuditModal(order: any) {

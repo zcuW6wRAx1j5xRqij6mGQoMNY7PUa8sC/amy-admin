@@ -8,6 +8,7 @@ import SearchBox from './modules/search-box.vue';
 import AuditDrawer from './modules/audit-drawer.vue';
 import CloseDrawer from './modules/close-drawer.vue';
 import CreateDrawer from './modules/create-drawer.vue';
+import { hiddenOrder } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 const message = useMessage();
@@ -186,12 +187,27 @@ const {
               平仓
             </NButton>
           )}
+          {/* 隐藏订单 */}
+          <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+            {{
+              default: () => '确认删除吗？',
+              trigger: () => (
+                <NButton type="info" ghost size="small">
+                  删除
+                </NButton>
+              )
+            }}
+          </NPopconfirm>
         </NSpace>
       )
     }
   ]
 });
 
+const handleHidden = async (id: number) => {
+  await hiddenOrder({ id });
+  getData();
+}
 const { checkedRowKeys } = useTableOperate(data, getData);
 
 // 操作函数

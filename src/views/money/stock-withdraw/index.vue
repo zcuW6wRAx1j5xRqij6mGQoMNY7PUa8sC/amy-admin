@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
-import { NButton, NTag, NText } from 'naive-ui';
+import { NButton, NTag, NText, NPopconfirm } from 'naive-ui';
 import dayjs from 'dayjs';
 import { StockWithdrawList } from '@/service/api/order';
 import { useAppStore } from '@/store/modules/app';
@@ -8,6 +8,7 @@ import { useTable, useTableOperate } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 import SearchBox from './modules/search-box.vue';
 import AuditDrawer from './modules/audit-drawer.vue';
+import { hiddenStock } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -118,22 +119,47 @@ const {
       render: row => {
         // 只有待审核状态才显示操作按钮
         if (row.status !== 'pending') {
-          return <span>-</span>;
+          return <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>;
         }
         return (
           <div class="flex-center gap-12px">
             <NButton size="small" type="success" onClick={() => handleAudit(row.id, 'approved')}>
               审核通过
             </NButton>
+            
             <NButton size="small" type="error" onClick={() => handleAudit(row.id, 'rejected')}>
               审核拒绝
             </NButton>
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
           </div>
         );
       }
     }
   ]
 });
+
+const handleHidden = async (id: number) => {
+  await hiddenStock({ id });
+  getData();
+};
 // 如果收到通知，则刷新页面
 usePageRefresh('money_stock-withdraw', getData);
 const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(

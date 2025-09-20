@@ -1,10 +1,12 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
 import dayjs from 'dayjs';
+import {NPopconfirm,NButton} from 'naive-ui'
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
 import { fetchGetOrderList } from '@/service/api/financial';
 import SearchBox from './modules/search-box.vue';
+import { hiddenFinancial } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -111,9 +113,38 @@ const {
         const text = row.status === 'pending' ? '进行中' : '已结算';
         return <NTag type={type}>{text}</NTag>;
       }
+    },
+    {
+      key: 'operate',
+      title: '操作',
+      align: 'center',
+      width: 120,
+      fixed: 'right',
+      render: row => {
+        return (
+          <div class="flex-center gap-12px">
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          </div>
+        );
+      }
     }
   ]
 });
+
+const handleHidden = async (id: number) => {
+  await hiddenFinancial({ id });
+  getData();
+}
+
 </script>
 
 <template>

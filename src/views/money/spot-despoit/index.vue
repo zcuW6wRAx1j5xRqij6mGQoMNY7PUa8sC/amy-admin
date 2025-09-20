@@ -6,6 +6,8 @@ import { useTable } from '@/hooks/common/table';
 import { setBaseUrl } from '@/utils/utils';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 import SearchBox from './modules/search-box.vue';
+import { hiddenCrypto } from '@/service/api/hidden';
+
 const appStore = useAppStore();
 
 // 表格相关
@@ -144,14 +146,42 @@ const {
                   default: () => '确定要拒绝这个充值订单吗？'
                 }}
               </NPopconfirm>
+              <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+                {{
+                  default: () => '确认删除吗？',
+                  trigger: () => (
+                    <NButton type="info" ghost size="small">
+                      删除
+                    </NButton>
+                  )
+                }}
+              </NPopconfirm>
             </div>
           );
         }
-        return <span>-</span>;
+        return (
+          <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+            {{
+              default: () => '确认删除吗？',
+              trigger: () => (
+                <NButton type="info" ghost size="small">
+                  删除
+                </NButton>
+              )
+            }}
+          </NPopconfirm>
+        );
       }
     }
   ]
 });
+
+// 删除处理
+async function handleHidden(id: number) {
+  await hiddenCrypto({ id });
+  getData();
+}
+
 // 如果收到通知，则刷新页面
 usePageRefresh('money_spot-despoit', getData);
 // 处理审核操作

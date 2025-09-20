@@ -4,6 +4,7 @@ import { OrderSpot } from '@/service/api/order';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
+import { hiddenSpot } from '@/service/api/hidden';
 // import SearchBox from './modules/search-box.vue';
 
 const appStore = useAppStore();
@@ -166,9 +167,37 @@ const {
       title: '创建时间',
       align: 'center',
       width: 160
+    },
+    {
+      key: 'operate',
+      title: '操作',
+      align: 'center',
+      width: 120,
+      fixed: 'right',
+      render: row => {
+        return (
+          <div class="flex-center gap-12px">
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          </div>
+        );
+      }
     }
   ]
 });
+
+const handleHidden = async (id: number) => {
+  await hiddenSpot({ id });
+  getData();
+}
 // 如果收到通知，则刷新页面
 usePageRefresh('order_spot', getData);
 const { checkedRowKeys } = useTableOperate(data, getData);
