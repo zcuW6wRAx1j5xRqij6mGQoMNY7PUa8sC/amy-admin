@@ -75,6 +75,13 @@ const {
       render: row => <span>{row.bank_card_id || '-'}</span>
     },
     {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
+    },
+    {
       key: 'status',
       title: '提现状态',
       align: 'center',

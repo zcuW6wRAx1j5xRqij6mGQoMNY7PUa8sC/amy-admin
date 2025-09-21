@@ -68,6 +68,13 @@ const {
       render: row => <span>{row.amount || 0}</span>
     },
     {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
+    },
+    {
       key: 'status',
       title: '充值状态',
       align: 'center',

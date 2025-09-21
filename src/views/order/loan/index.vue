@@ -153,6 +153,13 @@ const {
     },
     { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
     {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
+    },
+    {
       key: 'actions',
       title: '操作',
       align: 'center',

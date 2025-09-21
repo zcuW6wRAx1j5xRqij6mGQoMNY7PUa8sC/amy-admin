@@ -61,6 +61,13 @@ const {
       )
     },
     {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
+    },
+    {
       key: 'coin.name',
       title: '币种',
       align: 'center',

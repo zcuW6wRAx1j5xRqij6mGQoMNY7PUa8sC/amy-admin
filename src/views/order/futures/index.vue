@@ -257,6 +257,13 @@ const {
       width: 160
     },
     {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
+    },
+    {
       key: 'operate',
       title: '操作',
       align: 'center',

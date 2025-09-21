@@ -167,7 +167,14 @@ const {
       title: '申请时间',
       align: 'center',
       width: 170
-    }
+    },
+    {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
+    },
   ]
 });
 
