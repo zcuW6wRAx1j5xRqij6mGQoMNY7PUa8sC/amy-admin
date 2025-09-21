@@ -2,10 +2,10 @@
 import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { OrderFuturesList } from '@/service/api/order';
+import { hiddenFutures } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
-import { hiddenFutures } from '@/service/api/hidden';
 const appStore = useAppStore();
 
 // 表格相关
@@ -34,16 +34,17 @@ const {
       fixed: 'left'
     },
     {
-      key: 'order_code',
-      title: '订单编号',
-      align: 'center',
-      width: 150
-    },
-    {
       key: 'uid',
       title: '用户ID',
       align: 'center',
       width: 100
+    },
+    {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
     },
     {
       key: 'user.nickname',
@@ -51,6 +52,12 @@ const {
       align: 'center',
       width: 120,
       render: row => row.user?.nickname || '-'
+    },
+    {
+      key: 'order_code',
+      title: '订单编号',
+      align: 'center',
+      width: 150
     },
     {
       key: 'symbol_id',
@@ -257,13 +264,6 @@ const {
       width: 160
     },
     {
-      key: 'user.remark',
-      title: '用户备注',
-      align: 'center',
-      width: 120,
-      render: row => <span>{row.user?.remark || '-'}</span>
-    },
-    {
       key: 'operate',
       title: '操作',
       align: 'center',
@@ -293,7 +293,7 @@ usePageRefresh('order_futures', getData);
 const handleHidden = async (id: number) => {
   await hiddenFutures({ id });
   getData();
-}
+};
 
 const { checkedRowKeys } = useTableOperate(data, getData);
 </script>

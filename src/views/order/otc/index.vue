@@ -2,13 +2,13 @@
 import { ref } from 'vue';
 import { NButton, NPopconfirm, NSpace, NTag, useMessage } from 'naive-ui';
 import { OrderOtcList, OrderOtcLockUnlock } from '@/service/api/order';
+import { hiddenOrder } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
 import AuditDrawer from './modules/audit-drawer.vue';
 import CloseDrawer from './modules/close-drawer.vue';
 import CreateDrawer from './modules/create-drawer.vue';
-import { hiddenOrder } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 const message = useMessage();
@@ -48,6 +48,13 @@ const {
   columns: () => [
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
     { key: 'uid', title: '用户ID', align: 'center', width: 100 },
+    {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
+    },
     { key: 'user.nickname', title: '用户昵称', align: 'center', width: 120, render: row => row.user?.nickname || '-' },
     { key: 'stock_id', title: '股票ID', align: 'center', width: 100 },
     { key: 'stock.name', title: '股票名称', align: 'center', width: 120, render: row => row.stock?.name || '-' },
@@ -131,13 +138,6 @@ const {
     },
     { key: 'created_at', title: '申请时间', align: 'center', width: 160 },
     {
-      key: 'user.remark',
-      title: '用户备注',
-      align: 'center',
-      width: 120,
-      render: row => <span>{row.user?.remark || '-'}</span>
-    },
-    {
       key: 'actions',
       title: '操作',
       width: 180,
@@ -213,7 +213,7 @@ const {
 const handleHidden = async (id: number) => {
   await hiddenOrder({ id });
   getData();
-}
+};
 const { checkedRowKeys } = useTableOperate(data, getData);
 
 // 操作函数

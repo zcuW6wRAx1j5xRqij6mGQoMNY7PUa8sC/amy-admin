@@ -3,10 +3,10 @@ import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag, NText } from 'naive-ui';
 import dayjs from 'dayjs';
 import { DayStrategyAudit, DayStrategyList } from '@/service/api/order';
+import { hiddenApply } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
-import { hiddenApply } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -32,6 +32,13 @@ const {
   columns: () => [
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
     { key: 'uid', title: '用户ID', align: 'center', width: 100 },
+    {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
+    },
     {
       key: 'user.name',
       title: '用户姓名',
@@ -86,13 +93,6 @@ const {
       align: 'center',
       width: 170,
       render: row => <NText>{row.created_at && dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')}</NText>
-    },
-    {
-      key: 'user.remark',
-      title: '用户备注',
-      align: 'center',
-      width: 120,
-      render: row => <span>{row.user?.remark || '-'}</span>
     },
     {
       key: 'actions',
@@ -160,7 +160,7 @@ const {
 const handleHidden = async (id: number) => {
   await hiddenApply({ id });
   getDataByPage();
-}
+};
 
 const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
   data,

@@ -1,10 +1,10 @@
 <script setup lang="tsx">
 import { NTag } from 'naive-ui';
 import { OrderSpot } from '@/service/api/order';
+import { hiddenSpot } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
-import { hiddenSpot } from '@/service/api/hidden';
 // import SearchBox from './modules/search-box.vue';
 
 const appStore = useAppStore();
@@ -34,12 +34,7 @@ const {
       width: 80,
       fixed: 'left'
     },
-    {
-      key: 'order_code',
-      title: '订单编号',
-      align: 'center',
-      width: 150
-    },
+
     {
       key: 'uid',
       title: '用户ID',
@@ -47,11 +42,24 @@ const {
       width: 100
     },
     {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
+    },
+    {
       key: 'user.nickname',
       title: '用户昵称',
       align: 'center',
       width: 120,
       render: row => row.user?.nickname || '-'
+    },
+    {
+      key: 'order_code',
+      title: '订单编号',
+      align: 'center',
+      width: 150
     },
     {
       key: 'symbol_id',
@@ -174,14 +182,14 @@ const {
       align: 'center',
       width: 120,
       render: row => <span>{row.user?.remark || '-'}</span>
-    },
+    }
   ]
 });
 
 const handleHidden = async (id: number) => {
   await hiddenSpot({ id });
   getData();
-}
+};
 // 如果收到通知，则刷新页面
 usePageRefresh('order_spot', getData);
 const { checkedRowKeys } = useTableOperate(data, getData);

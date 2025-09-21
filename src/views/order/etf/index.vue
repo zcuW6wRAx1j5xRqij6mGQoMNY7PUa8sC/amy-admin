@@ -1,10 +1,10 @@
 <script setup lang="tsx">
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { EtfOrderAudit, EtfOrderList } from '@/service/api/etf';
+import { hiddenEtf } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
-import { hiddenEtf } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -36,6 +36,13 @@ const {
       align: 'center',
       width: 100,
       render: row => <span>{row.uid || '-'}</span>
+    },
+    {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
     },
     {
       key: 'product.name',
@@ -78,13 +85,6 @@ const {
       align: 'center',
       width: 120,
       render: row => <span>{row.return_profit || '-'}</span>
-    },
-    {
-      key: 'user.remark',
-      title: '用户备注',
-      align: 'center',
-      width: 120,
-      render: row => <span>{row.user?.remark || '-'}</span>
     },
     {
       key: 'status',
@@ -183,7 +183,7 @@ const {
 const handleHidden = async (id: number) => {
   await hiddenEtf({ id });
   getData();
-}
+};
 
 // 处理审核操作
 async function handleAudit(orderId: number, type: 1 | 2) {

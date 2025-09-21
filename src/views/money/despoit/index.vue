@@ -3,12 +3,12 @@ import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag, NText } from 'naive-ui';
 import dayjs from 'dayjs';
 import { DepositOrderList } from '@/service/api/order';
+import { hiddenDespoit } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 import SearchBox from './modules/search-box.vue';
 import AuditDrawer from './modules/audit-drawer.vue';
-import { hiddenDespoit } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -34,6 +34,13 @@ const {
   columns: () => [
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
     { key: 'uid', title: '用户ID', align: 'center', width: 100 },
+    {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
+    },
     {
       key: 'user.name',
       title: '用户姓名',
@@ -68,13 +75,6 @@ const {
       render: row => <span>{row.amount || 0}</span>
     },
     {
-      key: 'user.remark',
-      title: '用户备注',
-      align: 'center',
-      width: 120,
-      render: row => <span>{row.user?.remark || '-'}</span>
-    },
-    {
       key: 'status',
       title: '充值状态',
       align: 'center',
@@ -105,7 +105,8 @@ const {
       render: row => {
         // 只有待审核状态才显示操作按钮
         if (row.status !== 'pending') {
-          return <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+          return (
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
               {{
                 default: () => '确认删除吗？',
                 trigger: () => (
@@ -115,6 +116,7 @@ const {
                 )
               }}
             </NPopconfirm>
+          );
         }
         return (
           <div class="flex-center gap-12px">
@@ -145,7 +147,7 @@ usePageRefresh('money_despoit', getData);
 const handleHidden = async (id: number) => {
   await hiddenDespoit({ id });
   getData();
-}
+};
 
 const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
   data,

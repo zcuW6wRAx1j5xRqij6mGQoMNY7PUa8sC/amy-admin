@@ -1,12 +1,12 @@
 <script setup lang="tsx">
 import { NButton, NImage, NPopconfirm, NTag } from 'naive-ui';
 import { CryptoDepositAudit, CryptoDepositList } from '@/service/api/crypto';
+import { hiddenCrypto } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 import { setBaseUrl } from '@/utils/utils';
 import SearchBox from './modules/search-box.vue';
-import { hiddenCrypto } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -38,6 +38,13 @@ const {
       align: 'center',
       width: 100,
       render: row => <span>{row.uid || '-'}</span>
+    },
+    {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
     },
     {
       key: 'user.nickname',
@@ -91,13 +98,6 @@ const {
         }
         return <span>-</span>;
       }
-    },
-    {
-      key: 'user.remark',
-      title: '用户备注',
-      align: 'center',
-      width: 120,
-      render: row => <span>{row.user?.remark || '-'}</span>
     },
     {
       key: 'status',

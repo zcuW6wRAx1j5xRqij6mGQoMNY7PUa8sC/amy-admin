@@ -1,12 +1,12 @@
 <script setup lang="tsx">
-import { ref } from "vue"
-import { isEmpty } from '@/utils/is';
+import { ref } from 'vue';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
-import { OrderIPOList, OrderIPOLock, OrderClosed, OrderIPOLockPrice, OrderIPOLockAudit } from '@/service/api/order';
+import { OrderClosed, OrderIPOList, OrderIPOLock, OrderIPOLockAudit, OrderIPOLockPrice } from '@/service/api/order';
+import { hiddenIpo } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
+import { isEmpty } from '@/utils/is';
 import SearchBox from './modules/search-box.vue';
-import { hiddenIpo } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -34,6 +34,13 @@ const {
   columns: () => [
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
     { key: 'uid', title: '用户ID', align: 'center', width: 100 },
+    {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
+    },
     { key: 'user.nickname', title: '用户昵称', align: 'center', width: 120, render: row => row.user?.nickname || '-' },
     { key: 'stock_id', title: '股票ID', align: 'center', width: 100 },
     { key: 'stock.name', title: '股票名称', align: 'center', width: 120, render: row => row.stock?.name || '-' },
@@ -146,13 +153,6 @@ const {
     },
     { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
     {
-      key: 'user.remark',
-      title: '用户备注',
-      align: 'center',
-      width: 120,
-      render: row => <span>{row.user?.remark || '-'}</span>
-    },
-    {
       key: 'actions',
       title: '操作',
       align: 'center',
@@ -262,49 +262,48 @@ const {
 const handleHidden = async (id: number) => {
   await hiddenIpo({ id });
   getData();
-}
+};
 
 const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onDeleted } = useTableOperate(
   data,
   getData
 );
 
-const title = ref('')
-const model = ref({})
+const title = ref('');
+const model = ref({});
 // 操作函数
 function handleApprove(id: number, match_quantity: number) {
   // TODO: 实现通过功能
   if (!match_quantity) {
-    visible.value = true
-    title.value = '通过审核'
+    visible.value = true;
+    title.value = '通过审核';
     model.value = {
       id,
       match_quantity: 0,
-      apply_status: 1,
-    }
-    return
+      apply_status: 1
+    };
   }
 }
 
 function handleReject(id: number) {
   // TODO: 实现不通过功能
-  OrderIPOLockAudit({ id, apply_status: 2 })
+  OrderIPOLockAudit({ id, apply_status: 2 });
 }
-const priceText = "预设卖出价"
+const priceText = '预设卖出价';
 async function handlePrice(data: object) {
-  visible.value = true
-  title.value = priceText
+  visible.value = true;
+  title.value = priceText;
   model.value = {
-    id:data.id,
-    price:data.close_price,
-  }
+    id: data.id,
+    price: data.close_price
+  };
 }
 
 async function handleLock(id: number) {
   if (loading.value) return;
   loading.value = true;
   try {
-    await OrderIPOLock(id)
+    await OrderIPOLock(id);
     loading.value = false;
     onDeleted();
   } catch (error) {
@@ -318,7 +317,7 @@ async function handleClose(id: number) {
   loading.value = true;
   try {
     // TODO: 调用平仓API
-    await OrderClosed({ id })
+    await OrderClosed({ id });
     loading.value = false;
     onDeleted();
   } catch (error) {
@@ -336,17 +335,15 @@ function closeDrawer() {
   btnLoading.value = false;
   visible.value = false;
 }
-const errorObj = ref({})
+const errorObj = ref({});
 async function handleSubmit() {
   errorObj.value = {};
   if (title.value === priceText) {
     if (isEmpty(model.value.price)) {
       errorObj.value.price = '请输入价格';
     }
-  } else {
-    if (isEmpty(model.value.match_quantity)) {
-      errorObj.value.match_quantity = '请输入数量';
-    }
+  } else if (isEmpty(model.value.match_quantity)) {
+    errorObj.value.match_quantity = '请输入数量';
   }
   if (Object.values(errorObj.value).some(item => item)) {
     return;
@@ -354,10 +351,10 @@ async function handleSubmit() {
   btnLoading.value = true;
   const action = title.value === priceText ? OrderIPOLockPrice : OrderIPOLockAudit;
   try {
-    console.log(model.value)
+    console.log(model.value);
     await action(model.value);
     window.$message?.success('操作成功');
-    getData()
+    getData();
     closeDrawer();
   } catch (error) {
     errorObj.value = error;
@@ -372,19 +369,39 @@ async function handleSubmit() {
     <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard title="IPO订单管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
-          :loading="loading" no-add @add="handleAdd" @refresh="getData" />
+        <TableHeaderOperation
+          v-model:columns="columnChecks"
+          :disabled-delete="checkedRowKeys.length === 0"
+          :loading="loading"
+          no-add
+          @add="handleAdd"
+          @refresh="getData"
+        />
       </template>
-      <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
-        :flex-height="!appStore.isMobile" :scroll-x="4000" :loading="loading" remote :row-key="row => row.id"
-        :pagination="mobilePagination" class="sm:h-full" />
+      <NDataTable
+        v-model:checked-row-keys="checkedRowKeys"
+        :columns="columns"
+        :data="data"
+        size="small"
+        :flex-height="!appStore.isMobile"
+        :scroll-x="4000"
+        :loading="loading"
+        remote
+        :row-key="row => row.id"
+        :pagination="mobilePagination"
+        class="sm:h-full"
+      />
     </NCard>
     <NDrawer v-model:show="visible" display-directive="show" :width="360">
       <NDrawerContent :title="title" :native-scrollbar="false" closable>
         <MyForm all-required :error-obj="errorObj">
           <MyFormItem v-if="priceText === title" v-model="model.price" label="请填写价格" prop-name="price" />
-          <MyFormItem v-if="priceText !== title" v-model="model.match_quantity" label="请填写数量"
-            prop-name="match_quantity" />
+          <MyFormItem
+            v-if="priceText !== title"
+            v-model="model.match_quantity"
+            label="请填写数量"
+            prop-name="match_quantity"
+          />
         </MyForm>
         <template #footer>
           <NSpace :size="16">

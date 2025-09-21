@@ -1,14 +1,14 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
-import { NButton, NTag, NPopconfirm } from 'naive-ui';
+import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { LoanOrderList } from '@/service/api/order';
+import { hiddenLoan } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
 import RepaymentModal from './modules/repayment-modal.vue';
 import StatusModal from './modules/status-modal.vue';
 import AuditModal from './modules/audit-modal.vue';
-import { hiddenLoan } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -47,13 +47,6 @@ const {
   columns: () => [
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
     {
-      key: 'order_no',
-      title: '订单编号',
-      align: 'center',
-      width: 150,
-      render: row => <span class="text-xs font-mono">{row.order_no || '-'}</span>
-    },
-    {
       key: 'uid',
       title: '用户ID',
       align: 'center',
@@ -61,11 +54,25 @@ const {
       render: row => <span>{row.uid || '-'}</span>
     },
     {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
+    },
+    {
       key: 'user.nickname',
       title: '用户昵称',
       align: 'center',
       width: 120,
       render: row => <span>{row.user?.nickname || '-'}</span>
+    },
+    {
+      key: 'order_no',
+      title: '订单编号',
+      align: 'center',
+      width: 150,
+      render: row => <span class="text-xs font-mono">{row.order_no || '-'}</span>
     },
     {
       key: 'apply_amount',
@@ -153,13 +160,6 @@ const {
     },
     { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
     {
-      key: 'user.remark',
-      title: '用户备注',
-      align: 'center',
-      width: 120,
-      render: row => <span>{row.user?.remark || '-'}</span>
-    },
-    {
       key: 'actions',
       title: '操作',
       align: 'center',
@@ -204,19 +204,21 @@ const {
               )
             }}
           </NPopconfirm>
-        )
-        
+        );
+
         if (actions.length === 0) {
-          return <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
-            {{
-              default: () => '确认删除吗？',
-              trigger: () => (
-                <NButton type="info" ghost size="small">
-                  删除
-                </NButton>
-              )
-            }}
-          </NPopconfirm>;
+          return (
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          );
         }
         return <div class="flex-center flex-wrap gap-8px">{actions}</div>;
       }
@@ -224,11 +226,10 @@ const {
   ]
 });
 
-
 const handleHidden = async (id: number) => {
   await hiddenLoan({ id });
   getData();
-}
+};
 
 // 打开审核弹窗
 function openAuditModal(order: any) {
