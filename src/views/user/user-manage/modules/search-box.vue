@@ -60,22 +60,15 @@ async function search() {
             <NFormItemGi span="24 s:12 m:8 l:6" label="状态" path="status" class="pr-24px">
               <NSelect v-model:value="model.status" placeholder="请选择状态" :options="statusOptions" clearable />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:8 l:6" label="是否实名" path="is_verified_identity" class="pr-24px">
+            <NFormItemGi span="24 s:12 m:8 l:6" label="是否实名" path="is_kyc" class="pr-24px">
               <NSelect
-                v-model:value="model.is_verified_identity"
+                v-model:value="model.is_kyc"
                 placeholder="请选择是否实名"
                 :options="identityOptions"
                 clearable
               />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:8 l:6" label="资金锁定" path="funds_lock" class="pr-24px">
-              <NSelect
-                v-model:value="model.funds_lock"
-                placeholder="请选择资金锁定"
-                :options="fundsLockOptions"
-                clearable
-              />
-            </NFormItemGi>
+            
             <NFormItemGi span="24 m:6" class="pr-24px">
               <NSpace class="w-full">
                 <NButton @click="reset">
