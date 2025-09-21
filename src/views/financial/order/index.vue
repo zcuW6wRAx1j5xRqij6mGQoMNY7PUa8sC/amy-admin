@@ -1,12 +1,12 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
+import { NButton, NPopconfirm } from 'naive-ui';
 import dayjs from 'dayjs';
-import {NPopconfirm,NButton} from 'naive-ui'
+import { fetchGetOrderList } from '@/service/api/financial';
+import { hiddenFinancial } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
-import { fetchGetOrderList } from '@/service/api/financial';
 import SearchBox from './modules/search-box.vue';
-import { hiddenFinancial } from '@/service/api/hidden';
 
 const appStore = useAppStore();
 
@@ -42,6 +42,13 @@ const {
       title: '用户ID',
       align: 'center',
       width: 80
+    },
+    {
+      key: 'user.remark',
+      title: '用户备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
     },
     {
       key: 'financial',
@@ -115,13 +122,6 @@ const {
       }
     },
     {
-      key: 'user.remark',
-      title: '用户备注',
-      align: 'center',
-      width: 120,
-      render: row => <span>{row.user?.remark || '-'}</span>
-    },
-    {
       key: 'operate',
       title: '操作',
       align: 'center',
@@ -150,14 +150,13 @@ const {
 const handleHidden = async (id: number) => {
   await hiddenFinancial({ id });
   getData();
-}
-
+};
 </script>
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
-    <NCard title="理财订单管理" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
+    <NCard title="理财订单管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation v-model:columns="columnChecks" :loading="loading" no-add @refresh="getData" />
       </template>
