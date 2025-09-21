@@ -2,7 +2,7 @@
 import { reactive, ref } from 'vue';
 import { NButton, NTag, NText } from 'naive-ui';
 import dayjs from 'dayjs';
-import { fetchGetUserList, fetchSendMessage } from '@/service/api/user'; 
+import { fetchGetUserList, fetchSendMessage } from '@/service/api/user';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
@@ -32,10 +32,11 @@ const {
     status: null,
     role_type: null,
     is_kyc: null,
-    page: 1,
+    page: 1
   },
   columns: () => [
     { key: 'id', title: 'UID', align: 'center', width: 80, fixed: 'left' },
+    { key: 'remark', title: '备注', align: 'center', width: 120, render: row => <span>{row.remark || '-'}</span> },
     { key: 'email', title: '邮箱', align: 'center', width: 150 },
     {
       key: 'phone',
@@ -85,7 +86,6 @@ const {
     },
     // { key: 'register_ip', title: '注册IP', align: 'center', width: 120 },
     // { key: 'regsiter_device', title: '注册设备', align: 'center', width: 120 },
-    { key: 'remark', title: '备注', align: 'center', width: 120, render: row => <span>{row.remark || '-'}</span> },
     {
       key: 'last_login_at',
       title: '最近登录',
@@ -219,7 +219,7 @@ function handleResetPasswordSubmitted() {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-     <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" /> 
+    <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard title="用户管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation
