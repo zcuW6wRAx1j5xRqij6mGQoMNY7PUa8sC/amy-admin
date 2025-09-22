@@ -46,6 +46,7 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   order_loan: () => import("@/views/order/loan/index.vue"),
   order_otc: () => import("@/views/order/otc/index.vue"),
   order_spot: () => import("@/views/order/spot/index.vue"),
+  order_stock: () => import("@/views/order/stock/index.vue"),
   order_tagesstrategie: () => import("@/views/order/tagesstrategie/index.vue"),
   stock_ipo: () => import("@/views/stock/ipo/index.vue"),
   stock_market: () => import("@/views/stock/market/index.vue"),

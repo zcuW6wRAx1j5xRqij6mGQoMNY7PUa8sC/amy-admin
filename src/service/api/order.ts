@@ -6,9 +6,29 @@ export function OrderFuturesList(params: CommListPlader) {
   return request<any>({ url: '/api/admin/order/futures/list', params });
 }
 
+// 股票订单列表
+export function OrderStockList(params: CommListPlader) {
+  return request<any>({ url: '/api/admin/order/market/list', params });
+}
+
 // 大宗订单列表
 export function OrderOtcList(params: CommListPlader) {
   return request<any>({ url: '/api/admin/order/otc/list', params });
+}
+
+// 隐藏股票订单
+export function OrderMarketHidden(params: {id:number}) {
+  return request<any>({ url: '/api/admin/order/market/hidden', params });
+}
+
+// 股票平仓
+export function OrderMarketClosed(id: number) {
+  return request<any>({ url: '/api/admin/order/market/closed', method: 'POST', data: id });
+}
+
+// 股票锁仓/解锁
+export function OrderMarketLockOrUnlock(data: {id: number; status: 'open' | 'locked'}) {
+  return request<any>({ url: '/api/admin/order/market/lockOrUnlock', method: 'POST', data });
 }
 
 // OTC订单审核

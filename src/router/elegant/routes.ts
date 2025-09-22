@@ -370,6 +370,14 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
+        name: 'order_stock',
+        path: '/order/stock',
+        component: 'view.order_stock',
+        meta: {
+          title: 'order_stock'
+        }
+      },
+      {
         name: 'order_tagesstrategie',
         path: '/order/tagesstrategie',
         component: 'view.order_tagesstrategie',

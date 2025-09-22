@@ -55,6 +55,7 @@ declare module "@elegant-router/types" {
     "order_loan": "/order/loan";
     "order_otc": "/order/otc";
     "order_spot": "/order/spot";
+    "order_stock": "/order/stock";
     "order_tagesstrategie": "/order/tagesstrategie";
     "stock": "/stock";
     "stock_ipo": "/stock/ipo";
@@ -169,6 +170,7 @@ declare module "@elegant-router/types" {
     | "order_loan"
     | "order_otc"
     | "order_spot"
+    | "order_stock"
     | "order_tagesstrategie"
     | "stock_ipo"
     | "stock_market"
