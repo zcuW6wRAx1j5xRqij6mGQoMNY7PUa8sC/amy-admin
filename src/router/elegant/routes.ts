@@ -374,7 +374,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/order/stock',
         component: 'view.order_stock',
         meta: {
-          title: 'order_stock'
+          title: '股票订单',
+          icon: 'mdi:clipboard-text'
         }
       },
       {
