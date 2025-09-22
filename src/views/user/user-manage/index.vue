@@ -30,6 +30,7 @@ const {
     email: '',
     invite_code: '',
     status: null,
+    size:20,
     role_type: null,
     is_kyc: null,
     page: 1
