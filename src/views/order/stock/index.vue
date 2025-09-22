@@ -267,7 +267,7 @@ function handleCreate() {
           <!-- @add="handleCreate" -->
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
+    <!-- <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" /> -->
     <NCard title="OTC订单管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation
