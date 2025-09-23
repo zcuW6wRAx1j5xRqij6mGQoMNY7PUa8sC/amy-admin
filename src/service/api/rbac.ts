@@ -86,7 +86,7 @@ export function fetchEditAdmin(params: any) {
 
 // 重置密码
 export function fetchAdminResetPwd(data: ResetPwdPlader) {
-  return request<any>({ url: `/api/admin/account/resetPwd`, data });
+  return request<any>({ url: `/api/admin/account/resetPwd`, method: 'post', data });
 }
 
 // 管理员角色列表
