@@ -2,13 +2,14 @@
 import { reactive, ref } from 'vue';
 import { NButton, NTag, NText } from 'naive-ui';
 import dayjs from 'dayjs';
-import { fetchGetUserList, fetchSendMessage } from '@/service/api/user';
+import { fetchCreateKyc, fetchGetUserList, fetchSendMessage } from '@/service/api/user';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
 import UserEditDrawer from './modules/user-edit-drawer.vue';
 import UserCreateDrawer from './modules/user-create-drawer.vue';
 import ResetPasswordDrawer from './modules/reset-password-drawer.vue';
+import KycDrawer from './modules/kyc-drawer.vue';
 
 const appStore = useAppStore();
 
@@ -30,7 +31,7 @@ const {
     email: '',
     invite_code: '',
     status: null,
-    size:20,
+    size: 20,
     role_type: null,
     is_kyc: null,
     page: 1
@@ -114,6 +115,9 @@ const {
           <NButton size="small" type="primary" onClick={() => edit(row.id)}>
             编辑
           </NButton>
+          <NButton size="small" type="info" onClick={() => handleKyc(row.id)}>
+            实名
+          </NButton>
           <NButton size="small" type="warning" onClick={() => handleResetPassword(row.id)}>
             重置密码
           </NButton>
@@ -183,6 +187,10 @@ const resetPasswordDrawerVisible = ref(false);
 const resetPasswordUserId = ref<number>();
 const resetPasswordType = ref<'password' | 'trade-password'>('password');
 
+// 实名抽屉相关
+const kycDrawerVisible = ref(false);
+const kycUserId = ref<number>();
+
 function edit(id: number) {
   handleEdit(id);
 }
@@ -215,6 +223,18 @@ function handleResetTradePassword(id: number) {
 // 处理重置密码提交
 function handleResetPasswordSubmitted() {
   resetPasswordDrawerVisible.value = false;
+}
+
+// 实名
+function handleKyc(id: number) {
+  kycUserId.value = id;
+  kycDrawerVisible.value = true;
+}
+
+// 处理实名提交
+function handleKycSubmitted() {
+  kycDrawerVisible.value = false;
+  getData(); // 刷新列表
 }
 </script>
 
@@ -259,6 +279,9 @@ function handleResetPasswordSubmitted() {
       :reset-type="resetPasswordType"
       @submitted="handleResetPasswordSubmitted"
     />
+
+    <!-- 实名抽屉 -->
+    <KycDrawer v-model:visible="kycDrawerVisible" :user-id="kycUserId" @submitted="handleKycSubmitted" />
 
     <!-- 站内信 -->
     <ObDialog

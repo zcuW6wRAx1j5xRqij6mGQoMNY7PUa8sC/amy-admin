@@ -257,3 +257,18 @@ export function fetchSendMessage(params:{
 }) {
   return request({ url: '/api/admin/users/user/inbox/send', method: 'POST', data: params });
 }
+
+// 实名认证
+export function fetchCreateKyc(data: {
+  uid: number;
+  name: string;
+  id_card_number: string;
+  photo_front: string;
+  photo_back: string;
+}) {
+  return request({
+    url: '/api/admin/users/kyc/create',
+    method: 'post',
+    data
+  });
+}
