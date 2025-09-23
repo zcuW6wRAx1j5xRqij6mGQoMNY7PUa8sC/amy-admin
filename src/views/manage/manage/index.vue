@@ -190,7 +190,7 @@ getRoleList();
       <NDrawer v-model:show="editVisible" :width="500">
         <NDrawerContent title="重置密码" closable>
           <MyForm all-required :error-obj="editErrors">
-            <MyFormItem v-model="editForm.password" label="请输入密码" prop-name="password" />
+            <MyFormItem v-model="editForm.password" label="请输入密码" prop-name="password" type="password" />
           </MyForm>
           <template #footer>
             <NSpace :size="16">
