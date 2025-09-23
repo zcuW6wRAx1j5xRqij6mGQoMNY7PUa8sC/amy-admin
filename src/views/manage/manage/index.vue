@@ -160,6 +160,7 @@ function handleEditSubmit() {
     })
     .finally(() => {
       editLoading.value = false;
+      editVisible.value = false;
     });
 }
 
