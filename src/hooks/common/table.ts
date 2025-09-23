@@ -22,6 +22,14 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
 
   const EXPAND_KEY = '__expand__';
 
+  // 先定义pagination以在transformer中使用
+  const pagination: PaginationProps = reactive({
+    page: 1,
+    pageSize: 20,
+    showSizePicker: true,
+    pageSizes: [10, 15,20, 25,30]
+  });
+
   const {
     loading,
     empty,
@@ -38,17 +46,22 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
     apiParams,
     columns: config.columns,
     transformer: res => {
-      if (apiParams.noPage) {
-        return { data: res };
+      if (apiParams?.noPage) {
+        return {
+          data: res,
+          pageNum: 1,
+          pageSize: 10,
+          total: 1
+        };
       }
       const page = pagination.page || 1;
-      const page_size = 20;
+      const page_size = pagination.pageSize || 20;
       const total = res.total;
       const items = res.items || res.data || res.rows;
       // Ensure that the size is greater than 0, If it is less than 0, it will cause paging calculation errors.
       const pageSize = page_size <= 0 ? 10 : page_size;
 
-      const itemsWithIndex = items.map((item, index) => {
+      const itemsWithIndex = (items as Array<any>).map((item: any, index: number) => {
         return {
           ...item,
           index: (page - 1) * pageSize + index + 1
@@ -114,23 +127,23 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
       updatePagination({
         page: pageNum,
         pageSize,
+        
         itemCount: total
       });
     },
     immediate
   });
 
-  const pagination: PaginationProps = reactive({
-    page: 1,
-    pageSize: 20,
-    showSizePicker: false,
-    // pageSizes: [10, 15, 20, 25, 30],
+  // 补充pagination的方法定义
+  Object.assign(pagination, {
     onUpdatePage: async (page: number) => {
       pagination.page = page;
+      // 使用as any避免类型检查错误
       updateSearchParams({
         page,
-        page_size: pagination.pageSize!
-      });
+        page_size: pagination.pageSize!,
+        size: pagination.pageSize!
+      } as any);
 
       getData();
     },
@@ -138,10 +151,12 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
       pagination.pageSize = pageSize;
       pagination.page = 1;
 
+      // 使用as any避免类型检查错误
       updateSearchParams({
         page: pagination.page,
-        page_size: pageSize
-      });
+        page_size: pageSize,
+        size: pageSize
+      } as any);
 
       getData();
     },
@@ -154,7 +169,7 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
 
   // this is for mobile, if the system does not support mobile, you can use `pagination` directly
   const mobilePagination = computed(() => {
-    if (apiParams.noPage) {
+    if (apiParams?.noPage) {
       return false;
     }
     const p: PaginationProps = {
@@ -180,10 +195,11 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
       page: pageNum
     });
 
+    // 使用as any避免类型检查错误
     updateSearchParams({
       page: pageNum,
       page_size: pagination.pageSize!
-    });
+    } as any);
 
     await getData();
   }
