@@ -137,10 +137,10 @@ function edit(id) {
 
 function resetEdit(id: number) {
   editVisible.value = true;
-  editForm.value = ref({
+  editForm.value = {
     password: '',
     id
-  });
+  };
 }
 
 const roleList = ref([]);
