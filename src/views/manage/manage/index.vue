@@ -48,7 +48,7 @@ const {
       align: 'center',
       minWidth: 120,
       render: row => {
-        return row.invite_code || '-'
+        return row.invite_code || '-';
       }
     },
     {
@@ -151,7 +151,7 @@ const editErrors = ref({});
 
 function handleEditSubmit() {
   if (!editForm.value.password) return (editErrors.value.password = '请输入密码');
-  fetchAdminResetPwd(editForm.value)
+  fetchAdminResetPwd({ id: editForm.value.id, password: editForm.value.password })
     .then(res => {
       window.$message?.success('修改成功');
     })
