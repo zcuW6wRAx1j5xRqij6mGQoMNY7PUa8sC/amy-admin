@@ -27,6 +27,9 @@ const {
     uid: null,
     coin_id: null,
     status: null,
+    range: {
+      created_at: null,
+    },
     page: 1,
     size: 20
   },

@@ -29,6 +29,9 @@ const {
     uid: '',
     audit_status: null,
     page: 1,
+    range: {
+      created_at: null,
+    },
     size: 20
   },
   columns: () => [

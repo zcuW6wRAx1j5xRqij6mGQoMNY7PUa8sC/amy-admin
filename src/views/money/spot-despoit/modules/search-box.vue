@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
+import { ref } from 'vue';
 defineOptions({
   name: 'CryptoDepositSearchBox'
 });
@@ -19,6 +21,13 @@ const statusOptions = [
   { label: '已通过', value: 2 },
   { label: '已结清', value: 3 }
 ];
+
+const rangeShortcuts = ref({
+  今日: [dayjs().startOf('day').toDate(), dayjs().endOf('day').toDate()],
+  昨日: [dayjs().subtract(1, 'day').startOf('day').toDate(), dayjs().subtract(1, 'day').endOf('day').toDate()],
+  最近7天: [dayjs().subtract(7, 'day').startOf('day').toDate(), dayjs().endOf('day').toDate()],
+  最近30天: [dayjs().subtract(30, 'day').startOf('day').toDate(), dayjs().endOf('day').toDate()]
+});
 
 async function reset() {
   emit('reset');
@@ -43,6 +52,14 @@ async function search() {
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:8 l:6" label="状态" path="status" class="pr-24px">
               <NSelect v-model:value="model.status" placeholder="请选择状态" :options="statusOptions" clearable />
+            </NFormItemGi>
+            <NFormItemGi span="24 s:12 m:8 l:6" label="创建时间" path="created_at" class="pr-24px">
+              <NDatePicker 
+              v-model:value="model.range.created_at" type="datetimerange"
+              clearable
+              :shortcuts="rangeShortcuts"
+              :default-time="['00:00:00', '23:59:59']" 
+              placeholder="股票充值时间" />
             </NFormItemGi>
             <NFormItemGi span="24 m:6" class="pr-24px">
               <NSpace class="w-full">

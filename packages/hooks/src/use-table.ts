@@ -3,6 +3,7 @@ import type { Ref, VNodeChild } from 'vue';
 import { jsonClone } from '@sa/utils';
 import useBoolean from './use-boolean';
 import useLoading from './use-loading';
+import dayjs from 'dayjs';
 
 export type MaybePromise<T> = T | Promise<T>;
 
@@ -114,7 +115,28 @@ export default function useHookTable<A extends ApiFn, T, C>(config: TableConfig<
 
     Object.entries(params).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
-        formattedParams[key] = value;
+        if (key.includes('filter')) {
+          // 删除value中没有值的key
+          const filteredValue = Object.fromEntries(
+            Object.entries(value).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+          );
+          if (Object.keys(filteredValue).length > 0) {
+            formattedParams[key] = JSON.stringify(filteredValue);
+          }
+        } else if (key.includes('range')) {
+          // 删除value中没有值的key
+          const filteredValue = Object.fromEntries(
+            Object.entries(value).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+          );
+          let list = [];
+          Object.entries(filteredValue).forEach(([key, value]) => {
+            list.push([key, '>=', dayjs(value[0]).format('YYYY-MM-DD HH:mm:ss')]);
+            list.push([key, '<=', dayjs(value[1]).format('YYYY-MM-DD HH:mm:ss')]);
+          });
+          formattedParams[key] = JSON.stringify(list);
+        } else {
+          formattedParams[key] = value;
+        }
       }
     });
 

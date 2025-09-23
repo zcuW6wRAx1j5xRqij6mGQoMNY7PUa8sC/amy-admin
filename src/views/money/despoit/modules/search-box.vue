@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+import dayjs from 'dayjs';
 defineOptions({
   name: 'DepositOrderSearchBox'
 });
@@ -25,6 +27,13 @@ async function reset() {
 async function search() {
   emit('search');
 }
+
+const rangeShortcuts = ref({
+  今日: [dayjs().startOf('day').toDate(), dayjs().endOf('day').toDate()],
+  昨日: [dayjs().subtract(1, 'day').startOf('day').toDate(), dayjs().subtract(1, 'day').endOf('day').toDate()],
+  最近7天: [dayjs().subtract(7, 'day').startOf('day').toDate(), dayjs().endOf('day').toDate()],
+  最近30天: [dayjs().subtract(30, 'day').startOf('day').toDate(), dayjs().endOf('day').toDate()]
+});
 </script>
 
 <template>
@@ -38,6 +47,14 @@ async function search() {
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:8 l:6" label="充值状态" path="status" class="pr-24px">
               <NSelect v-model:value="model.status" placeholder="请选择充值状态" :options="statusOptions" clearable />
+            </NFormItemGi>
+            <NFormItemGi span="24 s:12 m:8 l:6" label="创建时间" path="created_at" class="pr-24px">
+              <NDatePicker 
+              v-model:value="model.range.created_at" type="datetimerange"
+              clearable
+              :shortcuts="rangeShortcuts"
+              :default-time="['00:00:00', '23:59:59']" 
+              placeholder="股票充值时间" />
             </NFormItemGi>
             <NFormItemGi span="24 m:6" class="pr-24px">
               <NSpace class="w-full">
