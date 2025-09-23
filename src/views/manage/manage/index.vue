@@ -151,7 +151,7 @@ const editErrors = ref({});
 
 function handleEditSubmit() {
   if (!editForm.value.password) return (editErrors.value.password = '请输入密码');
-  fetchAdminResetPwd({ id: editForm.value.id, password: editForm.value.password })
+  fetchAdminResetPwd(editForm.value)
     .then(res => {
       window.$message?.success('修改成功');
     })
