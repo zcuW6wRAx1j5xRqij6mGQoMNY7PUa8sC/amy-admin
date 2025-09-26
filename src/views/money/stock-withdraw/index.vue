@@ -38,13 +38,6 @@ const {
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
     { key: 'uid', title: '用户ID', align: 'center', width: 100 },
     {
-      key: 'user.name',
-      title: '用户姓名',
-      align: 'center',
-      width: 120,
-      render: row => <span>{row.user?.name || '-'}</span>
-    },
-    {
       key: 'user.email',
       title: '用户邮箱',
       align: 'center',
@@ -76,6 +69,31 @@ const {
       align: 'center',
       width: 120,
       render: row => <span>{row.bank_card_id || '-'}</span>
+    },
+    {
+      key: 'bank_card_info.card_holder_name',
+      title: '银行卡信息',
+      align: 'center',
+      width: '250px',
+      render: row => {
+        return <div>
+          <div class="text-align-left">
+            持卡人姓名:{row.bank_card_info?.card_holder_name || '-'}
+          </div>
+          <div class="text-align-left">
+            银行名称:{row.bank_card_info?.bank_name || '-'}
+          </div>
+          <div class="text-align-left">
+            银行卡号:{row.bank_card_info?.card_number || '-'}
+          </div>
+          <div class="text-align-left">
+            chve pix:{row.bank_card_info?.chve_pix || '-'}
+          </div>
+          <div class="text-align-left">
+            cpf:{row.bank_card_info?.cpf || '-'}
+          </div>
+        </div>
+      }
     },
     {
       key: 'user.remark',
