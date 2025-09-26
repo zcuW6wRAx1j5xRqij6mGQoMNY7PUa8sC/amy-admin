@@ -4,13 +4,16 @@ import { FlowFuturesList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { hiddenFuturesOrder } from '@/service/api/hidden';
+import SearchBox from './modules/search-box.vue';
 
 const appStore = useAppStore();
 
 // 表格相关
-const { columns, columnChecks, data, loading, getData, mobilePagination } = useTable({
+const { columns, columnChecks, data, loading, getData, mobilePagination,searchParams,
+  resetSearchParams,getDataByPage } = useTable({
   apiFn: FlowFuturesList,
   apiParams: {
+    uid: '',
     page: 1,
     size: 20
   },
@@ -184,6 +187,7 @@ const { checkedRowKeys } = useTableOperate(data, getData);
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
+    <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard title="合约钱包流水" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation
