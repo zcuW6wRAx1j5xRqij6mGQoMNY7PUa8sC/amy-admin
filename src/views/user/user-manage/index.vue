@@ -61,56 +61,6 @@ const {
       width: 100,
       render: row => <span>{row.level?.name_en || '-'}</span>
     },
-    {
-      key: 'banks',
-      title: '银行卡1信息',
-      align: 'center',
-      width: '320px',
-      render: row => {
-        return <div>
-          <div class="text-align-left">
-            持卡人姓名:{row.banks[0]?.card_holder_name || '-'}
-          </div>
-          <div class="text-align-left">
-            银行名称:{row.banks[0]?.bank_name || '-'}
-          </div>
-          <div class="text-align-left">
-            银行卡号:{row.banks[0]?.card_number || '-'}
-          </div>
-          <div class="text-align-left">
-            chve pix:{row.banks[0]?.chve_pix || '-'}
-          </div>
-          <div class="text-align-left">
-            cpf:{row.banks[0]?.cpf || '-'}
-          </div>
-        </div>
-      }
-    },
-    {
-      key: 'banks1',
-      title: '银行卡2信息',
-      align: 'center',
-      width: '320px',
-      render: row => {
-        return <div>
-          <div class="text-align-left">
-            持卡人姓名:{row.banks[1]?.card_holder_name || '-'}
-          </div>
-          <div class="text-align-left">
-            银行名称:{row.banks[1]?.bank_name || '-'}
-          </div>
-          <div class="text-align-left">
-            银行卡号:{row.banks[1]?.card_number || '-'}
-          </div>
-          <div class="text-align-left">
-            chve pix:{row.banks[1]?.chve_pix || '-'}
-          </div>
-          <div class="text-align-left">
-            cpf:{row.banks[1]?.cpf || '-'}
-          </div>
-        </div>
-      }
-    },
     { key: 'credit', title: '信用分', align: 'center', width: 100, render: row => <span>{row.credit || 0}</span> },
     {
       key: 'is_kyc',
@@ -153,6 +103,40 @@ const {
       align: 'center',
       width: 170,
       render: row => <NText>{row.created_at && dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')}</NText>
+    },
+    {
+      key: 'banks',
+      title: '银行卡1信息',
+      align: 'center',
+      width: '320px',
+      render: row => {
+        return (
+          <div>
+            <div class="text-align-left">持卡人姓名：{row.banks[0]?.card_holder_name || '-'}</div>
+            <div class="text-align-left">银行名称：{row.banks[0]?.bank_name || '-'}</div>
+            <div class="text-align-left">银行卡号：{row.banks[0]?.card_number || '-'}</div>
+            <div class="text-align-left">chve pix：{row.banks[0]?.chve_pix || '-'}</div>
+            <div class="text-align-left">cpf：{row.banks[0]?.cpf || '-'}</div>
+          </div>
+        );
+      }
+    },
+    {
+      key: 'banks1',
+      title: '银行卡2信息',
+      align: 'center',
+      width: '320px',
+      render: row => {
+        return (
+          <div>
+            <div class="text-align-left">持卡人姓名：{row.banks[1]?.card_holder_name || '-'}</div>
+            <div class="text-align-left">银行名称：{row.banks[1]?.bank_name || '-'}</div>
+            <div class="text-align-left">银行卡号：{row.banks[1]?.card_number || '-'}</div>
+            <div class="text-align-left">chve pix：{row.banks[1]?.chve_pix || '-'}</div>
+            <div class="text-align-left">cpf：{row.banks[1]?.cpf || '-'}</div>
+          </div>
+        );
+      }
     },
     {
       key: 'actions',
