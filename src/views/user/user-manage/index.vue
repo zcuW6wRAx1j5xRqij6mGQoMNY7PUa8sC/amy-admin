@@ -65,7 +65,7 @@ const {
       key: 'banks',
       title: '银行卡1信息',
       align: 'center',
-      width: '220px',
+      width: '320px',
       render: row => {
         return <div>
           <div class="text-align-left">
@@ -90,7 +90,7 @@ const {
       key: 'banks1',
       title: '银行卡2信息',
       align: 'center',
-      width: '220px',
+      width: '320px',
       render: row => {
         return <div>
           <div class="text-align-left">
