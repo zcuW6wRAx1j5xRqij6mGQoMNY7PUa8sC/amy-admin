@@ -27,7 +27,7 @@ const {
 } = useTable({
   apiFn: fetchGetUserList,
   apiParams: {
-    uid: '',
+    id: '',
     email: '',
     invite_code: '',
     status: null,

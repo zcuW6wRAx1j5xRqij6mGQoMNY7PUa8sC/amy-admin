@@ -148,7 +148,7 @@ export interface UserUpdateRequest {
  * 用户搜索参数接口
  */
 export interface UserSearchParams extends CommListPlader {
-  uid?: string;
+  id?: string;
   name?: string;
   email?: string;
   phone?: string;
