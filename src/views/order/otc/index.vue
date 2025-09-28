@@ -142,7 +142,7 @@ const {
         const statusMap = {
           pending: { type: 'warning', text: '待审核' },
           open: { type: 'success', text: '持仓中' },
-          locked: { type: 'warning', text: '已锁仓' },
+          // locked: { type: 'warning', text: '已锁仓' },
           rejected: { type: 'error', text: '已拒绝' },
           closed: { type: 'error', text: '已平仓' }
         };
@@ -174,7 +174,8 @@ const {
           )}
 
           {/* 锁仓按钮 - 只在状态为开放时显示 */}
-          {(row.status === 'open') && (
+          {/* row.status === 'open' */}
+          {( getStatus(row)==='open'&&row.status ==='open') && (
             <NPopconfirm onPositiveClick={() => handleLock(row.id)}>
               {{
                 default: () => '确认锁仓此订单吗？',
@@ -188,7 +189,8 @@ const {
           )}
 
           {/* 解锁按钮 - 只在状态为锁定时显示 */}
-          {(row.status === 'locked') && (
+          {/* row.status === 'locked' */}
+          {( getStatus(row)==='locked'&& row.status ==='open') && (
             <NPopconfirm onPositiveClick={() => handleUnlock(row.id)}>
               {{
                 default: () => '确认解锁此订单吗？',
@@ -229,13 +231,19 @@ const updateTime = () => {
     currentTime.value = Date.now()
     updateTime()
   }, 5000);
+  // currentTime.value = Date.now()
 }
 const currentTime = ref(Date.now())
 
 const getStatus = (order:any) => {
+//   产品上控制解除锁仓时间的字段是 unblock_at datetime 类型
+
+// 控制单个订单解仓字段是 unblocked int 类型 是否锁仓=1:未锁仓,0:已锁仓 
+// unblocked=0时要继续判断产品的unblock_at字段的时间是否大于当前时间
+// order_block_status = order.unblocked == 0 ? (order.blockTrade.unblock_at > now ? '已锁仓' : '未锁仓') : '未锁仓';
   // 添加对currentTime的依赖，确保当currentTime更新时，getStatus重新计算
   currentTime.value; // 读取但不使用，建立依赖关系
-  const timeData = order.blockTrade?.unblock_at || 0
+  const timeData = order.blockTrade?.unblock_at || order.unblocked || 0
   if (!timeData) return 'pending'
   const time = new Date(order.close_time).getTime()
   if(order.unblocked === 1) return 'open'
