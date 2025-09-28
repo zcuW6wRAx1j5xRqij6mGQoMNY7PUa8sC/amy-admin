@@ -120,6 +120,20 @@ const {
       render: row => <span>{row.close_fee || 0}</span>
     },
     {
+      key: 'block_trade_status',
+      title: '持仓状态',
+      align: 'center',
+      width: 100,
+      render:row=>{
+        if(row.status === 'pending' || row.status === 'closed'){
+          return '-'
+        }
+        const status = getStatus(row)
+        return status === 'pending' ? '-' : status === 'open' ?'未锁仓':'锁仓'
+        // return <NTag type={status.type}>{status.text}</NTag>;
+      }
+    },
+    {
       key: 'status',
       title: '状态',
       align: 'center',
@@ -160,7 +174,7 @@ const {
           )}
 
           {/* 锁仓按钮 - 只在状态为开放时显示 */}
-          {row.status === 'open' && (
+          {(row.status === 'open') && (
             <NPopconfirm onPositiveClick={() => handleLock(row.id)}>
               {{
                 default: () => '确认锁仓此订单吗？',
@@ -174,7 +188,7 @@ const {
           )}
 
           {/* 解锁按钮 - 只在状态为锁定时显示 */}
-          {row.status === 'locked' && (
+          {(row.status === 'locked') && (
             <NPopconfirm onPositiveClick={() => handleUnlock(row.id)}>
               {{
                 default: () => '确认解锁此订单吗？',
@@ -209,6 +223,26 @@ const {
     }
   ]
 });
+
+const updateTime = () => {
+  setTimeout(() => {
+    currentTime.value = Date.now()
+    updateTime()
+  }, 5000);
+}
+const currentTime = ref(Date.now())
+
+const getStatus = (order:any) => {
+  // 添加对currentTime的依赖，确保当currentTime更新时，getStatus重新计算
+  currentTime.value; // 读取但不使用，建立依赖关系
+  const timeData = order.blockTrade?.unblock_at || 0
+  if (!timeData) return 'pending'
+  const time = new Date(order.close_time).getTime()
+  if(order.unblocked === 1) return 'open'
+  if(order.unblocked === 0 && time > currentTime.value) return 'locked'
+  return 'open'
+}
+updateTime()
 
 const handleHidden = async (id: number) => {
   await hiddenOrder({ id });
