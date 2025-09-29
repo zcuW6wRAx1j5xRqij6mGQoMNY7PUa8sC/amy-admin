@@ -62,6 +62,7 @@ declare module "@elegant-router/types" {
     "stock_market": "/stock/market";
     "stock_otc": "/stock/otc";
     "user": "/user";
+    "user_bank-card": "/user/bank-card";
     "user_kyc": "/user/kyc";
     "user_level": "/user/level";
     "user_user-manage": "/user/user-manage";
@@ -175,6 +176,7 @@ declare module "@elegant-router/types" {
     | "stock_ipo"
     | "stock_market"
     | "stock_otc"
+    | "user_bank-card"
     | "user_kyc"
     | "user_level"
     | "user_user-manage"

@@ -272,3 +272,58 @@ export function fetchCreateKyc(data: {
     data
   });
 }
+// 用户银行卡列表
+export function UserBankCardList(params: any) {
+  return request({ url: '/api/admin/users/bank_card/list', params });
+}
+
+// 用户银行卡删除
+export function UserBankCardDelete(params: CommIdPlader) {
+  return request({ url: '/api/admin/users/bank_card/delete', params });
+}
+
+export interface bankCardReq {
+    /**
+     * 银行名称
+     */
+    bank_name: string;
+    /**
+     * 持卡人姓名
+     */
+    card_holder_name: string;
+    /**
+     * 银行卡号
+     */
+    card_number: string;
+    /**
+     * ChvePix
+     */
+    chve_pix: string;
+    /**
+     * CPF
+     */
+    cpf: string;
+    id: number;
+    /**
+     * 用户 ID
+     */
+    uid?: number;
+}
+
+// 用户银行卡添加
+export function UserBankCardAdd(data: bankCardReq) {
+  return request({
+    url: '/api/admin/users/bank_card/create',
+    method: 'post',
+    data
+  });
+}
+
+// 用户银行卡更新
+export function UserBankCardUpdate(data: bankCardReq) {
+  return request({
+    url: '/api/admin/users/bank_card/update',
+    method: 'post',
+    data
+  });
+}
