@@ -134,7 +134,7 @@ const {
         const statusMap = {
           pending: { type: 'warning', text: '待审核' },
           open: { type: 'success', text: '持仓中' },
-          // locked: { type: 'warning', text: '已锁仓' },
+          locked: { type: 'warning', text: '已锁仓' },
           rejected: { type: 'error', text: '已拒绝' },
           closed: { type: 'error', text: '已平仓' }
         };
