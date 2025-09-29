@@ -93,24 +93,16 @@ const { columns, data, loading, getData, searchParams, updateSearchParams } = us
   ]
 });
 
-// 监听用户ID变化
-watch(
-  () => props.userId,
-  newUserId => {
-    if (newUserId) {
-      updateSearchParams({ uid: newUserId });
-      formData.uid = newUserId;
-      getData();
-    }
-  },
-  { immediate: true }
-);
-
 // 监听抽屉显示状态
 watch(visible, newVisible => {
   if (newVisible) {
+    updateSearchParams({ uid: props.userId });
+    formData.uid = props.userId;
     resetForm();
-    getData();
+    // 确保有用户ID才获取数据
+    if (props.userId) {
+      getData();
+    }
   }
 });
 
@@ -218,7 +210,7 @@ function handleCancel() {
 </script>
 
 <template>
-  <NDrawer v-model:show="visible" width="1000px" placement="right">
+  <NDrawer v-model:show="visible" width="1100px" placement="right">
     <NDrawerContent title="银行卡信息管理" closable>
       <div class="flex-col-stretch gap-16px">
         <!-- 表单 -->
