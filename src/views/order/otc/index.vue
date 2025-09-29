@@ -63,7 +63,7 @@ const getStatus = (order: any) => {
 const shouldShowLockButton = (row: any) => {
   // 条件：status == open && (block_trade.unlock_at == null 或 block_trade.unlock_at < now) && is_manual_unlock == 1
   if (row.status !== 'open') return false;
-  if (row.is_manual_unlock !== 1) return false;
+  if (row.is_manual_unlock === 1 && row.status === 'open') return true;
 
   // 读取 currentTime 建立响应式依赖
   const now = dayjs(currentTime.value);
@@ -250,7 +250,7 @@ const {
             </NButton>
           )}
 
-          {row.status === 'open' && shouldShowLockButton(row) && (
+          { shouldShowLockButton(row) && (
             <NPopconfirm onPositiveClick={() => handleLock(row.id)}>
               {{
                 default: () => '确认锁仓此订单吗？',
