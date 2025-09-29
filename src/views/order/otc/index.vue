@@ -1,6 +1,8 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
+import { onUnmounted, ref } from 'vue';
+import { useIntervalFn } from '@vueuse/core';
 import { NButton, NPopconfirm, NSpace, NTag, useMessage } from 'naive-ui';
+import dayjs from 'dayjs';
 import { OrderOtcList, OrderOtcLockUnlock } from '@/service/api/order';
 import { hiddenOrder } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
@@ -24,6 +26,79 @@ const closeRowData = ref<any>(null);
 
 // 建仓弹窗相关
 const createDrawerVisible = ref(false);
+
+// 创建一个响应式的时间戳，用于触发状态重新计算
+const currentTime = ref(Date.now());
+
+const getStatus = (order: any) => {
+  // 显示解锁按钮：
+  // 1、is_manual_unlock == 0 && block_trade.unlock_at >= now
+  // 2、status == locked
+  // 显示锁仓按钮：
+  // 1、status == open && (block_trade.unlock_at == null 或 block_trade.unlock_at < now)
+  // 2、status == open && is_manual_unlock == 1
+
+  // 读取 currentTime 建立响应式依赖，当时间更新时会重新计算
+  const now = dayjs(currentTime.value);
+
+  // 如果订单状态不是 open，直接返回对应状态
+  if (order.status !== 'open') {
+    return order.status;
+  }
+
+  // 检查是否已锁仓
+  if (order.unblocked === 0) {
+    // 已锁仓，检查解锁时间
+    const unlockAt = order.block_trade?.unlock_at;
+    if (unlockAt && dayjs(unlockAt).isAfter(now)) {
+      return 'locked'; // 还在锁仓期内
+    }
+    return 'open'; // 锁仓期已过，可以解锁
+  }
+
+  return 'open'; // 未锁仓状态
+};
+
+// 判断是否显示锁仓按钮
+const shouldShowLockButton = (row: any) => {
+  // 条件：status == open && (block_trade.unlock_at == null 或 block_trade.unlock_at < now) && is_manual_unlock == 1
+  if (row.status !== 'open') return false;
+  if (row.is_manual_unlock !== 1) return false;
+
+  // 读取 currentTime 建立响应式依赖
+  const now = dayjs(currentTime.value);
+  const unlockAt = row.block_trade?.unlock_at;
+
+  // block_trade.unlock_at == null 或 block_trade.unlock_at < now
+  if (!unlockAt || dayjs(unlockAt).isBefore(now)) {
+    return true;
+  }
+
+  return false;
+};
+
+// 判断是否显示解锁按钮
+const shouldShowUnlockButton = (row: any) => {
+  // 条件：is_manual_unlock == 0 && block_trade.unlock_at >= now && status == locked
+  if (row.is_manual_unlock !== 0) return false;
+
+  // 读取 currentTime 建立响应式依赖
+  const now = dayjs(currentTime.value);
+  const unlockAt = row.block_trade?.unlock_at;
+
+  // 检查状态是否为 locked（通过 getStatus 判断）
+  const currentStatus = getStatus(row);
+  if (currentStatus !== 'locked') return false;
+
+  // block_trade.unlock_at >= now
+  if (unlockAt && (dayjs(unlockAt).isAfter(now) || dayjs(unlockAt).isSame(now))) {
+    return true;
+  }
+
+  return false;
+};
+
+let handleHidden: (id: number) => Promise<void>;
 
 // 表格相关
 const {
@@ -124,12 +199,14 @@ const {
       title: '持仓状态',
       align: 'center',
       width: 100,
-      render:row=>{
-        if(row.status === 'pending' || row.status === 'closed'){
-          return '-'
+      render: row => {
+        if (row.status === 'pending' || row.status === 'closed') {
+          return '-';
         }
-        const status = getStatus(row)
-        return status === 'pending' ? '-' : status === 'open' ?'未锁仓':'锁仓'
+        const status = getStatus(row);
+        if (status === 'pending') return '-';
+        if (status === 'open') return '未锁仓';
+        return '锁仓';
         // return <NTag type={status.type}>{status.text}</NTag>;
       }
     },
@@ -173,9 +250,7 @@ const {
             </NButton>
           )}
 
-          {/* 锁仓按钮 - 只在状态为开放时显示 */}
-          {/* row.status === 'open' */}
-          {( getStatus(row)==='open'&&row.status ==='open') && (
+          {row.status === 'open' && shouldShowLockButton(row) && (
             <NPopconfirm onPositiveClick={() => handleLock(row.id)}>
               {{
                 default: () => '确认锁仓此订单吗？',
@@ -188,9 +263,7 @@ const {
             </NPopconfirm>
           )}
 
-          {/* 解锁按钮 - 只在状态为锁定时显示 */}
-          {/* row.status === 'locked' */}
-          {( getStatus(row)==='locked'&& row.status ==='open') && (
+          {shouldShowUnlockButton(row) && (
             <NPopconfirm onPositiveClick={() => handleUnlock(row.id)}>
               {{
                 default: () => '确认解锁此订单吗？',
@@ -226,37 +299,22 @@ const {
   ]
 });
 
-const updateTime = () => {
-  setTimeout(() => {
-    currentTime.value = Date.now()
-    updateTime()
-  }, 5000);
-  // currentTime.value = Date.now()
-}
-const currentTime = ref(Date.now())
+const { checkedRowKeys } = useTableOperate(data, getData);
 
-const getStatus = (order:any) => {
-//   产品上控制解除锁仓时间的字段是 unblock_at datetime 类型
-
-// 控制单个订单解仓字段是 unblocked int 类型 是否锁仓=1:未锁仓,0:已锁仓 
-// unblocked=0时要继续判断产品的unblock_at字段的时间是否大于当前时间
-// order_block_status = order.unblocked == 0 ? (order.blockTrade.unblock_at > now ? '已锁仓' : '未锁仓') : '未锁仓';
-  // 添加对currentTime的依赖，确保当currentTime更新时，getStatus重新计算
-  currentTime.value; // 读取但不使用，建立依赖关系
-  const timeData = order.blockTrade?.unblock_at || order.unblocked || 0
-  if (!timeData) return 'pending'
-  const time = new Date(order.close_time).getTime()
-  if(order.unblocked === 1) return 'open'
-  if(order.unblocked === 0 && time > currentTime.value) return 'locked'
-  return 'open'
-}
-updateTime()
-
-const handleHidden = async (id: number) => {
+// 定义 handleHidden 函数
+handleHidden = async (id: number) => {
   await hiddenOrder({ id });
   getData();
 };
-const { checkedRowKeys } = useTableOperate(data, getData);
+
+// 使用轻量级定时器更新时间戳，不调用接口
+const timeUpdateInterval = useIntervalFn(
+  () => {
+    currentTime.value = Date.now();
+  },
+  5000,
+  { immediate: true }
+);
 
 // 操作函数
 function handleApprove(row: any) {
@@ -278,8 +336,8 @@ async function handleLock(id: number) {
     await OrderOtcLockUnlock({ id, status: 'locked' });
     message.success('订单已锁仓');
     getData();
-  } catch (error) {
-    console.error('锁仓失败:', error);
+  } catch {
+    // console.error('锁仓失败:', error);
   } finally {
     loading.value = false;
   }
@@ -292,8 +350,8 @@ async function handleUnlock(id: number) {
     await OrderOtcLockUnlock({ id, status: 'open' });
     message.success('订单已解锁');
     getData();
-  } catch (error) {
-    console.error('解锁失败:', error);
+  } catch {
+    // console.error('解锁失败:', error);
   } finally {
     loading.value = false;
   }
@@ -307,6 +365,11 @@ async function handleClose(row: any) {
 function handleCreate() {
   createDrawerVisible.value = true;
 }
+
+// 组件卸载时清理定时器
+onUnmounted(() => {
+  timeUpdateInterval.pause();
+});
 </script>
 
 <template>
