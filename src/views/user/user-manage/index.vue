@@ -142,7 +142,7 @@ const {
       key: 'actions',
       title: '操作',
       align: 'center',
-      width: 280,
+      width: 340,
       fixed: 'right',
       render: row => (
         <div class="flex-center gap-12px">
