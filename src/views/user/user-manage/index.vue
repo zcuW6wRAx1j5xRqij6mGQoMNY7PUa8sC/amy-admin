@@ -2,7 +2,7 @@
 import { reactive, ref } from 'vue';
 import { NButton, NTag, NText } from 'naive-ui';
 import dayjs from 'dayjs';
-import { fetchCreateKyc, fetchGetUserList, fetchSendMessage } from '@/service/api/user';
+import { fetchGetUserList, fetchSendMessage } from '@/service/api/user';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
@@ -10,6 +10,7 @@ import UserEditDrawer from './modules/user-edit-drawer.vue';
 import UserCreateDrawer from './modules/user-create-drawer.vue';
 import ResetPasswordDrawer from './modules/reset-password-drawer.vue';
 import KycDrawer from './modules/kyc-drawer.vue';
+import BankCardDrawer from './modules/bank-card-drawer.vue';
 
 const appStore = useAppStore();
 
@@ -105,44 +106,10 @@ const {
       render: row => <NText>{row.created_at && dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')}</NText>
     },
     {
-      key: 'banks',
-      title: '银行卡1信息',
-      align: 'center',
-      width: '320px',
-      render: row => {
-        return (
-          <div>
-            <div class="text-align-left">持卡人姓名：{row.banks[0]?.card_holder_name || '-'}</div>
-            <div class="text-align-left">银行名称：{row.banks[0]?.bank_name || '-'}</div>
-            <div class="text-align-left">银行卡号：{row.banks[0]?.card_number || '-'}</div>
-            <div class="text-align-left">chve pix：{row.banks[0]?.chve_pix || '-'}</div>
-            <div class="text-align-left">cpf：{row.banks[0]?.cpf || '-'}</div>
-          </div>
-        );
-      }
-    },
-    {
-      key: 'banks1',
-      title: '银行卡2信息',
-      align: 'center',
-      width: '320px',
-      render: row => {
-        return (
-          <div>
-            <div class="text-align-left">持卡人姓名：{row.banks[1]?.card_holder_name || '-'}</div>
-            <div class="text-align-left">银行名称：{row.banks[1]?.bank_name || '-'}</div>
-            <div class="text-align-left">银行卡号：{row.banks[1]?.card_number || '-'}</div>
-            <div class="text-align-left">chve pix：{row.banks[1]?.chve_pix || '-'}</div>
-            <div class="text-align-left">cpf：{row.banks[1]?.cpf || '-'}</div>
-          </div>
-        );
-      }
-    },
-    {
       key: 'actions',
       title: '操作',
       align: 'center',
-      width: 340,
+      width: 320,
       fixed: 'right',
       render: row => (
         <div class="flex-center gap-12px">
@@ -157,6 +124,9 @@ const {
           </NButton>
           <NButton size="small" type="error" onClick={() => handleResetTradePassword(row.id)}>
             重置交易密码
+          </NButton>
+          <NButton size="small" type="success" onClick={() => handleBankCard(row.id)}>
+            银行卡信息
           </NButton>
         </div>
       )
@@ -180,12 +150,6 @@ const errorObj = reactive({
   subject: '',
   content: ''
 });
-const send = row => {
-  fromData.uid = row.id;
-  fromData.subject = '';
-  fromData.content = '';
-  msgVisible.value = true;
-};
 
 const handleMsg = async () => {
   errorObj.value = {};
@@ -198,17 +162,15 @@ const handleMsg = async () => {
     return;
   }
   btnLoading.value = true;
-  return fetchSendMessage(fromData)
-    .then(() => {
-      window.$message?.success('发送成功');
-      msgVisible.value = false;
-    })
-    .catch(error => {
-      errorObj.value = error;
-    })
-    .finally(() => {
-      btnLoading.value = false;
-    });
+  try {
+    await fetchSendMessage(fromData);
+    window.$message?.success('发送成功');
+    msgVisible.value = false;
+  } catch (error) {
+    errorObj.value = error;
+  } finally {
+    btnLoading.value = false;
+  }
 };
 
 const { drawerVisible, editingData, handleEdit, checkedRowKeys } = useTableOperate(data, getData);
@@ -224,6 +186,10 @@ const resetPasswordType = ref<'password' | 'trade-password'>('password');
 // 实名抽屉相关
 const kycDrawerVisible = ref(false);
 const kycUserId = ref<number>();
+
+// 银行卡抽屉相关
+const bankCardDrawerVisible = ref(false);
+const bankCardUserId = ref<number>();
 
 function edit(id: number) {
   handleEdit(id);
@@ -269,6 +235,17 @@ function handleKyc(id: number) {
 function handleKycSubmitted() {
   kycDrawerVisible.value = false;
   getData(); // 刷新列表
+}
+
+// 银行卡
+function handleBankCard(id: number) {
+  bankCardUserId.value = id;
+  bankCardDrawerVisible.value = true;
+}
+
+// 处理银行卡提交
+function handleBankCardSubmitted() {
+  bankCardDrawerVisible.value = false;
 }
 </script>
 
@@ -316,6 +293,13 @@ function handleKycSubmitted() {
 
     <!-- 实名抽屉 -->
     <KycDrawer v-model:visible="kycDrawerVisible" :user-id="kycUserId" @submitted="handleKycSubmitted" />
+
+    <!-- 银行卡抽屉 -->
+    <BankCardDrawer
+      v-model:visible="bankCardDrawerVisible"
+      :user-id="bankCardUserId"
+      @submitted="handleBankCardSubmitted"
+    />
 
     <!-- 站内信 -->
     <ObDialog
