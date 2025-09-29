@@ -437,14 +437,6 @@ export const generatedRoutes: GeneratedRoute[] = [
     },
     children: [
       {
-        name: 'user_bank-card',
-        path: '/user/bank-card',
-        component: 'view.user_bank-card',
-        meta: {
-          title: '银行卡列表'
-        }
-      },
-      {
         name: 'user_kyc',
         path: '/user/kyc',
         component: 'view.user_kyc',
