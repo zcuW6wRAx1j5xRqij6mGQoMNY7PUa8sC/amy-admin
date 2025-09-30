@@ -57,6 +57,7 @@ function createDefaultModel() {
     stock_id: null,
     discount_status: 0,
     discount: 1.0,
+    unblock_at: null,
     discount_start: null,
     discount_end: null
   };
@@ -235,6 +236,10 @@ async function handleSubmit() {
     return;
   }
 
+  if (ruleForm.value.unblock_at) {
+    ruleForm.value.unblock_at = dayjs(ruleForm.value.unblock_at).format('YYYY-MM-DD HH:mm:ss');
+  }
+
   // 处理折扣时间，拼接当天日期
   const submitData = processDiscountTime({ ...ruleForm.value });
 
@@ -306,6 +311,13 @@ watch(visible, () => {
           prop-name="discount"
           :disabled="ruleForm.discount_status === 0"
           placeholder="请输入折扣比例，如8折输入0.8"
+        />
+        <MyFormItem
+          v-model="ruleForm.unblock_at"
+          label="自动解锁时间"
+          form-type="datetime"
+          prop-name="unblock_at"
+          placeholder="请选择自动解锁时间"
         />
         <MyFormItem
           v-model="ruleForm.discount_start"

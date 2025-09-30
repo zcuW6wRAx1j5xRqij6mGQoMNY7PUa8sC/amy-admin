@@ -135,6 +135,13 @@ const {
       }
     },
     {
+      key: 'unblock_at',
+      title: '自动解锁时间',
+      align: 'center',
+      width: 120,
+      render: (row: any) => row.unblock_at ? dayjs(row.unblock_at).format('YYYY-MM-DD HH:mm:ss') : '-'
+    },
+    {
       key: 'discount_time' as any,
       title: '折扣时间',
       align: 'center',
