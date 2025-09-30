@@ -2,7 +2,6 @@
 import { onUnmounted, ref } from 'vue';
 import { useIntervalFn } from '@vueuse/core';
 import { NButton, NPopconfirm, NSpace, NTag, useMessage } from 'naive-ui';
-import dayjs from 'dayjs';
 import { OrderOtcList, OrderOtcLockUnlock } from '@/service/api/order';
 import { hiddenOrder } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
@@ -32,74 +31,6 @@ const createDrawerVisible = ref(false);
 
 // 创建一个响应式的时间戳，用于触发状态重新计算
 const currentTime = ref(Date.now());
-
-const getStatus = (order: any) => {
-  // 显示解锁按钮：
-  // 1、is_manual_unlock == 0 && block_trade.unlock_at >= now
-  // 2、status == locked
-  // 显示锁仓按钮：
-  // 1、status == open && (block_trade.unlock_at == null 或 block_trade.unlock_at < now)
-  // 2、status == open && is_manual_unlock == 1
-
-  // 读取 currentTime 建立响应式依赖，当时间更新时会重新计算
-  const now = dayjs(currentTime.value);
-
-  // 如果订单状态不是 open，直接返回对应状态
-  if (order.status !== 'open') {
-    return order.status;
-  }
-
-  // 检查是否已锁仓
-  if (order.unblocked === 0) {
-    // 已锁仓，检查解锁时间
-    const unlockAt = order.block_trade?.unlock_at;
-    if (unlockAt && dayjs(unlockAt).isAfter(now)) {
-      return 'locked'; // 还在锁仓期内
-    }
-    return 'open'; // 锁仓期已过，可以解锁
-  }
-
-  return 'open'; // 未锁仓状态
-};
-
-// 判断是否显示锁仓按钮
-const shouldShowLockButton = (row: any) => {
-  // 条件：status == open && (block_trade.unlock_at == null 或 block_trade.unlock_at < now) && is_manual_unlock == 1
-  if (row.status !== 'open') return false;
-  if (row.is_manual_unlock !== 1) return false;
-
-  // 读取 currentTime 建立响应式依赖
-  const now = dayjs(currentTime.value);
-  const unlockAt = row.block_trade?.unlock_at;
-
-  // block_trade.unlock_at == null 或 block_trade.unlock_at < now
-  if (!unlockAt || dayjs(unlockAt).isBefore(now)) {
-    return true;
-  }
-
-  return false;
-};
-
-// 判断是否显示解锁按钮
-const shouldShowUnlockButton = (row: any) => {
-  // 条件：is_manual_unlock == 0 && block_trade.unlock_at >= now && status == locked
-  if (row.is_manual_unlock !== 0) return false;
-
-  // 读取 currentTime 建立响应式依赖
-  const now = dayjs(currentTime.value);
-  const unlockAt = row.block_trade?.unlock_at;
-
-  // 检查状态是否为 locked（通过 getStatus 判断）
-  const currentStatus = getStatus(row);
-  if (currentStatus !== 'locked') return false;
-
-  // block_trade.unlock_at >= now
-  if (unlockAt && (dayjs(unlockAt).isAfter(now) || dayjs(unlockAt).isSame(now))) {
-    return true;
-  }
-
-  return false;
-};
 
 let handleHidden: (id: number) => Promise<void>;
 
@@ -198,22 +129,6 @@ const {
       render: row => <span>{row.close_fee || 0}</span>
     },
     {
-      key: 'block_trade_status',
-      title: '持仓状态',
-      align: 'center',
-      width: 100,
-      render: row => {
-        if (row.status === 'pending' || row.status === 'closed') {
-          return '-';
-        }
-        const status = getStatus(row);
-        if (status === 'pending') return '-';
-        if (status === 'open') return '未锁仓';
-        return '锁仓';
-        // return <NTag type={status.type}>{status.text}</NTag>;
-      }
-    },
-    {
       key: 'status',
       title: '状态',
       align: 'center',
@@ -222,7 +137,7 @@ const {
         const statusMap = {
           pending: { type: 'warning', text: '待审核' },
           open: { type: 'success', text: '持仓中' },
-          // locked: { type: 'warning', text: '已锁仓' },
+          locked: { type: 'warning', text: '已锁仓' },
           rejected: { type: 'error', text: '已拒绝' },
           closed: { type: 'error', text: '已平仓' }
         };
@@ -253,7 +168,7 @@ const {
             </NButton>
           )}
 
-          {hasAuth('edit') && row.status === 'open' && shouldShowLockButton(row) && (
+          {hasAuth('edit') &&row.status === 'open' && (
             <NPopconfirm onPositiveClick={() => handleLock(row.id)}>
               {{
                 default: () => '确认锁仓此订单吗？',
@@ -266,7 +181,7 @@ const {
             </NPopconfirm>
           )}
 
-          {hasAuth('edit') && shouldShowUnlockButton(row) && (
+          {hasAuth('edit') && row.status === 'locked' && (
             <NPopconfirm onPositiveClick={() => handleUnlock(row.id)}>
               {{
                 default: () => '确认解锁此订单吗？',
@@ -280,7 +195,7 @@ const {
           )}
 
           {/* 平仓按钮 - 只在状态为开放或锁定时显示 */}
-          {hasAuth('edit') && (row.status === 'open' || row.status === 'locked') && (
+          {hasAuth('edit') && row.status === 'open' && (
             <NButton type="error" ghost size="small" onClick={() => handleClose(row)}>
               平仓
             </NButton>
