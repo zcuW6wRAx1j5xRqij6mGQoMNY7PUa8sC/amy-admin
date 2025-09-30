@@ -1,17 +1,16 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
-import { NButton, NTag, NText, NPopconfirm } from 'naive-ui';
+import { NButton, NPopconfirm, NTag, NText } from 'naive-ui';
 import dayjs from 'dayjs';
 import { StockWithdrawList } from '@/service/api/order';
+import { hiddenStock } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
+import { useAuth } from '@/hooks/business/auth';
 import SearchBox from './modules/search-box.vue';
 import AuditDrawer from './modules/audit-drawer.vue';
-import { hiddenStock } from '@/service/api/hidden';
-import { useAuth } from '@/hooks/business/auth';
 const { hasAuth } = useAuth();
-
 
 const appStore = useAppStore();
 
@@ -79,23 +78,15 @@ const {
       align: 'center',
       width: '250px',
       render: row => {
-        return <div>
-          <div class="text-align-left">
-            持卡人姓名:{row.bank_card_info?.card_holder_name || '-'}
+        return (
+          <div>
+            <div class="text-align-left">持卡人姓名:{row.bank_card_info?.card_holder_name || '-'}</div>
+            <div class="text-align-left">银行名称:{row.bank_card_info?.bank_name || '-'}</div>
+            <div class="text-align-left">银行卡号:{row.bank_card_info?.card_number || '-'}</div>
+            <div class="text-align-left">chve pix:{row.bank_card_info?.chve_pix || '-'}</div>
+            <div class="text-align-left">cpf:{row.bank_card_info?.cpf || '-'}</div>
           </div>
-          <div class="text-align-left">
-            银行名称:{row.bank_card_info?.bank_name || '-'}
-          </div>
-          <div class="text-align-left">
-            银行卡号:{row.bank_card_info?.card_number || '-'}
-          </div>
-          <div class="text-align-left">
-            chve pix:{row.bank_card_info?.chve_pix || '-'}
-          </div>
-          <div class="text-align-left">
-            cpf:{row.bank_card_info?.cpf || '-'}
-          </div>
-        </div>
+        );
       }
     },
     {
@@ -142,29 +133,8 @@ const {
       fixed: 'right',
       render: row => {
         // 只有待审核状态才显示操作按钮
-        if (row.status !== 'pending' && !hasAuth('delete')) {
-          return <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
-              {{
-                default: () => '确认删除吗？',
-                trigger: () => (
-                  <NButton type="info" ghost size="small">
-                    删除
-                  </NButton>
-                )
-              }}
-            </NPopconfirm>;
-        }
-        return (
-          <div class="flex-center gap-12px">
-            {hasAuth('review') && (
-            <NButton size="small" type="success" onClick={() => handleAudit(row.id, 'approved')}>
-              审核通过
-            </NButton>
-            )}
-            
-            <NButton size="small" type="error" onClick={() => handleAudit(row.id, 'rejected')}>
-              审核拒绝
-            </NButton>
+        if (row.status !== 'pending' && hasAuth('delete')) {
+          return (
             <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
               {{
                 default: () => '确认删除吗？',
@@ -174,9 +144,22 @@ const {
                   </NButton>
                 )
               }}
-            </NPopconfirm>)}
-          </div>
-        );
+            </NPopconfirm>
+          );
+        }
+        if (row.status === 'pending' && hasAuth('review')) {
+          return (
+            <div class="flex-center gap-12px">
+              <NButton size="small" type="success" onClick={() => handleAudit(row.id, 'approved')}>
+                审核通过
+              </NButton>
+
+              <NButton size="small" type="error" onClick={() => handleAudit(row.id, 'rejected')}>
+                审核拒绝
+              </NButton>
+            </div>
+          );
+        }
       }
     }
   ]
