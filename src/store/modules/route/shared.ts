@@ -1,7 +1,7 @@
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw, _RouteRecordBase } from 'vue-router';
 import type { ElegantConstRoute, LastLevelRouteKey, RouteKey, RouteMap } from '@elegant-router/types';
-import { useSvgIcon } from '@/hooks/common/icon';
 import { $t } from '@/locales';
+import { useSvgIcon } from '@/hooks/common/icon';
 
 /**
  * Filter auth routes by roles
@@ -48,7 +48,7 @@ function filterAuthRouteByRoles(route: ElegantConstRoute, roles: string[]): Eleg
  * @param route route
  */
 function sortRouteByOrder(route: ElegantConstRoute) {
-  if (route.children?.length) {
+  if (route?.children?.length) {
     route.children.sort((next, prev) => (Number(next.meta?.order) || 0) - (Number(prev.meta?.order) || 0));
     route.children.forEach(sortRouteByOrder);
   }

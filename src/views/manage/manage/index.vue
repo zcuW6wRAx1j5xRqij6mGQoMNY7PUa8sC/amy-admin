@@ -8,6 +8,9 @@ import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import OperateDrawer from './modules/operate-drawer.vue';
 import SearchBox from './modules/search-box.vue';
+import { useAuth } from '@/hooks/business/auth';
+const { hasAuth } = useAuth();
+
 // import BindLeaderDrawer from './modules/bind-leader-drawer.vue';
 
 const appStore = useAppStore();
@@ -182,6 +185,7 @@ getRoleList();
           v-model:columns="columnChecks"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
+          :no-add="hasAuth('add')"
           @add="handleAdd"
           @refresh="getData"
         />

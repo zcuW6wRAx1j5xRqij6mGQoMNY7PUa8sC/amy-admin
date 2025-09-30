@@ -9,6 +9,9 @@ import SearchBox from './modules/search-box.vue';
 import RepaymentModal from './modules/repayment-modal.vue';
 import StatusModal from './modules/status-modal.vue';
 import AuditModal from './modules/audit-modal.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
@@ -169,7 +172,7 @@ const {
         const actions = [];
 
         // 只有待审核状态的订单才显示审核按钮
-        if (row.status === 'pending') {
+        if (hasAuth('review') && row.status === 'pending') {
           actions.push(
             <NButton size="small" type="warning" onClick={() => openAuditModal(row)}>
               审核
@@ -181,7 +184,8 @@ const {
           row.status === 'approved' &&
           row.repayment_status !== 'paid' &&
           row.repayment_status !== 'cancelled' &&
-          row.repayment_status !== 'written_off'
+          row.repayment_status !== 'written_off' &&
+          hasAuth('edit')
         ) {
           actions.push(
             <NButton size="small" type="success" onClick={() => openRepaymentModal(row)}>
@@ -193,20 +197,36 @@ const {
           );
         }
         // 隐藏订单
-        actions.push(
-          <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
-            {{
-              default: () => '确认删除吗？',
-              trigger: () => (
-                <NButton type="info" ghost size="small">
-                  删除
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
-        );
+        if(hasAuth('delete')) {
+          actions.push(
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          );
+        }
+        if (hasAuth('delete')) {
+          actions.push(
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          );
+        }
 
-        if (actions.length === 0) {
+        if (actions.length === 0 && hasAuth('delete')) {
           return (
             <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
               {{

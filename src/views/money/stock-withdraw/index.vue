@@ -9,6 +9,9 @@ import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 import SearchBox from './modules/search-box.vue';
 import AuditDrawer from './modules/audit-drawer.vue';
 import { hiddenStock } from '@/service/api/hidden';
+import { useAuth } from '@/hooks/business/auth';
+const { hasAuth } = useAuth();
+
 
 const appStore = useAppStore();
 
@@ -139,7 +142,7 @@ const {
       fixed: 'right',
       render: row => {
         // 只有待审核状态才显示操作按钮
-        if (row.status !== 'pending') {
+        if (row.status !== 'pending' && !hasAuth('delete')) {
           return <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
               {{
                 default: () => '确认删除吗？',
@@ -153,9 +156,11 @@ const {
         }
         return (
           <div class="flex-center gap-12px">
+            {hasAuth('review') && (
             <NButton size="small" type="success" onClick={() => handleAudit(row.id, 'approved')}>
               审核通过
             </NButton>
+            )}
             
             <NButton size="small" type="error" onClick={() => handleAudit(row.id, 'rejected')}>
               审核拒绝
@@ -169,7 +174,7 @@ const {
                   </NButton>
                 )
               }}
-            </NPopconfirm>
+            </NPopconfirm>)}
           </div>
         );
       }

@@ -7,6 +7,11 @@ import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 const appStore = useAppStore();
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
+
+
 
 // 表格相关
 const {
@@ -272,16 +277,18 @@ const {
       render: row => {
         return (
           <div class="flex-center gap-12px">
-            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
-              {{
-                default: () => '确认删除吗？',
-                trigger: () => (
-                  <NButton type="info" ghost size="small">
-                    删除
-                  </NButton>
-                )
-              }}
-            </NPopconfirm>
+            {hasAuth('delete') && (
+              <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+                {{
+                  default: () => '确认删除吗？',
+                  trigger: () => (
+                    <NButton type="info" ghost size="small">
+                      删除
+                    </NButton>
+                  )
+                }}
+              </NPopconfirm>
+            )}
           </div>
         );
       }

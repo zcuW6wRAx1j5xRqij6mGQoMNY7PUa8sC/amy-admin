@@ -7,6 +7,9 @@ import { useTable } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 import { setBaseUrl } from '@/utils/utils';
 import SearchBox from './modules/search-box.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
@@ -143,50 +146,59 @@ const {
         if (row.status == 0) {
           return (
             <div class="flex-center gap-12px">
-              <NPopconfirm onPositiveClick={() => handleAudit(row.id, 2)} positiveText="确定" negativeText="取消">
-                {{
-                  trigger: () => (
-                    <NButton size="small" type="success">
-                      通过
-                    </NButton>
-                  ),
-                  default: () => '确定要通过这个充值订单吗？'
-                }}
-              </NPopconfirm>
-              <NPopconfirm onPositiveClick={() => handleAudit(row.id, 1)} positiveText="确定" negativeText="取消">
-                {{
-                  trigger: () => (
-                    <NButton size="small" type="error">
-                      拒绝
-                    </NButton>
-                  ),
-                  default: () => '确定要拒绝这个充值订单吗？'
-                }}
-              </NPopconfirm>
-              <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
-                {{
-                  default: () => '确认删除吗？',
-                  trigger: () => (
-                    <NButton type="info" ghost size="small">
-                      删除
-                    </NButton>
-                  )
-                }}
-              </NPopconfirm>
+              {hasAuth('review') && (
+                <NPopconfirm onPositiveClick={() => handleAudit(row.id, 2)} positiveText="确定" negativeText="取消">
+                  {{
+                    trigger: () => (
+                      <NButton size="small" type="success">
+                        通过
+                      </NButton>
+                    ),
+                    default: () => '确定要通过这个充值订单吗？'
+                  }}
+                </NPopconfirm>
+              )}
+              {hasAuth('review') && (
+                <NPopconfirm onPositiveClick={() => handleAudit(row.id, 1)} positiveText="确定" negativeText="取消">
+                  {{
+                    trigger: () => (
+                      <NButton size="small" type="error">
+                        拒绝
+                      </NButton>
+                    ),
+                    default: () => '确定要拒绝这个充值订单吗？'
+                  }}
+              </NPopconfirm>)}
+              {hasAuth('delete') && (
+                <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+                  {{
+                    default: () => '确认删除吗？',
+                    trigger: () => (
+                      <NButton type="info" ghost size="small">
+                        删除
+                      </NButton>
+                    )
+                  }}
+                </NPopconfirm>
+              )}
             </div>
           );
         }
         return (
-          <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
-            {{
-              default: () => '确认删除吗？',
-              trigger: () => (
-                <NButton type="info" ghost size="small">
-                  删除
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
+          <div>
+            {hasAuth('delete') && (
+            <NPopconfirm  onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          )}
+          </div>
         );
       }
     }

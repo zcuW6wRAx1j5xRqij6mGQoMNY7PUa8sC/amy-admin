@@ -11,7 +11,9 @@ import UserCreateDrawer from './modules/user-create-drawer.vue';
 import ResetPasswordDrawer from './modules/reset-password-drawer.vue';
 import KycDrawer from './modules/kyc-drawer.vue';
 import BankCardDrawer from './modules/bank-card-drawer.vue';
+import { useAuth } from '@/hooks/business/auth';
 
+const { hasAuth } = useAuth();
 const appStore = useAppStore();
 
 // 表格相关
@@ -113,21 +115,21 @@ const {
       fixed: 'right',
       render: row => (
         <div class="flex-center gap-12px">
-          <NButton size="small" type="primary" onClick={() => edit(row.id)}>
+          {hasAuth('edit') && (<NButton size="small" type="primary" onClick={() => edit(row.id)}>
             编辑
-          </NButton>
-          <NButton size="small" type="info" onClick={() => handleKyc(row.id)}>
+          </NButton>)}
+          {hasAuth('realName') && (<NButton size="small" type="info" onClick={() => handleKyc(row.id)}>
             实名
-          </NButton>
-          <NButton size="small" type="warning" onClick={() => handleResetPassword(row.id)}>
+          </NButton>)}
+          {hasAuth('resetPassword') && (<NButton size="small" type="warning" onClick={() => handleResetPassword(row.id)}>
             重置密码
-          </NButton>
-          <NButton size="small" type="error" onClick={() => handleResetTradePassword(row.id)}>
+          </NButton>)}
+          {hasAuth('resetTradePassword') && (<NButton size="small" type="error" onClick={() => handleResetTradePassword(row.id)}>
             重置交易密码
-          </NButton>
-          <NButton size="small" type="success" onClick={() => handleBankCard(row.id)}>
+          </NButton>)}
+          {hasAuth('bankCard') && (<NButton size="small" type="success" onClick={() => handleBankCard(row.id)}>
             银行卡信息
-          </NButton>
+          </NButton>)}
         </div>
       )
     }
@@ -254,27 +256,12 @@ function handleBankCardSubmitted() {
     <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard title="用户管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <TableHeaderOperation
-          v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
-          :loading="loading"
-          @add="handleCreateUser"
-          @refresh="getData"
-        />
+        <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
+          :loading="loading" @add="handleCreateUser" :no-add="!hasAuth('add')" @refresh="getData" />
       </template>
-      <NDataTable
-        v-model:checked-row-keys="checkedRowKeys"
-        :columns="columns"
-        :data="data"
-        size="small"
-        :flex-height="!appStore.isMobile"
-        :scroll-x="2300"
-        :loading="loading"
-        remote
-        :row-key="row => row.id"
-        :pagination="mobilePagination"
-        class="sm:h-full"
-      />
+      <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
+        :flex-height="!appStore.isMobile" :scroll-x="2300" :loading="loading" remote :row-key="row => row.id"
+        :pagination="mobilePagination" class="sm:h-full" />
     </NCard>
 
     <!-- 创建用户抽屉 -->
@@ -284,31 +271,19 @@ function handleBankCardSubmitted() {
     <UserEditDrawer v-model:visible="drawerVisible" :row-data="editingData" @submitted="getData" />
 
     <!-- 重置密码抽屉 -->
-    <ResetPasswordDrawer
-      v-model:visible="resetPasswordDrawerVisible"
-      :user-id="resetPasswordUserId"
-      :reset-type="resetPasswordType"
-      @submitted="handleResetPasswordSubmitted"
-    />
+    <ResetPasswordDrawer v-model:visible="resetPasswordDrawerVisible" :user-id="resetPasswordUserId"
+      :reset-type="resetPasswordType" @submitted="handleResetPasswordSubmitted" />
 
     <!-- 实名抽屉 -->
     <KycDrawer v-model:visible="kycDrawerVisible" :user-id="kycUserId" @submitted="handleKycSubmitted" />
 
     <!-- 银行卡抽屉 -->
-    <BankCardDrawer
-      v-model:visible="bankCardDrawerVisible"
-      :user-id="bankCardUserId"
-      @submitted="handleBankCardSubmitted"
-    />
+    <BankCardDrawer v-model:visible="bankCardDrawerVisible" :user-id="bankCardUserId"
+      @submitted="handleBankCardSubmitted" />
 
     <!-- 站内信 -->
-    <ObDialog
-      v-model:visible="msgVisible"
-      title="发送站内信"
-      :loading="btnLoading"
-      width="420px"
-      :handle-confirm="handleMsg"
-    >
+    <ObDialog v-model:visible="msgVisible" title="发送站内信" :loading="btnLoading" width="420px"
+      :handle-confirm="handleMsg">
       <MyForm all-required :error-obj="errorObj">
         <MyFormItem v-model="fromData.subject" label="消息主题" prop-name="subject" />
         <MyFormItem label="消息内容" form-type="others" prop-name="content">

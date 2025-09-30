@@ -4,6 +4,9 @@ import { WalletFuturesList } from '@/service/api/flow';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { setBaseUrl } from '@/utils/utils';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 

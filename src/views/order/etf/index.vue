@@ -5,6 +5,9 @@ import { hiddenEtf } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
@@ -128,7 +131,8 @@ const {
         if (row.status === 0) {
           return (
             <div class="flex-center gap-12px">
-              <NPopconfirm onPositiveClick={() => handleAudit(row.id, 2)} positiveText="确定" negativeText="取消">
+              {hasAuth('review') && (
+                <NPopconfirm  onPositiveClick={() => handleAudit(row.id, 2)} positiveText="确定" negativeText="取消">
                 {{
                   trigger: () => (
                     <NButton size="small" type="success">
@@ -137,8 +141,9 @@ const {
                   ),
                   default: () => '确定要通过这个ETF订单吗？'
                 }}
-              </NPopconfirm>
-              <NPopconfirm onPositiveClick={() => handleAudit(row.id, 1)} positiveText="确定" negativeText="取消">
+              </NPopconfirm>)}
+              {hasAuth('review') && (
+                <NPopconfirm onPositiveClick={() => handleAudit(row.id, 1)} positiveText="确定" negativeText="取消">
                 {{
                   trigger: () => (
                     <NButton size="small" type="error">
@@ -147,17 +152,19 @@ const {
                   ),
                   default: () => '确定要拒绝这个ETF订单吗？'
                 }}
-              </NPopconfirm>
-              <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
-                {{
-                  default: () => '确认删除吗？',
-                  trigger: () => (
-                    <NButton type="info" ghost size="small">
-                      删除
-                    </NButton>
-                  )
-                }}
-              </NPopconfirm>
+              </NPopconfirm>)}
+              {hasAuth('delete') && (
+                <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+                  {{
+                    default: () => '确认删除吗？',
+                    trigger: () => (
+                      <NButton type="info" ghost size="small">
+                        删除
+                      </NButton>
+                    )
+                  }}
+                </NPopconfirm>
+              )}
             </div>
           );
         }

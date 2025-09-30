@@ -38,17 +38,24 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   /** Is login */
   const isLogin = computed(() => Boolean(token.value));
   function setMenuRootMap(menuList:any) {
-    // menuList是菜单列表，如果menuList的子元素有三级，则第三级是按钮的权限。我希望返回一个对象，key是第二级的url，value是第三级的url数组
+    // menuList是菜单列表，如果menuList的子元素有三级，则第三级是按钮的权限
+    // 基于二级children存放相应的三级children
     const menuRoot = {};
+    
     menuList.forEach(item => {
-      if (item.children) {
+      if (item.children && Array.isArray(item.children)) {
         item.children.forEach(child => {
-          if (child.children) {
-            menuRoot[child.url] = child.children.map(c => c.url);
+          if (child.children && Array.isArray(child.children)) {
+            // 为每个二级菜单存储其对应的三级菜单（按钮权限）
+            menuRoot[child.url] = child.children.map(c => c.url || '');
+          } else {
+            // 如果二级菜单没有三级子菜单，则设为空数组
+            menuRoot[child.url] = [];
           }
         });
       }
     });
+    
     menuRootMap.value = menuRoot;
   }
   /** Reset auth store */

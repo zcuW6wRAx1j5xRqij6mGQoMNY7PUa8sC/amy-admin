@@ -6,6 +6,9 @@ import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 // import SearchBox from './modules/search-box.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 

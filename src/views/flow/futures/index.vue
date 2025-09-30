@@ -5,6 +5,9 @@ import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { hiddenFuturesOrder } from '@/service/api/hidden';
 import SearchBox from './modules/search-box.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
@@ -160,6 +163,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination,searchPa
       render: row => {
         return (
           <div class="flex-center gap-12px">
+            {hasAuth('delete') && (
             <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
               {{
                 default: () => '确认删除吗？',
@@ -169,7 +173,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination,searchPa
                   </NButton>
                 )
               }}
-            </NPopconfirm>
+            </NPopconfirm>)}
           </div>
         );
       }
