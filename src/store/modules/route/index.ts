@@ -235,12 +235,10 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
   /** Init static auth route */
   function initStaticAuthRoute() {
     const { authRoutes: staticAuthRoutes } = createStaticRoutes();
-
     if (authStore.isStaticSuper) {
       addAuthRoutes(staticAuthRoutes);
     } else {
       const filteredAuthRoutes = filterAuthRoutesByRoles(staticAuthRoutes, authStore.userInfo.roles);
-
       addAuthRoutes(filteredAuthRoutes);
     }
 
@@ -278,8 +276,11 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
         authStore.resetStore();
         return;
       }
-      const filterRoutes = routes[0]?.children;
-      const home = filterRoutes[0].name;
+      let filterRoutes = routes[0]?.name;
+      if (filterRoutes.children) {
+        filterRoutes = routes[0]?.children[0].name;
+      }
+      const home = filterRoutes;
       addAuthRoutes(routes);
 
       handleConstantAndAuthRoutes();

@@ -6,6 +6,9 @@ import { useTable, useTableOperate } from '@/hooks/common/table';
 import { setBaseUrl } from '@/utils/utils';
 import SearchBox from './modules/search-box.vue';
 import OperateDrawer from './modules/operate-drawer.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
@@ -101,9 +104,11 @@ const {
       fixed: 'right',
       width: 80,
       render: row => (
-        <NButton text type="primary" onClick={() => handleEdit(row.id)}>
-          编辑
-        </NButton>
+        <div>{hasAuth('edit') && (
+          <NButton text type="primary" onClick={() => handleEdit(row.id)}>
+            编辑
+          </NButton>
+        )}</div>
       )
     }
   ]
@@ -118,7 +123,7 @@ const { drawerVisible, operateType, editingData, handleAdd, handleEdit } = useTa
     <NCard title="日内产品管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <NSpace>
-          <TableHeaderOperation v-model:columns="columnChecks" :loading="loading" @refresh="getData" @add="handleAdd" />
+          <TableHeaderOperation v-model:columns="columnChecks" :loading="loading" @refresh="getData" :no-add="!hasAuth('add')" @add="handleAdd" />
         </NSpace>
       </template>
       <NDataTable

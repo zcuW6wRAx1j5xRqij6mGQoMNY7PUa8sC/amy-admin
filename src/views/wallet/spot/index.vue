@@ -6,6 +6,9 @@ import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { setBaseUrl } from '@/utils/utils';
 import SpotFundDrawer from './modules/fund-drawer.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
@@ -142,9 +145,11 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       fixed: 'right',
       render: row => (
         <div class="flex-center gap-12px">
-          <NButton type="primary" ghost size="small" onClick={() => handleFundChange(row.id)}>
-            金额变动
-          </NButton>
+          {hasAuth('edit') && (
+            <NButton type="primary" ghost size="small" onClick={() => handleFundChange(row.id)}>
+              金额变动
+            </NButton>
+          )}
         </div>
       )
     }

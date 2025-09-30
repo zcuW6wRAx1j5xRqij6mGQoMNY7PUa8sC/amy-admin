@@ -11,6 +11,9 @@ import SearchBox from './modules/search-box.vue';
 import AuditDrawer from './modules/audit-drawer.vue';
 import CloseDrawer from './modules/close-drawer.vue';
 import CreateDrawer from './modules/create-drawer.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 const message = useMessage();
@@ -237,20 +240,20 @@ const {
       render: row => (
         <NSpace>
           {/* 通过按钮 - 只在状态为待审核时显示 */}
-          {row.status === 'pending' && (
+          {hasAuth('review') && row.status === 'pending' && (
             <NButton type="success" ghost size="small" onClick={() => handleApprove(row)}>
               通过
             </NButton>
           )}
 
           {/* 拒绝按钮 - 只在状态为待审核时显示 */}
-          {row.status === 'pending' && (
+          {hasAuth('review') && row.status === 'pending' && (
             <NButton type="error" ghost size="small" onClick={() => handleReject(row)}>
               拒绝
             </NButton>
           )}
 
-          {row.status === 'open' && shouldShowLockButton(row) && (
+          {hasAuth('edit') && row.status === 'open' && shouldShowLockButton(row) && (
             <NPopconfirm onPositiveClick={() => handleLock(row.id)}>
               {{
                 default: () => '确认锁仓此订单吗？',
@@ -263,7 +266,7 @@ const {
             </NPopconfirm>
           )}
 
-          {shouldShowUnlockButton(row) && (
+          {hasAuth('edit') && shouldShowUnlockButton(row) && (
             <NPopconfirm onPositiveClick={() => handleUnlock(row.id)}>
               {{
                 default: () => '确认解锁此订单吗？',
@@ -277,22 +280,24 @@ const {
           )}
 
           {/* 平仓按钮 - 只在状态为开放或锁定时显示 */}
-          {(row.status === 'open' || row.status === 'locked') && (
+          {hasAuth('edit') && (row.status === 'open' || row.status === 'locked') && (
             <NButton type="error" ghost size="small" onClick={() => handleClose(row)}>
               平仓
             </NButton>
           )}
           {/* 隐藏订单 */}
-          <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
-            {{
-              default: () => '确认删除吗？',
-              trigger: () => (
-                <NButton type="info" ghost size="small">
-                  删除
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
+          {hasAuth('delete') && (
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          )}
         </NSpace>
       )
     }
@@ -381,6 +386,7 @@ onUnmounted(() => {
           v-model:columns="columnChecks"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
+          :no-auth="!hasAuth('add')"
           @add="handleCreate"
           @refresh="getData"
         />

@@ -143,7 +143,7 @@ function renderTreeLabel(data) {
         )}
       </div>
       <div class="ml-2 flex items-center gap-1">
-        {node.category === 1 && (
+        {/* {hasAuth('add') && node.category === 1 && (
           <NButton
             type="primary"
             size="tiny"
@@ -154,8 +154,18 @@ function renderTreeLabel(data) {
           >
             <svg-icon icon="tabler:code-plus" class="h-4 w-4" />
           </NButton>
-        )}
-        {
+        )} */}
+        <NButton
+            type="primary"
+            size="tiny"
+            onClick={e => {
+              e.stopPropagation();
+              handleAdd(node);
+            }}
+          >
+            <svg-icon icon="tabler:code-plus" class="h-4 w-4" />
+          </NButton>
+        {hasAuth('edit') && (
           <NButton
             type="primary"
             size="tiny"
@@ -166,8 +176,8 @@ function renderTreeLabel(data) {
           >
             <svg-icon icon="tabler:pencil-cog" class="h-4 w-4" />
           </NButton>
-        }
-        {
+        )}
+        {hasAuth('delete') && (
           <NPopconfirm onPositiveClick={() => handleDelete(node.id)}>
             {{
               default: () => `确认删除这个${node.category === 1 ? '菜单' : '按钮'}吗？`,
@@ -178,7 +188,7 @@ function renderTreeLabel(data) {
               )
             }}
           </NPopconfirm>
-        }
+        )}
       </div>
     </div>
   );
@@ -198,7 +208,7 @@ onMounted(() => {
       class="overflow-auto card-wrapper shadow-sm sm:flex-1-hidden"
     >
       <template #header-extra>
-        <NButton type="primary" @click="handleAdd">新增</NButton>
+        <NButton v-if="hasAuth('add')" type="primary" @click="handleAdd">新增</NButton>
       </template>
       <NSpin :show="loading">
         <!-- 调试信息 -->

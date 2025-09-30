@@ -7,6 +7,9 @@ import { hiddenApply } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import SearchBox from './modules/search-box.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
@@ -105,7 +108,7 @@ const {
         if (row.status !== 0) {
           return (
             <div class="flex-center gap-12px">
-              <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {hasAuth('delete')&&(<NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
                 {{
                   default: () => '确认删除吗？',
                   trigger: () => (
@@ -114,13 +117,13 @@ const {
                     </NButton>
                   )
                 }}
-              </NPopconfirm>
+              </NPopconfirm>)}
             </div>
           );
         }
         return (
           <div class="flex-center gap-12px">
-            <NPopconfirm onPositiveClick={() => handleAudit(row.id, 1)}>
+            {(hasAuth('review') && <NPopconfirm onPositiveClick={() => handleAudit(row.id, 1)}>
               {{
                 default: () => '确认审核通过吗？',
                 trigger: () => (
@@ -129,8 +132,8 @@ const {
                   </NButton>
                 )
               }}
-            </NPopconfirm>
-            <NPopconfirm onPositiveClick={() => handleAudit(row.id, 2)}>
+            </NPopconfirm>)}
+            {(hasAuth('review') && <NPopconfirm onPositiveClick={() => handleAudit(row.id, 2)}>
               {{
                 default: () => '确认审核拒绝吗？',
                 trigger: () => (
@@ -139,8 +142,8 @@ const {
                   </NButton>
                 )
               }}
-            </NPopconfirm>
-            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+            </NPopconfirm>)}
+            {(hasAuth('delete') && <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
               {{
                 default: () => '确认删除吗？',
                 trigger: () => (
@@ -149,7 +152,7 @@ const {
                   </NButton>
                 )
               }}
-            </NPopconfirm>
+            </NPopconfirm>)}
           </div>
         );
       }

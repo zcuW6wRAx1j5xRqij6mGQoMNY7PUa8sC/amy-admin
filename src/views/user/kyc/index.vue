@@ -5,6 +5,9 @@ import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
 import { setBaseUrl } from '@/utils/utils';
 import KycSearch from './modules/kyc-search.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
@@ -116,7 +119,7 @@ const { columns, data, loading, getDataByPage, mobilePagination, searchParams, r
       width: 120,
       fixed: 'right',
       render: row => {
-        if (row.status === 0) {
+        if (row.status === 0 && hasAuth('review')) {
           return (
             <div class="flex-center gap-12px">
               <NPopconfirm onPositiveClick={() => handleReview(row, 1)}>

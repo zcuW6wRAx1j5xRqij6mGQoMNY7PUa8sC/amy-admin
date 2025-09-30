@@ -5,6 +5,9 @@ import { WebsiteDelNotice, WebsiteNoticeList } from '@/service/api/website';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import OperateDrawer from './modules/operate-drawer.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
@@ -63,19 +66,23 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       fixed: 'right',
       render: row => (
         <div class="flex-center gap-12px">
-          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
-            编辑
-          </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
-            {{
-              default: () => '确认删除吗？',
-              trigger: () => (
-                <NButton type="error" ghost size="small">
-                  删除
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
+          {hasAuth('edit') && (
+            <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+              编辑
+            </NButton>
+          )}
+          {hasAuth('delete') && (
+            <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="error" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          )}
         </div>
       )
     }
@@ -114,6 +121,7 @@ function edit(id: number) {
           v-model:columns="columnChecks"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
+          :no-add="!hasAuth('add')"
           @add="handleAdd"
           @refresh="getData"
         />

@@ -6,6 +6,9 @@ import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import OperateDrawer from './modules/operate-drawer.vue';
 import SearchBox from './modules/search-box.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
@@ -144,9 +147,11 @@ const {
       fixed: 'right',
       render: row => (
         <div class="flex-center gap-12px">
-          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
-            设置
-          </NButton>
+          {hasAuth('set') && (
+            <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+              设置
+            </NButton>
+          )}
         </div>
       )
     }

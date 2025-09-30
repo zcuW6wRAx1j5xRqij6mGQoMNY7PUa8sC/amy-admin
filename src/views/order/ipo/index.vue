@@ -7,6 +7,9 @@ import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { isEmpty } from '@/utils/is';
 import SearchBox from './modules/search-box.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
@@ -161,7 +164,7 @@ const {
       render: row => (
         <NSpace>
           {/* 通过按钮 - 只在申请状态为待审核时显示 */}
-          {row.apply_status === 0 && (
+          {hasAuth('review') && row.apply_status === 0 && (
             <NPopconfirm onPositiveClick={() => handleApprove(row.id)}>
               {{
                 default: () => '确认通过此申请吗？',
@@ -175,7 +178,7 @@ const {
           )}
 
           {/* 不通过按钮 - 只在申请状态为待审核时显示 */}
-          {row.apply_status === 0 && (
+          {hasAuth('review') && row.apply_status === 0 && (
             <NPopconfirm onPositiveClick={() => handleReject(row.id)}>
               {{
                 default: () => '确认拒绝此申请吗？',
@@ -189,7 +192,7 @@ const {
           )}
 
           {/* 锁仓按钮 - 只在状态为正常时显示 */}
-          {row.status === 'pending' && row.apply_status === 1 && (
+          {hasAuth('edit') && row.status === 'pending' && row.apply_status === 1 && (
             <NPopconfirm onPositiveClick={() => handleLock(row.id)}>
               {{
                 default: () => '确认锁仓此订单吗？',
@@ -203,7 +206,7 @@ const {
           )}
 
           {/* 解锁按钮 - 只在状态为锁定时显示 */}
-          {row.status === 'locked' && row.apply_status === 1 && (
+          {hasAuth('edit') && row.status === 'locked' && row.apply_status === 1 && (
             <NPopconfirm onPositiveClick={() => handleLock(row.id)}>
               {{
                 default: () => '确认解锁此订单吗？',
@@ -216,7 +219,7 @@ const {
             </NPopconfirm>
           )}
 
-          {(row.status === 'pending' || row.status === 'open') && row.apply_status === 1 && (
+          {hasAuth('edit') && (row.status === 'pending' || row.status === 'open') && row.apply_status === 1 && (
             <NPopconfirm onPositiveClick={() => handlePrice(row)}>
               {{
                 default: () => '确认设置卖出价格？',
@@ -230,7 +233,7 @@ const {
           )}
 
           {/* 平仓按钮 - 只在状态为正常或锁定时显示，且申请状态为已中签 */}
-          {(row.status === 'pending' || row.status === 'locked') && row.apply_status === 1 && (
+          {hasAuth('edit') && (row.status === 'pending' || row.status === 'locked') && row.apply_status === 1 && (
             <NPopconfirm onPositiveClick={() => handleClose(row.id)}>
               {{
                 default: () => '确认平仓此订单吗？',
@@ -243,16 +246,18 @@ const {
             </NPopconfirm>
           )}
           {/* 隐藏订单 */}
-          <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
-            {{
-              default: () => '确认删除吗？',
-              trigger: () => (
-                <NButton type="info" ghost size="small">
-                  删除
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
+          {hasAuth('edit') && (
+            <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          )}
         </NSpace>
       )
     }
