@@ -44,7 +44,7 @@ const {
       title: '日收益率(%)',
       align: 'center',
       width: 120,
-      render: row => <span>{row.daily_profit_rate ? `${row.daily_profit_rate}%` : '-'}</span>
+      render: row => <span>{row.daily_profit_rate ? `${row.daily_profit_rate*100}%` : '-'}</span>
     },
     {
       key: 'min_quantity',
