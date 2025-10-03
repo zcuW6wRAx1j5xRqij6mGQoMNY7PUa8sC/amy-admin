@@ -92,6 +92,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination,getDataB
           withdraw_refund: { type: 'success', text: '提现失败返还' },
           FlowTypeDeposit: { type: 'success', text: '入金' },
           block_trade_system_create: { type: 'success', text: '系统建仓' },
+          market_buy: { type: 'success', text: '股票购买' },
 
           // 大宗交易相关
           block_trade_apply: { type: 'warning', text: '大宗申请' },
@@ -104,10 +105,11 @@ const { columns, columnChecks, data, loading, getData, mobilePagination,getDataB
           ipo_settlement: { type: 'info', text: 'IPO订单结算' },
 
           // ETF相关
-          block_etf_apply: { type: 'warning', text: '申请ETF' },
-          block_etf_apply_refund: { type: 'success', text: 'ETF审核退款' },
-          etf_subscription: { type: 'warning', text: 'ETF审核缴款' },
-          etf_settlement: { type: 'info', text: 'ETF订单结算' }
+          block_etf_apply: { type: 'warning', text: '申请AI7.0' },
+          block_etf_apply_refund: { type: 'success', text: 'AI7.0审核退款' },
+          etf_subscription: { type: 'warning', text: 'AI7.0审核缴款' },
+          etf_settlement: { type: 'info', text: 'AI7.0订单结算' },
+          etf_principal_refund: { type: 'success', text: 'AI7.0本金返还' },
         };
         const config = typeMap[row.type] || { type: 'default', text: row.type };
         return <NTag type={config.type}>{config.text}</NTag>;
