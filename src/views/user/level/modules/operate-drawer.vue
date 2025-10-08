@@ -47,7 +47,8 @@ function createDefaultModel(): UserLevelRequest {
     despoit_money: 0,
     high_yield_rate: 0,
     high_yield_amount_rate: 0,
-    normal_yield_rate: 0
+    normal_yield_rate: 0,
+    trade_code: ''
   };
 }
 
@@ -146,6 +147,7 @@ watch(visible, async () => {
         <MyFormItem v-model="ruleForm.name_es" label="西班牙名称" prop-name="name_es" placeholder="请输入西班牙名称" />
         <MyFormItem v-model="ruleForm.name_jp" label="日语名称" prop-name="name_jp" placeholder="请输入日语名称" />
         <MyFormItem v-model="ruleForm.name_kr" label="韩语名称" prop-name="name_kr" placeholder="请输入韩语名称" />
+        <MyFormItem v-model="ruleForm.trade_code" label="交易标识" prop-name="trade_code" placeholder="请输入交易标识" />
         <MyFormItem
           v-model="ruleForm.despoit_money"
           label="充值金额"
