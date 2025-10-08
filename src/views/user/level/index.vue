@@ -56,7 +56,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
     },
     {
       key: 'trade_code',
-      title: '交易标识',
+      title: '交易码',
       align: 'center',
       width: 120,
       render: row => <span>{row.trade_code || '-'}</span>
