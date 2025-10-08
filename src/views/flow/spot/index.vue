@@ -93,6 +93,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination,getDataB
 
           // 转账相关
           transfer_out: { type: 'info', text: '转出' },
+          transfer_in: { type: 'info', text: '转入' },
 
           // 挂单相关
           posting_order: { type: 'warning', text: '挂单' },

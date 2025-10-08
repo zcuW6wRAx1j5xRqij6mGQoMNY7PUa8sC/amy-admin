@@ -77,12 +77,14 @@ async function handleInitModel() {
       const detailData = await EtfConfigDetail({ id: props.rowData.id });
       Object.keys(ruleForm.value).forEach(key => {
         ruleForm.value[key] = detailData[key] || null;
+        ruleForm.value.daily_profit_rate = detailData.daily_profit_rate
       });
     } catch (error) {
       console.error('获取设置详情失败:', error);
       // 如果详情接口失败，使用传入的rowData作为备选
       Object.keys(ruleForm.value).forEach(key => {
         ruleForm.value[key] = props.rowData[key] || null;
+        ruleForm.value.daily_profit_rate = props.rowData?.daily_profit_rate || null;
       });
     }
   }
