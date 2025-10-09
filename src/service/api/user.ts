@@ -32,6 +32,7 @@ export interface UserLevelRequest {
   high_yield_rate?: number; // 高收益比例
   high_yield_amount_rate?: number; // 高收益金额比例
   normal_yield_rate?: number; // 普通收益比例
+  trade_code?: string; // 交易标识
 }
 
 /**
