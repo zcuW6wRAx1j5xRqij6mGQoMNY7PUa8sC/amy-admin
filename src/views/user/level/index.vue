@@ -54,13 +54,13 @@ const { columns, columnChecks, data, loading, getData, mobilePagination } = useT
       width: 120,
       render: row => <span>{row.name_kr || '-'}</span>
     },
-    {
-      key: 'trade_code',
-      title: '交易码',
-      align: 'center',
-      width: 120,
-      render: row => <span>{row.trade_code || '-'}</span>
-    },
+    // {
+    //   key: 'trade_code',
+    //   title: '交易码',
+    //   align: 'center',
+    //   width: 120,
+    //   render: row => <span>{row.trade_code || '-'}</span>
+    // },
     {
       key: 'despoit_money',
       title: '充值金额',
