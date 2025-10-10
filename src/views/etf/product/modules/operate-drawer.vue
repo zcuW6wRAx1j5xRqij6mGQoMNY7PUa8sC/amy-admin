@@ -49,7 +49,8 @@ function createDefaultModel() {
     desc: '',
     order_start_at: null,
     order_end_at: null,
-    status: '1'
+    status: '1',
+    trade_code: ''
   };
 }
 
@@ -131,17 +132,19 @@ watch(visible, async () => {
 <template>
   <NDrawer v-model:show="visible" display-directive="show" :width="600">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
-      <MyForm all-required :error-obj="errorObj">
-        <MyFormItem v-model="ruleForm.name" label="产品名称" prop-name="name" />
-        <MyFormItem v-model="ruleForm.desc" label="详细介绍" prop-name="desc" type="textarea" />
+      <MyForm :error-obj="errorObj">
+        <MyFormItem v-model="ruleForm.name" label="产品名称" prop-name="name" isRequired />
+        <MyFormItem v-model="ruleForm.desc" label="详细介绍" prop-name="desc" type="textarea" isRequired />
+        <MyFormItem v-model="ruleForm.trade_code" label="交易码" prop-name="trade_code" />
         <MyFormItem
           v-model="ruleForm.order_start_at"
           label="开始时间"
           prop-name="order_start_at"
           form-type="datetime"
+          isRequired
         />
-        <MyFormItem v-model="ruleForm.order_end_at" label="结束时间" prop-name="order_end_at" form-type="datetime" />
-        <MyFormItem v-model="ruleForm.status" label="状态" form-type="select" :data-list="statusOptions" />
+        <MyFormItem v-model="ruleForm.order_end_at" label="结束时间" prop-name="order_end_at" form-type="datetime" isRequired />
+        <MyFormItem v-model="ruleForm.status" label="状态" form-type="select" :data-list="statusOptions" isRequired />
       </MyForm>
       <template #footer>
         <NSpace :size="16">

@@ -34,6 +34,7 @@ const {
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
     { key: 'name', title: '产品名称', align: 'center', width: 150 },
     { key: 'desc', title: '详细介绍', align: 'center', width: 200, render: row => <span>{row.desc || '-'}</span> },
+    { key: 'trade_code', title: '交易码', align: 'center', width: 120, render:row=> <span>{row.trade_code||'-'}</span> },
     {
       key: 'order_start_at',
       title: '开始时间',

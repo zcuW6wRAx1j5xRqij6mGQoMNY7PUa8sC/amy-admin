@@ -38,17 +38,17 @@ const { columns, data, loading, getDataByPage, mobilePagination, searchParams, r
       key: 'photo_front',
       title: '证件正面照',
       align: 'center',
-      width: 120,
+      width: 60,
       render: row => {
         return row.photo_front ? (
-          <NImage
-            src={setBaseUrl(row.photo_front)}
-            width={100}
-            height={80}
-            object-fit="cover"
-            preview-disabled={false}
-            alt="证件正面"
-          />
+            <NImage
+              src={setBaseUrl(row.photo_front)}
+              width={30}
+              height={30}
+              object-fit="cover"
+              preview-disabled={false}
+              alt="证件正面"
+            />
         ) : (
           '-'
         );
@@ -58,17 +58,17 @@ const { columns, data, loading, getDataByPage, mobilePagination, searchParams, r
       key: 'photo_back',
       title: '证件背面照',
       align: 'center',
-      width: 120,
+      width: 60,
       render: row => {
         return row.photo_back ? (
-          <NImage
-            src={setBaseUrl(row.photo_back)}
-            width={100}
-            height={80}
-            object-fit="cover"
-            preview-disabled={false}
-            alt="证件背面"
-          />
+            <NImage
+              src={setBaseUrl(row.photo_back)}
+              width={30}
+              height={30}
+              object-fit="cover"
+              preview-disabled={false}
+              alt="证件背面"
+            />
         ) : (
           '-'
         );
@@ -174,20 +174,11 @@ async function handleReview(item: any, status: number) {
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <KycSearch v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard title="实名认证管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
-      <NDataTable
-        :columns="columns"
-        :data="data"
-        size="small"
-        :flex-height="!appStore.isMobile"
-        :scroll-x="1800"
-        :loading="loading"
-        remote
-        :row-key="row => row.id"
-        :pagination="mobilePagination"
-        class="sm:h-full"
-      />
+      <NDataTable :columns="columns" :data="data" size="small" :flex-height="!appStore.isMobile" :scroll-x="1800"
+        :loading="loading" remote :row-key="row => row.id" :pagination="mobilePagination" class="sm:h-full" />
     </NCard>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>
