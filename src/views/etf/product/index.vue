@@ -33,8 +33,12 @@ const {
   columns: () => [
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
     { key: 'name', title: '产品名称', align: 'center', width: 150 },
-    { key: 'desc', title: '详细介绍', align: 'center', width: 200, render: row => <div class="text-ellipsis">{row.desc || '-'}</div> },
-    { key: 'trade_code', title: '交易码', align: 'center', width: 120, render:row=> <span>{row.trade_code||'-'}</span> },
+    {
+      key: 'desc', title: '详细介绍', align: 'center', width: 200, ellipsis: {
+        tooltip: true
+      }, render: row => {row.desc || '-'}
+    },
+    { key: 'trade_code', title: '交易码', align: 'center', width: 120, render: row => <span>{row.trade_code || '-'}</span> },
     {
       key: 'order_start_at',
       title: '开始时间',
@@ -78,15 +82,15 @@ const {
           )}
           {hasAuth('delete') && (
             <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
-            {{
-              default: () => '确认删除吗？',
-              trigger: () => (
-                <NButton type="error" ghost size="small">
-                  删除
-                </NButton>
-              )
-            }}
-          </NPopconfirm>)}
+              {{
+                default: () => '确认删除吗？',
+                trigger: () => (
+                  <NButton type="error" ghost size="small">
+                    删除
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>)}
         </div>
       )
     }
@@ -122,42 +126,17 @@ function edit(id: number) {
     <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard title="ETF产品管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <TableHeaderOperation
-          v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
-          :loading="loading"
-          :no-add="!hasAuth('add')"
-          @add="handleAdd"
-          @refresh="getData"
-        />
+        <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
+          :loading="loading" :no-add="!hasAuth('add')" @add="handleAdd" @refresh="getData" />
       </template>
-      <NDataTable
-        v-model:checked-row-keys="checkedRowKeys"
-        :columns="columns"
-        :data="data"
-        size="small"
-        :flex-height="!appStore.isMobile"
-        :scroll-x="1200"
-        :loading="loading"
-        remote
-        :row-key="row => row.id"
-        :pagination="mobilePagination"
-        class="sm:h-full"
-      />
-      <OperateDrawer
-        v-model:visible="drawerVisible"
-        :operate-type="operateType"
-        :row-data="editingData"
-        @submitted="getData"
-      />
+      <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
+        :flex-height="!appStore.isMobile" :scroll-x="1200" :loading="loading" remote :row-key="row => row.id"
+        :pagination="mobilePagination" class="sm:h-full" />
+      <OperateDrawer v-model:visible="drawerVisible" :operate-type="operateType" :row-data="editingData"
+        @submitted="getData" />
     </NCard>
   </div>
 </template>
 
 <style scoped>
-:deep(.text-ellipsis) {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 </style>
