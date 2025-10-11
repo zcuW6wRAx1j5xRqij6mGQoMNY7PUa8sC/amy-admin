@@ -6,17 +6,20 @@ import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import FundDrawer from './modules/fund-drawer.vue';
 import { useAuth } from '@/hooks/business/auth';
+import SearchBox from './modules/search-box.vue';
 
 const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
 // 表格相关
-const { columns, columnChecks, data, loading, getData, mobilePagination } = useTable({
+const { columns, columnChecks, data, loading, getData, mobilePagination,searchParams,
+  resetSearchParams,getDataByPage } = useTable({
   apiFn: WalletStockList,
   apiParams: {
     page: 1,
-    size: 20
+    size: 20,
+    uid: null,
   },
   columns: () => [
     {
@@ -147,6 +150,7 @@ function handleFundChange(id: number) {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
+    <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard title="股票钱包管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation
