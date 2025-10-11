@@ -112,7 +112,7 @@ async function handleSubmit() {
   if (ruleForm.value.max_quantity === null || ruleForm.value.max_quantity < 0) {
     errorObj.value.max_quantity = '请输入有效的最大买入金额';
   }
-  if (ruleForm.value.min_quantity >= ruleForm.value.max_quantity) {
+  if (+ruleForm.value.min_quantity >= +ruleForm.value.max_quantity) {
     errorObj.value.max_quantity = '最大买入金额必须大于最小买入金额';
   }
   if (Object.values(errorObj.value).some(item => item)) {
