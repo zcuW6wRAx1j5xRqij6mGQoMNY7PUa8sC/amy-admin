@@ -45,9 +45,9 @@ const {
       render: row => <span>{row.user?.remark || '-'}</span>
     },
     { key: 'user.nickname', title: '用户昵称', align: 'center', width: 120, render: row => row.user?.nickname || '-' },
-    { key: 'stock_id', title: '股票ID', align: 'center', width: 100 },
-    { key: 'stock.name', title: '股票名称', align: 'center', width: 120, render: row => row.stock?.name || '-' },
-    { key: 'stock.symbol', title: '股票代码', align: 'center', width: 120, render: row => row.stock?.symbol || '-' },
+    // { key: 'stock_id', title: '股票ID', align: 'center', width: 100 },
+    // { key: 'stock.name', title: '股票名称', align: 'center', width: 120, render: row => row.stock?.name || '-' },
+    // { key: 'stock.symbol', title: '股票代码', align: 'center', width: 120, render: row => row.stock?.symbol || '-' },
     { key: 'ipo_id', title: 'IPO ID', align: 'center', width: 100 },
     {
       key: 'apply_price',
@@ -145,7 +145,7 @@ const {
       width: 100,
       render: row => {
         const statusMap = {
-          oepn: { type: 'success', text: '持仓中' },
+          open: { type: 'success', text: '持仓中' },
           pending: { type: 'info', text: '待审核' },
           locked: { type: 'warning', text: '锁定' },
           closed: { type: 'error', text: '已平仓' }
