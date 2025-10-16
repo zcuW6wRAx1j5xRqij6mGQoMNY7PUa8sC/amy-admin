@@ -45,9 +45,9 @@ const {
       render: row => <span>{row.user?.remark || '-'}</span>
     },
     { key: 'user.nickname', title: '用户昵称', align: 'center', width: 120, render: row => row.user?.nickname || '-' },
-    { key: 'stock_id', title: '股票ID', align: 'center', width: 100 },
-    { key: 'stock.name', title: '股票名称', align: 'center', width: 120, render: row => row.stock?.name || '-' },
-    { key: 'stock.symbol', title: '股票代码', align: 'center', width: 120, render: row => row.stock?.symbol || '-' },
+    // { key: 'stock_id', title: '股票ID', align: 'center', width: 100 },
+    // { key: 'stock.name', title: '股票名称', align: 'center', width: 120, render: row => row.stock?.name || '-' },
+    // { key: 'stock.symbol', title: '股票代码', align: 'center', width: 120, render: row => row.stock?.symbol || '-' },
     { key: 'ipo_id', title: 'IPO ID', align: 'center', width: 100 },
     {
       key: 'apply_price',
@@ -145,7 +145,7 @@ const {
       width: 100,
       render: row => {
         const statusMap = {
-          oepn: { type: 'success', text: '持仓中' },
+          open: { type: 'success', text: '持仓中' },
           pending: { type: 'info', text: '待审核' },
           locked: { type: 'warning', text: '锁定' },
           closed: { type: 'error', text: '已平仓' }
@@ -192,7 +192,7 @@ const {
           )}
 
           {/* 锁仓按钮 - 只在状态为正常时显示 */}
-          {hasAuth('edit') && row.status === 'pending' && row.apply_status === 1 && (
+          {hasAuth('edit') && row.status === 'open' && row.apply_status === 1 && (
             <NPopconfirm onPositiveClick={() => handleLock(row.id)}>
               {{
                 default: () => '确认锁仓此订单吗？',
@@ -246,7 +246,7 @@ const {
             </NPopconfirm>
           )}
           {/* 隐藏订单 */}
-          {hasAuth('edit') && (
+          {hasAuth('edit')&&(row.status === 'closed') && (
             <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
               {{
                 default: () => '确认删除吗？',
@@ -310,7 +310,7 @@ async function handleLock(id: number) {
   try {
     await OrderIPOLock(id);
     loading.value = false;
-    onDeleted();
+    getData();
   } catch (error) {
   } finally {
     loading.value = false;
