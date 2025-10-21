@@ -4,8 +4,8 @@ import { EtfOrderAudit, EtfOrderList } from '@/service/api/etf';
 import { hiddenEtf } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
-import SearchBox from './modules/search-box.vue';
 import { useAuth } from '@/hooks/business/auth';
+import SearchBox from './modules/search-box.vue';
 
 const { hasAuth } = useAuth();
 
@@ -63,7 +63,7 @@ const {
     },
     {
       key: 'daily_profit_rate',
-      title: '日收益率(%)',
+      title: '收益率(%)',
       align: 'center',
       width: 120,
       render: row => <span>{row.daily_profit_rate ? `${row.daily_profit_rate}%` : '-'}</span>
@@ -83,13 +83,6 @@ const {
       render: row => <span>{row.profit || '-'}</span>
     },
     {
-      key: 'return_profit',
-      title: '已返还收益',
-      align: 'center',
-      width: 120,
-      render: row => <span>{row.return_profit || '-'}</span>
-    },
-    {
       key: 'status',
       title: '状态',
       align: 'center',
@@ -105,20 +98,7 @@ const {
         return <NTag type={status.type}>{status.text}</NTag>;
       }
     },
-    {
-      key: 'next_settlement_at',
-      title: '下次结算时间',
-      align: 'center',
-      width: 170,
-      render: row => <span>{row.next_settlement_at || '-'}</span>
-    },
-    {
-      key: 'settlement_at',
-      title: '结单日期',
-      align: 'center',
-      width: 170,
-      render: row => <span>{row.settlement_at || '-'}</span>
-    },
+    { key: 'close_at', title: '结单时间', align: 'center', width: 160 },
     { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
     {
       key: 'actions',
@@ -132,27 +112,29 @@ const {
           return (
             <div class="flex-center gap-12px">
               {hasAuth('review') && (
-                <NPopconfirm  onPositiveClick={() => handleAudit(row.id, 2)} positiveText="确定" negativeText="取消">
-                {{
-                  trigger: () => (
-                    <NButton size="small" type="success">
-                      通过
-                    </NButton>
-                  ),
-                  default: () => '确定要通过这个ETF订单吗？'
-                }}
-              </NPopconfirm>)}
+                <NPopconfirm onPositiveClick={() => handleAudit(row.id, 2)} positiveText="确定" negativeText="取消">
+                  {{
+                    trigger: () => (
+                      <NButton size="small" type="success">
+                        通过
+                      </NButton>
+                    ),
+                    default: () => '确定要通过这个ETF订单吗？'
+                  }}
+                </NPopconfirm>
+              )}
               {hasAuth('review') && (
                 <NPopconfirm onPositiveClick={() => handleAudit(row.id, 1)} positiveText="确定" negativeText="取消">
-                {{
-                  trigger: () => (
-                    <NButton size="small" type="error">
-                      拒绝
-                    </NButton>
-                  ),
-                  default: () => '确定要拒绝这个ETF订单吗？'
-                }}
-              </NPopconfirm>)}
+                  {{
+                    trigger: () => (
+                      <NButton size="small" type="error">
+                        拒绝
+                      </NButton>
+                    ),
+                    default: () => '确定要拒绝这个ETF订单吗？'
+                  }}
+                </NPopconfirm>
+              )}
               {hasAuth('delete') && (
                 <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
                   {{
