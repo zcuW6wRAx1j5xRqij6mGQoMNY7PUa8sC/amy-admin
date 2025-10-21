@@ -3,9 +3,9 @@ import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { EtfProductDelete, EtfProductList } from '@/service/api/etf';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
+import { useAuth } from '@/hooks/business/auth';
 import SearchBox from './modules/search-box.vue';
 import OperateDrawer from './modules/operate-drawer.vue';
-import { useAuth } from '@/hooks/business/auth';
 
 const { hasAuth } = useAuth();
 
@@ -34,11 +34,31 @@ const {
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
     { key: 'name', title: '产品名称', align: 'center', width: 150 },
     {
-      key: 'desc', title: '详细介绍', align: 'center', width: 200, ellipsis: {
+      key: 'desc',
+      title: '详细介绍',
+      align: 'center',
+      width: 200,
+      ellipsis: {
         tooltip: true
-      }, render: row => {row.desc || '-'}
+      },
+      render: row => {
+        return row.desc || '-';
+      }
     },
-    { key: 'trade_code', title: '交易码', align: 'center', width: 120, render: row => <span>{row.trade_code || '-'}</span> },
+    {
+      key: 'trade_code',
+      title: '交易码',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.trade_code || '-'}</span>
+    },
+    {
+      key: 'duration',
+      title: '持仓时长(分钟)',
+      align: 'center',
+      width: 140,
+      render: row => <span>{row.duration || '-'}</span>
+    },
     {
       key: 'order_start_at',
       title: '开始时间',
@@ -90,7 +110,8 @@ const {
                   </NButton>
                 )
               }}
-            </NPopconfirm>)}
+            </NPopconfirm>
+          )}
         </div>
       )
     }
@@ -126,17 +147,36 @@ function edit(id: number) {
     <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard title="ETF产品管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
-          :loading="loading" :no-add="!hasAuth('add')" @add="handleAdd" @refresh="getData" />
+        <TableHeaderOperation
+          v-model:columns="columnChecks"
+          :disabled-delete="checkedRowKeys.length === 0"
+          :loading="loading"
+          :no-add="!hasAuth('add')"
+          @add="handleAdd"
+          @refresh="getData"
+        />
       </template>
-      <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
-        :flex-height="!appStore.isMobile" :scroll-x="1200" :loading="loading" remote :row-key="row => row.id"
-        :pagination="mobilePagination" class="sm:h-full" />
-      <OperateDrawer v-model:visible="drawerVisible" :operate-type="operateType" :row-data="editingData"
-        @submitted="getData" />
+      <NDataTable
+        v-model:checked-row-keys="checkedRowKeys"
+        :columns="columns"
+        :data="data"
+        size="small"
+        :flex-height="!appStore.isMobile"
+        :scroll-x="1200"
+        :loading="loading"
+        remote
+        :row-key="row => row.id"
+        :pagination="mobilePagination"
+        class="sm:h-full"
+      />
+      <OperateDrawer
+        v-model:visible="drawerVisible"
+        :operate-type="operateType"
+        :row-data="editingData"
+        @submitted="getData"
+      />
     </NCard>
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

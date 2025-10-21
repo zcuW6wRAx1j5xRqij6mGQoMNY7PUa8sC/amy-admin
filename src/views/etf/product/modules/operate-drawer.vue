@@ -50,7 +50,8 @@ function createDefaultModel() {
     order_start_at: null,
     order_end_at: null,
     status: '1',
-    trade_code: ''
+    trade_code: '',
+    duration: null
   };
 }
 
@@ -95,6 +96,9 @@ async function handleSubmit() {
   if (isEmpty(ruleForm.value.order_end_at)) {
     errorObj.value.order_end_at = '请选择结束时间';
   }
+  if (ruleForm.value.duration !== null && ruleForm.value.duration !== '' && (isNaN(Number(ruleForm.value.duration)) || Number(ruleForm.value.duration) <= 0)) {
+    errorObj.value.duration = '持仓时长必须为正整数';
+  }
   if (Object.values(errorObj.value).some(item => item)) {
     return;
   }
@@ -108,6 +112,12 @@ async function handleSubmit() {
     }
     if (params.order_end_at) {
       params.order_end_at = dayjs(params.order_end_at).format('YYYY-MM-DD HH:mm:ss');
+    }
+    // 确保duration为数字类型
+    if (params.duration !== null && params.duration !== '') {
+      params.duration = Number(params.duration);
+    } else {
+      params.duration = null;
     }
     await action(params);
 
@@ -136,6 +146,7 @@ watch(visible, async () => {
         <MyFormItem v-model="ruleForm.name" label="产品名称" prop-name="name" isRequired />
         <MyFormItem v-model="ruleForm.desc" label="详细介绍" prop-name="desc" type="textarea" isRequired />
         <MyFormItem v-model="ruleForm.trade_code" label="交易码" prop-name="trade_code" />
+        <MyFormItem v-model="ruleForm.duration" label="持仓时长(分钟)" prop-name="duration" form-type="number" />
         <MyFormItem
           v-model="ruleForm.order_start_at"
           label="开始时间"
