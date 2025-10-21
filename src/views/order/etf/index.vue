@@ -63,7 +63,7 @@ const {
     },
     {
       key: 'daily_profit_rate',
-      title: '日收益率(%)',
+      title: '收益率(%)',
       align: 'center',
       width: 120,
       render: row => <span>{row.daily_profit_rate ? `${row.daily_profit_rate}%` : '-'}</span>
@@ -98,6 +98,7 @@ const {
         return <NTag type={status.type}>{status.text}</NTag>;
       }
     },
+    { key: 'close_at', title: '结单时间', align: 'center', width: 160 },
     { key: 'created_at', title: '创建时间', align: 'center', width: 160 },
     {
       key: 'actions',
