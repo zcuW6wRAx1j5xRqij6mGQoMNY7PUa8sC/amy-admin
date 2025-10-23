@@ -29,7 +29,10 @@ const {
     product_id: null,
     status: null,
     page: 1,
-    size: 20
+    size: 20,
+    filter: {
+      'user.remark': ''
+    }
   },
   columns: () => [
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
@@ -104,7 +107,7 @@ const {
       key: 'actions',
       title: '操作',
       align: 'center',
-      width: 120,
+      width: 160,
       fixed: 'right',
       render: row => {
         // 只有待审核状态的订单才显示审核按钮

@@ -34,6 +34,9 @@ const {
     range: {
       created_at: null
     },
+    filter: {
+      'user.remark': ''
+    },
     size: 20
   },
   columns: () => [
@@ -109,7 +112,7 @@ const {
       title: '备注',
       align: 'center',
       width: 150,
-      render: row => <span>{row.remark || '-'}</span>
+      render: row => <span>{row.user?.remark || '-'}</span>
     },
     {
       key: 'reject_reason',

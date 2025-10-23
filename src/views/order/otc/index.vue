@@ -6,11 +6,11 @@ import { OrderOtcList, OrderOtcLockUnlock } from '@/service/api/order';
 import { hiddenOrder } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
+import { useAuth } from '@/hooks/business/auth';
 import SearchBox from './modules/search-box.vue';
 import AuditDrawer from './modules/audit-drawer.vue';
 import CloseDrawer from './modules/close-drawer.vue';
 import CreateDrawer from './modules/create-drawer.vue';
-import { useAuth } from '@/hooks/business/auth';
 
 const { hasAuth } = useAuth();
 
@@ -52,7 +52,10 @@ const {
     uid: '',
     status: null,
     page: 1,
-    size: 20
+    size: 20,
+    filter: {
+      'user.remark': ''
+    }
   },
   columns: () => [
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
@@ -168,7 +171,7 @@ const {
             </NButton>
           )}
 
-          {hasAuth('edit') &&row.status === 'open' && (
+          {hasAuth('edit') && row.status === 'open' && (
             <NPopconfirm onPositiveClick={() => handleLock(row.id)}>
               {{
                 default: () => '确认锁仓此订单吗？',

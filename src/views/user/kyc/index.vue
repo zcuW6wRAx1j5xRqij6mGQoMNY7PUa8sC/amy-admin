@@ -3,9 +3,9 @@ import { NButton, NImage, NPopconfirm, NTag, NText } from 'naive-ui';
 import { UserKycAudit, UserKycList } from '@/service/api/user';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
+import { useAuth } from '@/hooks/business/auth';
 import { setBaseUrl } from '@/utils/utils';
 import KycSearch from './modules/kyc-search.vue';
-import { useAuth } from '@/hooks/business/auth';
 
 const { hasAuth } = useAuth();
 
@@ -25,7 +25,10 @@ const { columns, data, loading, getDataByPage, mobilePagination, searchParams, r
     page: 1,
     page_size: 20,
     filter: '',
-    status: null
+    status: null,
+    filter: {
+      'user.remark': ''
+    }
   },
   columns: () => [
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
@@ -41,14 +44,14 @@ const { columns, data, loading, getDataByPage, mobilePagination, searchParams, r
       width: 60,
       render: row => {
         return row.photo_front ? (
-            <NImage
-              src={setBaseUrl(row.photo_front)}
-              width={30}
-              height={30}
-              object-fit="cover"
-              preview-disabled={false}
-              alt="证件正面"
-            />
+          <NImage
+            src={setBaseUrl(row.photo_front)}
+            width={30}
+            height={30}
+            object-fit="cover"
+            preview-disabled={false}
+            alt="证件正面"
+          />
         ) : (
           '-'
         );
@@ -61,14 +64,14 @@ const { columns, data, loading, getDataByPage, mobilePagination, searchParams, r
       width: 60,
       render: row => {
         return row.photo_back ? (
-            <NImage
-              src={setBaseUrl(row.photo_back)}
-              width={30}
-              height={30}
-              object-fit="cover"
-              preview-disabled={false}
-              alt="证件背面"
-            />
+          <NImage
+            src={setBaseUrl(row.photo_back)}
+            width={30}
+            height={30}
+            object-fit="cover"
+            preview-disabled={false}
+            alt="证件背面"
+          />
         ) : (
           '-'
         );
@@ -111,6 +114,13 @@ const { columns, data, loading, getDataByPage, mobilePagination, searchParams, r
       align: 'center',
       width: 170,
       render: row => <NText>{row.created_at}</NText>
+    },
+    {
+      key: 'remark',
+      title: '备注',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.user?.remark || '-'}</span>
     },
     {
       key: 'actions',
@@ -174,11 +184,20 @@ async function handleReview(item: any, status: number) {
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <KycSearch v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard title="实名认证管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
-      <NDataTable :columns="columns" :data="data" size="small" :flex-height="!appStore.isMobile" :scroll-x="1800"
-        :loading="loading" remote :row-key="row => row.id" :pagination="mobilePagination" class="sm:h-full" />
+      <NDataTable
+        :columns="columns"
+        :data="data"
+        size="small"
+        :flex-height="!appStore.isMobile"
+        :scroll-x="1800"
+        :loading="loading"
+        remote
+        :row-key="row => row.id"
+        :pagination="mobilePagination"
+        class="sm:h-full"
+      />
     </NCard>
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
