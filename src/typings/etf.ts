@@ -23,6 +23,14 @@ export interface EtfProduct {
    * 状态:0=关闭,1=开启
    */
   status?: string;
+  /**
+   * 交易码
+   */
+  trade_code?: string;
+  /**
+   * 持仓时长(分钟)
+   */
+  duration?: number;
   created_at?: string;
   updated_at?: string;
   [property: string]: any;
@@ -116,6 +124,14 @@ export interface EtfProductRequest {
    * 状态:0=关闭,1=开启
    */
   status?: number;
+  /**
+   * 交易码
+   */
+  trade_code?: string;
+  /**
+   * 持仓时长(分钟)
+   */
+  duration?: number;
   [property: string]: any;
 }
 

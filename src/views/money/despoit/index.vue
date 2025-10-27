@@ -7,9 +7,9 @@ import { hiddenDespoit } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
+import { useAuth } from '@/hooks/business/auth';
 import SearchBox from './modules/search-box.vue';
 import AuditDrawer from './modules/audit-drawer.vue';
-import { useAuth } from '@/hooks/business/auth';
 
 const { hasAuth } = useAuth();
 
@@ -33,7 +33,10 @@ const {
     status: null,
     page: 1,
     range: {
-      created_at: null,
+      created_at: null
+    },
+    filter: {
+      'user.remark': ''
     },
     size: 20
   },
