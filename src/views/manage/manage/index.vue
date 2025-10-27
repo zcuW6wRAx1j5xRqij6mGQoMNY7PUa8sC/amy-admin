@@ -185,7 +185,7 @@ getRoleList();
           v-model:columns="columnChecks"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
-          :no-add="hasAuth('add')"
+          :no-add="!hasAuth('add')"
           @add="handleAdd"
           @refresh="getData"
         />
