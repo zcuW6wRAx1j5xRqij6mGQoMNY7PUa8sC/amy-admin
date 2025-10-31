@@ -1,10 +1,11 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
-import { NButton, NPopconfirm, NTag, NText } from 'naive-ui';
+import { NButton, NPopconfirm, NTag, NText, NImage } from 'naive-ui';
 import dayjs from 'dayjs';
 import { DepositOrderList } from '@/service/api/order';
 import { hiddenDespoit } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
+import { setBaseUrl } from '@/utils/utils';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 import { useAuth } from '@/hooks/business/auth';
@@ -75,6 +76,13 @@ const {
           {row.user?.phone || '-'}
         </NText>
       )
+    },
+    {
+      key: 'receipt',
+      title: '充值凭证',
+      align: 'center',
+      width: 120,
+      render: row => <NImage src={setBaseUrl(row.receipt)} alt="充值凭证" width={100} height={100} />
     },
     {
       key: 'amount',
