@@ -113,7 +113,7 @@ const {
       title: '备注',
       align: 'center',
       width: 150,
-      render: row => <span>{row.user?.remark || '-'}</span>
+      render: row => <span>{row.remark || '-'}</span>
     },
     {
       key: 'reject_reason',
