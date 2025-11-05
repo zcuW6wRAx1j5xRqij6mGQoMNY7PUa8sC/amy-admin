@@ -97,7 +97,7 @@ function validateForm() {
     { key: 'apply_price', message: '请输入申请价格' },
     { key: 'close_fee', message: '请输入平仓手续费%' },
     { key: 'open_fee', message: '请输入开仓手续费%' },
-    { key: 'company_id', message: '请输入企业ID' },
+    { key: 'company_id', message: '请输入股票代码' },
     { key: 'company_name', message: '请输入企业名称' },
     { key: 'issue_quantity', message: '请输入发行数量' }
   ];
@@ -171,7 +171,7 @@ watch(visible, () => {
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm all-required :error-obj="errorObj">
         <MyFormItem v-model="ruleForm.buy_price" label="购买价格" prop-name="buy_price" />
-        <MyFormItem v-model="ruleForm.company_id" label="企业ID" prop-name="company_id" />
+        <MyFormItem v-model="ruleForm.company_id" label="股票代码" prop-name="company_id" />
         <MyFormItem v-model="ruleForm.company_name" label="企业名称" prop-name="company_name" />
         <MyFormItem v-model="ruleForm.apply_price" label="申请价格" prop-name="apply_price" />
         <MyFormItem v-model="ruleForm.apply_min_quantity" label="申请最小量" prop-name="apply_min_quantity" />

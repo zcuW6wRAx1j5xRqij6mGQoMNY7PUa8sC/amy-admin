@@ -51,7 +51,7 @@ export interface IpoPostPlader {
   id?: number;
   stock_id?: number; // 股票ID
   name?: string; //股票名称
-  company_id?: string; // 企业ID
+  company_id?: string; // 股票代码
   company_name?: string; // 企业名称
   apply_price: number; // 发行价格
   apply_min_quantity: number; // 申请最小量

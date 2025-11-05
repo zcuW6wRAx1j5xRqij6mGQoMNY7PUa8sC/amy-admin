@@ -41,7 +41,7 @@ const {
     },
     {
       key: 'company_id',
-      title: '企业ID',
+      title: '股票代码',
       align: 'center',
       width: 100
     },
