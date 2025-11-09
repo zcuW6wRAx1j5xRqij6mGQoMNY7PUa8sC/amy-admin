@@ -1,11 +1,13 @@
 <script setup lang="tsx">
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { EtfOrderAudit, EtfOrderList } from '@/service/api/etf';
+import { EtfOrderAudit, EtfOrderList, EtfOrderUpdate } from '@/service/api/etf';
 import { hiddenEtf } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
 import { useAuth } from '@/hooks/business/auth';
 import SearchBox from './modules/search-box.vue';
+import dayjs from 'dayjs';
+import { ref } from 'vue';
 
 const { hasAuth } = useAuth();
 
@@ -155,6 +157,11 @@ const {
         }
         return (
           <div class="flex-center gap-12px">
+            {row.status === 2 && (
+              <NButton type="info" ghost size="small" onClick={() => handOpenSelectTime(row.id)}>
+                修改结算时间
+              </NButton>
+            )}
             <NPopconfirm onPositiveClick={() => handleHidden(row.id)}>
               {{
                 default: () => '确认删除吗？',
@@ -192,6 +199,42 @@ async function handleAudit(orderId: number, type: 1 | 2) {
     console.error('审核失败:', error);
   }
 }
+//  结算时间
+const timeVisible = ref(false);
+const errorObj = ref({});
+const btnLoading = ref(false);
+const fromData = ref({
+  close_at: null,
+  id: null
+});
+// 打开处理时间结算时间
+function handOpenSelectTime(orderId: number) {
+  fromData.value = {
+    close_at: null,
+    id: orderId
+  };
+  timeVisible.value = true;
+}
+
+// 处理选择时间
+async function handleSelectTime() {
+  if (fromData.value.close_at) {
+    fromData.value.close_at = dayjs(fromData.value.close_at).format('YYYY-MM-DD HH:mm:ss');
+  } else {
+    errorObj.value.close_at = '请选择结算时间';
+  }
+  btnLoading.value = true;
+  try {
+    await EtfOrderUpdate(fromData.value);
+    window.$message?.success('修改成功');
+    timeVisible.value = false;
+    getData();
+  } catch (error: any) {
+    console.error('修改失败:', error);
+  } finally {
+    btnLoading.value = false;
+  }
+}
 </script>
 
 <template>
@@ -215,6 +258,19 @@ async function handleAudit(orderId: number, type: 1 | 2) {
         class="sm:h-full"
       />
     </NCard>
+
+    <ObDialog
+      v-model:visible="timeVisible"
+      title="修改结算时间"
+      :loading="btnLoading"
+      width="420px"
+      :handle-confirm="handleSelectTime"
+    >
+      <MyForm all-required :error-obj="errorObj">
+        <MyFormItem v-model="fromData.close_at" form-type="datetime" label="结算时间" prop-name="close_at" />
+      </MyForm>
+    </ObDialog>
+
   </div>
 </template>
 
