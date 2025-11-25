@@ -1,7 +1,7 @@
 import { onBeforeUnmount, ref } from 'vue';
 import { localStg } from '@/utils/storage';
 const socketInfo = {
-  url: 'wss://ws.amy.finance/connection/websocket'
+  url: `${import.meta.env.VITE_WS_BASE_URL}connection/websocket`
 };
 let centrifuge = null;
 // 存储已订阅的频道，避免重复订阅

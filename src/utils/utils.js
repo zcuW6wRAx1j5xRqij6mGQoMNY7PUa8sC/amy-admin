@@ -15,7 +15,7 @@ export const encodedParams = (obj = {}) => {
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
     .join('&');
 };
-export const baseUrl = 'https://s3.amy.finance';
+export const baseUrl = import.meta.env.VITE_IMG_BASE_URL;
 
 export function setBaseUrl(url) {
   if (!url) {
