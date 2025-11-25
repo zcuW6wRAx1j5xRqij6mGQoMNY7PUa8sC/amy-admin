@@ -97,3 +97,8 @@ export interface EtfOrderAuditRequest {
 export function EtfOrderAudit(data: EtfOrderAuditRequest) {
   return request<any>({ url: '/api/admin/order/etf/audit', method: 'post', data });
 }
+
+// 更新ETF产品
+export function EtfOrderUpdate(data:{ id: number,close_at:string }) {
+  return request<any>({ url: '/api/admin/order/etf/update', method: 'post', data });
+}

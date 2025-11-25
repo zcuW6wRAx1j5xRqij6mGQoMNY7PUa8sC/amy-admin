@@ -34,11 +34,15 @@ const {
     range: {
       created_at: null
     },
+    filter: {
+      'user.remark': ''
+    },
     size: 20
   },
   columns: () => [
     { key: 'id', title: 'ID', align: 'center', width: 80, fixed: 'left' },
     { key: 'uid', title: '用户ID', align: 'center', width: 100 },
+    { key: 'user.remark', title: '用户备注', align: 'center', width: 100 },
     {
       key: 'user.email',
       title: '用户邮箱',

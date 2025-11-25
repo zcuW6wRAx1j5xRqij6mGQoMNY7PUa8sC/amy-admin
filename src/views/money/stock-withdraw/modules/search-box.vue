@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import dayjs from 'dayjs';
 import { ref } from 'vue';
+import dayjs from 'dayjs';
 defineOptions({
   name: 'StockWithdrawSearchBox'
 });
@@ -48,13 +48,18 @@ async function search() {
             <NFormItemGi span="24 s:12 m:8 l:6" label="提现状态" path="status" class="pr-24px">
               <NSelect v-model:value="model.status" placeholder="请选择提现状态" :options="statusOptions" clearable />
             </NFormItemGi>
+            <NFormItemGi span="24 s:12 m:8 l:6" label="备注" path="remark" class="pr-24px">
+              <NInput v-model:value="model.filter['user.remark']" placeholder="请输入备注" />
+            </NFormItemGi>
             <NFormItemGi span="24 s:12 m:8 l:6" label="申请时间" path="created_at" class="pr-24px">
-              <NDatePicker 
-              v-model:value="model.range.created_at" type="datetimerange"
-              clearable
-              :shortcuts="rangeShortcuts"
-              :default-time="['00:00:00', '23:59:59']" 
-              placeholder="申请时间" />
+              <NDatePicker
+                v-model:value="model.range.created_at"
+                type="datetimerange"
+                clearable
+                :shortcuts="rangeShortcuts"
+                :default-time="['00:00:00', '23:59:59']"
+                placeholder="申请时间"
+              />
             </NFormItemGi>
             <NFormItemGi span="24 m:6" class="pr-24px">
               <NSpace class="w-full">

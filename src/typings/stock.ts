@@ -11,7 +11,7 @@ export interface IpoStock {
    */
   name: string;
   /**
-   * 企业ID
+   * 股票代码
    */
   company_id?: string;
   /**
@@ -94,7 +94,7 @@ export interface IpoStockRequest {
    */
   name: string;
   /**
-   * 企业ID
+   * 股票代码
    */
   company_id?: string;
   /**
