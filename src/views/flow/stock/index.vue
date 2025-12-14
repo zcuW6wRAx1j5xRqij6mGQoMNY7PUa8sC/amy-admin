@@ -99,6 +99,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination,getDataB
           block_trade_apply_refund: { type: 'success', text: '大宗审核退款' },
           block_trade_settlement: { type: 'info', text: '大宗订单结算' },
           block_trade_extra_income: { type: 'success', text: '大宗额外收益' },
+          block_trade_close_refund_partial: { type: 'success', text: '大宗退款' },
 
           // IPO相关
           ipo_subscription: { type: 'warning', text: 'IPO认缴' },
