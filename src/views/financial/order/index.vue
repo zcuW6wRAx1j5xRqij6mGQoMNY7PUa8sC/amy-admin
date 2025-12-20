@@ -43,7 +43,7 @@ const StatusMap = {
   },
   rejected: {
     type: 'error',
-    text: '已拒绝'
+    text: '订单已拒绝'
   }
 };
 
@@ -63,6 +63,7 @@ const {
     email: '',
     phone: '',
     status: null,
+    audit_status: null,
     uid: null,
     page: 1,
     page_size: 20

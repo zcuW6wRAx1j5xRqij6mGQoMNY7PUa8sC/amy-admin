@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { watch } from 'vue';
 import dayjs from 'dayjs';
 
+const orderValue = 'order_'
+const isSuccess = 'approved'
 const statusList = [
-  { label: '进行中', value: 'pending' },
-  { label: '已结算', value: 'settled' }
+  { label: '待审核', value: 'pending' },
+  // { label: '已通过', value: 'approved' },
+  { label: '已拒绝', value: 'rejected' },
+  { label: `待处理`, value: `${orderValue}pending` },
+  { label: `进行中`, value: `${orderValue}processing` },
+  { label: `已结算`, value: `${orderValue}settled` },
+  { label: `订单已拒绝`, value: `${orderValue}rejected` }
 ];
 
 defineOptions({
@@ -27,6 +34,19 @@ async function reset() {
 async function search() {
   emit('search');
 }
+
+const changeStatus = (val: string) => {
+  if (!val) return
+  const isOrder = val.indexOf(orderValue) !== -1
+  const name = val.replace(orderValue, '')
+  model.value.audit_status = isOrder ? isSuccess : name
+  model.value.status = isOrder ? name : null
+}
+
+watch(() => model.value.audit_status, (val)=>{
+  if (!val) model.value.currentStatus = null
+})
+
 </script>
 
 <template>
@@ -45,7 +65,8 @@ async function search() {
               <NInput v-model:value="model.phone" placeholder="请输入" />
             </NFormItemGi>
             <NFormItemGi label="状态">
-              <NSelect v-model:value="model.status" :options="statusList" placeholder="请选择" clearable />
+              <NSelect v-model:value="model.currentStatus" @change="changeStatus" :options="statusList"
+                placeholder="请选择" clearable />
             </NFormItemGi>
             <NFormItemGi>
               <NSpace class="w-full" justify="end">
