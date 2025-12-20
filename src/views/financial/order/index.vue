@@ -2,12 +2,12 @@
 import { ref } from 'vue';
 import { NButton, NPopconfirm } from 'naive-ui';
 import dayjs from 'dayjs';
-import { fetchGetOrderList, auditFinancial } from '@/service/api/financial';
+import { auditFinancial, fetchGetOrderList } from '@/service/api/financial';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
-import SearchBox from './modules/search-box.vue';
 import { useAuth } from '@/hooks/business/auth';
 import { percentFormat } from '@/utils/utils';
+import SearchBox from './modules/search-box.vue';
 
 const { hasAuth } = useAuth();
 
@@ -25,7 +25,7 @@ const AuditStatusMap = {
     type: 'error',
     text: '已拒绝'
   }
-}
+};
 
 // 状态: pending 待处理 processing 进行中 settled 已结算 rejected 审核拒绝
 const StatusMap = {
@@ -45,7 +45,7 @@ const StatusMap = {
     type: 'error',
     text: '已拒绝'
   }
-}
+};
 
 const {
   columns,
@@ -168,11 +168,10 @@ const {
       width: 80,
       fixed: 'right',
       render: row => {
-        if(row.audit_status !== 'approved'){
+        if (row.audit_status !== 'approved') {
           return <NTag type={AuditStatusMap[row.audit_status].type}>{AuditStatusMap[row.audit_status].text}</NTag>;
-        }else{
-            return <NTag type={StatusMap[row.status].type}>{StatusMap[row.status].text}</NTag>;
         }
+        return <NTag type={StatusMap[row.status].type}>{StatusMap[row.status].text}</NTag>;
       }
     },
     {
@@ -185,27 +184,29 @@ const {
         return (
           <div class="flex-center gap-12px">
             {hasAuth('audit') && (
-            <NPopconfirm onPositiveClick={() => handleAudit({ id: row.id, status: 'approved' })}>
-              {{
-                default: () => '确认通过吗？',
-                trigger: () => (
-                  <NButton type="success" ghost size="small">
-                    通过
-                  </NButton>
-                )
-              }}
-            </NPopconfirm>)}
+              <NPopconfirm onPositiveClick={() => handleAudit({ id: row.id, status: 'approved' })}>
+                {{
+                  default: () => '确认通过吗？',
+                  trigger: () => (
+                    <NButton type="success" ghost size="small">
+                      通过
+                    </NButton>
+                  )
+                }}
+              </NPopconfirm>
+            )}
             {hasAuth('audit') && (
-            <NPopconfirm onPositiveClick={() => handleAudit({ id: row.id, status: 'rejected' })}>
-              {{
-                default: () => '确认拒绝吗？',
-                trigger: () => (
-                  <NButton type='error' ghost size="small">
-                    拒绝
-                  </NButton>
-                )
-              }}
-            </NPopconfirm>)}
+              <NPopconfirm onPositiveClick={() => handleAudit({ id: row.id, status: 'rejected' })}>
+                {{
+                  default: () => '确认拒绝吗？',
+                  trigger: () => (
+                    <NButton type="error" ghost size="small">
+                      拒绝
+                    </NButton>
+                  )
+                }}
+              </NPopconfirm>
+            )}
           </div>
         );
       }
@@ -213,7 +214,7 @@ const {
   ]
 });
 
-const handleAudit = async (params: { id: number, status: string }) => {
+const handleAudit = async (params: { id: number; status: string }) => {
   await auditFinancial(params);
   getData();
 };
