@@ -111,6 +111,12 @@ const { columns, columnChecks, data, loading, getData, mobilePagination,getDataB
           etf_subscription: { type: 'warning', text: 'AI7.0审核缴款' },
           etf_settlement: { type: 'info', text: 'AI7.0订单结算' },
           etf_principal_refund: { type: 'success', text: 'AI7.0本金返还' },
+
+          // 日内交易相关
+          financial: { type: 'warning', text: '日内购买' },
+          financial_settle: { type: 'info', text: '日内收益' },
+          financial_principal_refund: { type: 'success', text: '日内本金返还' },
+          financial_redeem: { type: 'error', text: '日内赎回' },
         };
         const config = typeMap[row.type] || { type: 'default', text: row.type };
         return <NTag type={config.type}>{config.text}</NTag>;
