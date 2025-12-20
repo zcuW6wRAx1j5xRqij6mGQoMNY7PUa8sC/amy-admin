@@ -62,6 +62,13 @@ const durationList = [
   { label: '120天', value: 120 }
 ];
 
+const needTradeCodeList = [
+  { label: '是', value: 1 },
+  { label: '否', value: 0 }
+];
+
+
+
 watch(
   () => visible.value,
   newVal => {
@@ -83,7 +90,8 @@ function createDefaultModel() {
     penalty_rate: '0',
     duration: [1],
     sort: 1,
-    status: 1
+    status: 1,
+    need_trade_code: 0
   };
 }
 
@@ -186,6 +194,8 @@ function handleInitModel() {
         <MyFormItem v-model="ruleForm.penalty_rate" label="赎回利息%" type="number" prop-name="penalty_rate" />
         <MyFormItem v-model="ruleForm.duration" label="天数" form-type="select" :data-list="durationList"
           prop-name="duration" multiple />
+        <MyFormItem v-model="ruleForm.trade_code" label="交易码" form-type="input"
+          :data-list="needTradeCodeList" prop-name="trade_code" />
         <MyFormItem v-model="ruleForm.sort" label="排序" type="number" prop-name="sort" />
         <MyFormItem v-if="operateType === 'edit'" v-model="ruleForm.status" label="状态" form-type="select"
           :data-list="statusList" prop-name="status" />

@@ -78,6 +78,12 @@ const {
       align: 'center',
       render: row => percentFormat(row.min_daily_rate)
     },
+    {
+      key: 'trade_code',
+      title: '交易码',
+      align: 'center',
+      render: row => (row.trade_code ? row.trade_code : '-')
+    },
     // {
     //   key: 'max_daily_rate',
     //   title: '最大日收益率',
@@ -136,7 +142,7 @@ const { drawerVisible, operateType, editingData, handleAdd, handleEdit } = useTa
             :no-add="!hasAuth('add')" @add="handleAdd" />
         </NSpace>
       </template>
-      <NDataTable :columns="columns" :data="data" size="small" :flex-height="!appStore.isMobile" :scroll-x="1200"
+      <NDataTable :columns="columns" :data="data" size="small" :flex-height="!appStore.isMobile" :scroll-x="1500"
         :loading="loading" remote :row-key="row => row.id" :pagination="mobilePagination" class="sm:h-full" />
     </NCard>
 
