@@ -70,6 +70,20 @@ const {
       render: row => <span>{row.amount || 0}</span>
     },
     {
+      key: 'fee',
+      title: '手续费',
+      align: 'center',
+      width: 120,
+      render: row => <span>{row.fee || '0.00000000'}</span>
+    },
+    {
+      key: 'real_amount',
+      title: '实际到账金额',
+      align: 'center',
+      width: 140,
+      render: row => <span>{row.real_amount || '0.00000000'}</span>
+    },
+    {
       key: 'bank_card_id',
       title: '银行卡ID',
       align: 'center',
@@ -219,7 +233,7 @@ function handleAuditSubmitted() {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="1400"
+        :scroll-x="1800"
         :loading="loading"
         remote
         :row-key="row => row.id"
