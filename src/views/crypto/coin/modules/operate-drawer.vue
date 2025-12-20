@@ -154,10 +154,10 @@ watch(visible, async () => {
         />
         <MyFormItem
           v-model="model.withdraw_fee"
-          label="提现手续费（0-1）如0.01表示1‰"
+          label="提现手续费（0-1）如0.01表示1%"
           prop-name="withdraw_fee"
           form-type="number"
-          placeholder="请输入提现手续费，如0.01表示1‰"
+          placeholder="请输入提现手续费，如0.01表示1%"
         />
         <MyFormItem v-model="model.status" label="状态" form-type="select" :data-list="statusList" prop-name="status" />
       </MyForm>
