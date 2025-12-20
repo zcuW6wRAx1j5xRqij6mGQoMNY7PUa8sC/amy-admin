@@ -3,7 +3,7 @@ import { NButton, NImage, NPopconfirm, NTag, NText } from 'naive-ui';
 import { CryptoCoinList, CryptoDelCoin } from '@/service/api/crypto';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import { setBaseUrl } from '@/utils/utils';
+import { setBaseUrl, percentFormat } from '@/utils/utils';
 import SearchBox from './modules/search-box.vue';
 import OperateDrawer from './modules/operate-drawer.vue';
 import { useAuth } from '@/hooks/business/auth';
@@ -81,6 +81,13 @@ const {
       render: row => (
         <NTag type={row.allow_withdraw === 1 ? 'success' : 'error'}>{row.allow_withdraw === 1 ? '是' : '否'}</NTag>
       )
+    },
+    {
+      key: 'withdraw_fee',
+      title: '提现手续费',
+      align: 'center',
+      width: 120,
+      render: row => <span>{percentFormat(row.withdraw_fee)}</span>
     },
     {
       key: 'status',

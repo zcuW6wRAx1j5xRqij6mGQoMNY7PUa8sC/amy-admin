@@ -34,6 +34,10 @@ export interface CryptoPostCoinPlader {
    * 状态：1-正常，0-禁用
    */
   status?: number;
+  /**
+   * 提现手续费（0.01表示1%）
+   */
+  withdraw_fee?: number;
   id?: number;
 }
 
