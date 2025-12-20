@@ -1,14 +1,14 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
-import { NButton, NPopconfirm, NTag, NText, NImage } from 'naive-ui';
+import { NButton, NImage, NPopconfirm, NTag, NText } from 'naive-ui';
 import dayjs from 'dayjs';
 import { DepositOrderList } from '@/service/api/order';
 import { hiddenDespoit } from '@/service/api/hidden';
 import { useAppStore } from '@/store/modules/app';
-import { setBaseUrl } from '@/utils/utils';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { usePageRefresh } from '@/hooks/common/usePageRefresh';
 import { useAuth } from '@/hooks/business/auth';
+import { setBaseUrl } from '@/utils/utils';
 import SearchBox from './modules/search-box.vue';
 import AuditDrawer from './modules/audit-drawer.vue';
 
@@ -114,10 +114,17 @@ const {
       render: row => <NText>{row.created_at && dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')}</NText>
     },
     {
+      key: 'remark',
+      title: '备注',
+      align: 'center',
+      width: 150,
+      render: row => <span>{row.remark || '-'}</span>
+    },
+    {
       key: 'actions',
       title: '操作',
       align: 'center',
-      width: 200,
+      width: 240,
       fixed: 'right',
       render: row => {
         // 只有待审核状态才显示操作按钮
