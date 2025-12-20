@@ -183,7 +183,7 @@ const {
       render: row => {
         return (
           <div class="flex-center gap-12px">
-            {hasAuth('audit') && (
+            {hasAuth('audit') && row.audit_status === 'pending' && (
               <NPopconfirm onPositiveClick={() => handleAudit({ id: row.id, status: 'approved' })}>
                 {{
                   default: () => '确认通过吗？',
@@ -195,7 +195,7 @@ const {
                 }}
               </NPopconfirm>
             )}
-            {hasAuth('audit') && (
+            {hasAuth('audit') && row.audit_status === 'pending' && (
               <NPopconfirm onPositiveClick={() => handleAudit({ id: row.id, status: 'rejected' })}>
                 {{
                   default: () => '确认拒绝吗？',
