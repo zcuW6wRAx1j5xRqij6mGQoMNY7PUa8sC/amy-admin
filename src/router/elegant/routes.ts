@@ -88,7 +88,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     path: '/etf',
     component: 'layout.base',
     meta: {
-      title: 'ETF管理',
+      title: 'AI管理',
       icon: 'mdi:trending-up'
     },
     children: [
@@ -97,7 +97,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/etf/config',
         component: 'view.etf_config',
         meta: {
-          title: 'ETF配置',
+          title: 'AI配置',
           icon: 'mdi:tune'
         }
       },
@@ -106,7 +106,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/etf/product',
         component: 'view.etf_product',
         meta: {
-          title: 'ETF产品',
+          title: 'AI产品',
           icon: 'mdi:package-variant'
         }
       }

@@ -45,6 +45,7 @@ const typeOptions = [
   { label: '大宗申请', value: 'block_trade_apply' },
   { label: '大宗审核退款', value: 'block_trade_apply_refund' },
   { label: '大宗订单结算', value: 'block_trade_settlement' },
+  { label: '大宗退款', value: 'block_trade_close_refund_partial' },
   { label: 'IPO认缴', value: 'ipo_subscription' },
   { label: 'IPO订单结算', value: 'ipo_settlement' },
   { label: '申请ETF', value: 'block_etf_apply' },

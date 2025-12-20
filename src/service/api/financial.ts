@@ -21,3 +21,7 @@ export function fetchUpdateProduct(data: any) {
 export function fetchGetOrderList(params: any) {
   return request<any>({ url: '/api/admin/financial/orders', params });
 }
+
+export function auditFinancial(data: { id: number, status: string }) {
+  return request<any>({ url: '/api/admin/financial/audit', method: 'post', data });
+}

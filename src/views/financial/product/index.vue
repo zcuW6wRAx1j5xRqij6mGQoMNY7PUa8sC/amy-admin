@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { fetchGetProductList } from '@/service/api/financial';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
-import { setBaseUrl } from '@/utils/utils';
+import { setBaseUrl, percentFormat } from '@/utils/utils';
 import SearchBox from './modules/search-box.vue';
 import OperateDrawer from './modules/operate-drawer.vue';
 import { useAuth } from '@/hooks/business/auth';
@@ -31,6 +31,24 @@ const {
   },
   columns: () => [
     {
+      key: 'id',
+      title: 'ID',
+      align: 'center',
+      width: 60,
+      fixed: 'left'
+    },
+    {
+      key: 'category',
+      title: '分类',
+      align: 'center',
+      fixed: 'left',
+      render: row => {
+        const type = row.category === 'flexible' ? 'success' : 'warning';
+        const text = row.category === 'flexible' ? '活期' : '定期';
+        return <NTag type={type}>{text}</NTag>;
+      }
+    },
+    {
       key: 'logo',
       title: 'Logo',
       align: 'center',
@@ -45,16 +63,6 @@ const {
       align: 'center'
     },
     {
-      key: 'category',
-      title: '分类',
-      align: 'center',
-      render: row => {
-        const type = row.category === 'flexible' ? 'success' : 'warning';
-        const text = row.category === 'flexible' ? '活期' : '定期';
-        return <NTag type={type}>{text}</NTag>;
-      }
-    },
-    {
       key: 'min_amount',
       title: '最小金额',
       align: 'center'
@@ -66,21 +74,21 @@ const {
     },
     {
       key: 'min_daily_rate',
-      title: '最小日收益率',
+      title: '日收益率',
       align: 'center',
-      render: row => `${row.min_daily_rate}%`
+      render: row => percentFormat(row.min_daily_rate)
     },
-    {
-      key: 'max_daily_rate',
-      title: '最大日收益率',
-      align: 'center',
-      render: row => `${row.max_daily_rate}%`
-    },
+    // {
+    //   key: 'max_daily_rate',
+    //   title: '最大日收益率',
+    //   align: 'center',
+    //   render: row => percentFormat(row.max_daily_rate)
+    // },
     {
       key: 'penalty_rate',
       title: '赎回手续费',
       align: 'center',
-      render: row => `${row.penalty_rate}%`
+      render: row => percentFormat(row.penalty_rate)
     },
     {
       key: 'sort',
@@ -91,6 +99,7 @@ const {
       key: 'status',
       title: '状态',
       align: 'center',
+      fixed: 'right',
       render: row => {
         const type = row.status === 0 ? 'error' : 'success';
         const text = row.status === 0 ? '关闭' : '开启';
@@ -123,29 +132,16 @@ const { drawerVisible, operateType, editingData, handleAdd, handleEdit } = useTa
     <NCard title="日内产品管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <NSpace>
-          <TableHeaderOperation v-model:columns="columnChecks" :loading="loading" @refresh="getData" :no-add="!hasAuth('add')" @add="handleAdd" />
+          <TableHeaderOperation v-model:columns="columnChecks" :loading="loading" @refresh="getData"
+            :no-add="!hasAuth('add')" @add="handleAdd" />
         </NSpace>
       </template>
-      <NDataTable
-        :columns="columns"
-        :data="data"
-        size="small"
-        :flex-height="!appStore.isMobile"
-        :scroll-x="1200"
-        :loading="loading"
-        remote
-        :row-key="row => row.id"
-        :pagination="mobilePagination"
-        class="sm:h-full"
-      />
+      <NDataTable :columns="columns" :data="data" size="small" :flex-height="!appStore.isMobile" :scroll-x="1200"
+        :loading="loading" remote :row-key="row => row.id" :pagination="mobilePagination" class="sm:h-full" />
     </NCard>
 
-    <OperateDrawer
-      v-model:visible="drawerVisible"
-      :operate-type="operateType"
-      :row-data="editingData"
-      @submitted="getData"
-    />
+    <OperateDrawer v-model:visible="drawerVisible" :operate-type="operateType" :row-data="editingData"
+      @submitted="getData" />
   </div>
 </template>
 

@@ -43,7 +43,8 @@ function createDefaultModel(): CryptoPostCoinPlader {
     deposit_address: '',
     allow_deposit: 0,
     allow_withdraw: 1,
-    status: 0
+    status: 0,
+    withdraw_fee: 0
   };
 }
 
@@ -97,6 +98,9 @@ async function handleSubmit() {
   if (isEmpty(model.value.allow_withdraw)) {
     errorObj.value.allow_withdraw = '请选择是否允许提现';
   }
+  if (isEmpty(model.value.withdraw_fee) && model.value.withdraw_fee !== 0) {
+    errorObj.value.withdraw_fee = '请输入提现手续费';
+  }
   if (Object.values(errorObj.value).some(item => item)) {
     return;
   }
@@ -147,6 +151,13 @@ watch(visible, async () => {
           form-type="select"
           :data-list="depositList"
           prop-name="allow_withdraw"
+        />
+        <MyFormItem
+          v-model="model.withdraw_fee"
+          label="提现手续费（0-1）如0.01表示1‰"
+          prop-name="withdraw_fee"
+          form-type="number"
+          placeholder="请输入提现手续费，如0.01表示1‰"
         />
         <MyFormItem v-model="model.status" label="状态" form-type="select" :data-list="statusList" prop-name="status" />
       </MyForm>
