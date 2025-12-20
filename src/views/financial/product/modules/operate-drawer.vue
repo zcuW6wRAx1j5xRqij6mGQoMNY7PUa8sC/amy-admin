@@ -46,7 +46,7 @@ const statusList = [
 ];
 
 const categoryList = [
-  { label: '活期', value: 'flexible' },
+  // { label: '活期', value: 'flexible' },
   { label: '定期', value: 'fixed' }
 ];
 
@@ -74,15 +74,15 @@ function createDefaultModel() {
   return {
     id: null,
     name: '',
-    category: null,
+    category: 'fixed',
     logo: '',
     min_amount: '',
     max_amount: '',
     min_daily_rate: '',
     max_daily_rate: '',
-    penalty_rate: '',
-    duration: null,
-    sort: 0,
+    penalty_rate: '0',
+    duration: [1],
+    sort: 1,
     status: 1
   };
 }
@@ -105,11 +105,11 @@ async function handleSubmit() {
     errorObj.value.max_amount = '请输入最大金额';
   }
   if (isEmpty(ruleForm.value.min_daily_rate)) {
-    errorObj.value.min_daily_rate = '请输入最小日收益率';
+    errorObj.value.min_daily_rate = '请输入日收益率';
   }
-  if (isEmpty(ruleForm.value.max_daily_rate)) {
-    errorObj.value.max_daily_rate = '请输入最大日收益率';
-  }
+  // if (isEmpty(ruleForm.value.max_daily_rate)) {
+  //   errorObj.value.max_daily_rate = '请输入最大日收益率';
+  // }
   if (isEmpty(ruleForm.value.penalty_rate)) {
     errorObj.value.penalty_rate = '请输入赎回利息';
   }
@@ -169,49 +169,26 @@ function handleInitModel() {
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <MyForm all-required :error-obj="errorObj">
         <MyFormItem v-model="ruleForm.name" label="名称" prop-name="name" />
-        <MyFormItem
-          v-model="ruleForm.category"
-          label="分类"
-          form-type="select"
-          :data-list="categoryList"
-          prop-name="category"
-        />
+        <MyFormItem v-model="ruleForm.category" label="分类" form-type="select" :data-list="categoryList"
+          prop-name="category" />
         <MyFormItem v-model="ruleForm.logo" label="Logo" form-type="upload" prop-name="logo">
-          <NUpload
-            class="avatar-uploader"
-            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-            :show-file-list="false"
-            accept="image/*"
-            :limit="1"
-            @before-upload="handleLogoSuccess"
-          >
+          <NUpload class="avatar-uploader" action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+            :show-file-list="false" accept="image/*" :limit="1" @before-upload="handleLogoSuccess">
             <NButton v-if="uploading" disabled type="primary">{{ uploading ? '上传中' : '点击上传' }}</NButton>
             <NImage v-else-if="ruleForm.logo" :src="setBaseUrl(ruleForm.logo)" object-fit="cover" />
-            <NButton v-else type="primary">{{ uploading ? '上传中' : '点击上传' }}</NButton>
+            <NButton v-else type="primary" style="margin-left: 8px;">{{ uploading ? '上传中' : '点击上传' }}</NButton>
           </NUpload>
         </MyFormItem>
         <MyFormItem v-model="ruleForm.min_amount" label="最小金额" type="number" prop-name="min_amount" />
         <MyFormItem v-model="ruleForm.max_amount" label="最大金额" type="number" prop-name="max_amount" />
-        <MyFormItem v-model="ruleForm.min_daily_rate" label="最小日收益率%" type="number" prop-name="min_daily_rate" />
-        <MyFormItem v-model="ruleForm.max_daily_rate" label="最大日收益率%" type="number" prop-name="max_daily_rate" />
+        <MyFormItem v-model="ruleForm.min_daily_rate" label="日收益率%(0 ~ 1)" type="number" prop-name="min_daily_rate" />
+        <!-- <MyFormItem v-model="ruleForm.max_daily_rate" label="最大日收益率%" type="number" prop-name="max_daily_rate" /> -->
         <MyFormItem v-model="ruleForm.penalty_rate" label="赎回利息%" type="number" prop-name="penalty_rate" />
-        <MyFormItem
-          v-model="ruleForm.duration"
-          label="可购买天数"
-          form-type="select"
-          :data-list="durationList"
-          prop-name="duration"
-          multiple
-        />
+        <MyFormItem v-model="ruleForm.duration" label="天数" form-type="select" :data-list="durationList"
+          prop-name="duration" multiple />
         <MyFormItem v-model="ruleForm.sort" label="排序" type="number" prop-name="sort" />
-        <MyFormItem
-          v-if="operateType === 'edit'"
-          v-model="ruleForm.status"
-          label="状态"
-          form-type="select"
-          :data-list="statusList"
-          prop-name="status"
-        />
+        <MyFormItem v-if="operateType === 'edit'" v-model="ruleForm.status" label="状态" form-type="select"
+          :data-list="statusList" prop-name="status" />
       </MyForm>
 
       <template #footer>

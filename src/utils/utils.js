@@ -145,3 +145,22 @@ export const divide = (a, b) => {
   }
   return new Decimal(a).dividedBy(b).toString();
 };
+
+export const percentFormat = num => {
+    // 处理边界情况：如果输入为空或不是数字，返回 0.00%
+    if (isEmpty(num) || isNaN(num)) {
+        return '0.00%'
+    }
+
+    // 使用 Decimal 确保精确计算，避免浮点数精度问题
+    const decimalNum = new Decimal(num)
+
+    // 将数值转换为百分比（乘以 100）
+    const percentValue = decimalNum.times(100)
+
+    // 四舍五入保留两位小数，使用默认的 ROUND_HALF_UP 模式
+    const formattedValue = percentValue.toFixed(2)
+
+    // 添加百分号并返回结果
+    return `${formattedValue}%`
+}

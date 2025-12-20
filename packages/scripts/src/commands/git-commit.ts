@@ -74,7 +74,9 @@ export async function gitCommitVerify(lang: Lang = 'en-us', ignores: RegExp[] = 
 
   if (ignores.some(regExp => regExp.test(commitMsg))) return;
 
-  const REG_EXP = /(?<type>[a-z]+)(?:\((?<scope>.+)\))?(?<breaking>!)?: (?<description>.+)/i;
+  // 修改正则表达式：让 scope、冒号、空格全部变成可选
+  // 允许： "fix 优化", "fix: 优化", "feat(ui): 增加按钮"
+  const REG_EXP = /^[a-z]+(?:\(.*\))?!?(: )?.+/i;
 
   if (!REG_EXP.test(commitMsg)) {
     const errorMsg = locales[lang].gitCommitVerify;
