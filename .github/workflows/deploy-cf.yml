@@ -4,7 +4,7 @@ on:
     branches:
       - dev
       - master
-      - main
+      - main # 建议同时包含 master 和 main，以防命名习惯不同
 
 jobs:
   deploy:
