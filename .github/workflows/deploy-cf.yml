@@ -41,7 +41,7 @@ jobs:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }} # 关键修正：url 改为 webhook_url
           color: ${{ job.status == 'success' && '#0070f3' || '#ff0000' }}
           message: |
-            🚀 **项目部署通知**
+            **🚀项目部署通知**
 
             **项目名称**: amy-admin
             **当前状态**: ${{ job.status == 'success' && '✅ SUCCESS' || '❌ FAILED' }}
