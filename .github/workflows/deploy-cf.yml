@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - dev
+      - master
+      - main  # 建议同时包含 master 和 main，以防命名习惯不同
 jobs:
   deploy:
     runs-on: ubuntu-latest
