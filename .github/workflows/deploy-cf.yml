@@ -42,6 +42,7 @@ jobs:
           color: ${{ job.status == 'success' && '#0070f3' || '#ff0000' }}
           message: |
             🚀 **项目部署通知**
+
             **项目名称**: `${{ secrets.CF_PROJECT_NAME }}`
             **当前状态**: ${{ job.status == 'success' && '✅ SUCCESS' || '❌ FAILED' }}
 
