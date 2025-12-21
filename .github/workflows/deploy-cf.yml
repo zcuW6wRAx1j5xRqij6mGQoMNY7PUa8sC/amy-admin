@@ -39,7 +39,7 @@ jobs:
         uses: appleboy/discord-action@master
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }} # 关键修正：url 改为 webhook_url
-          color: ${{ job.status == 'success' && '0070f3' || 'ff0000' }}
+          color: ${{ job.status == 'success' && '#0070f3' || '#ff0000' }}
           message: |
             **项目部署通知**
 
