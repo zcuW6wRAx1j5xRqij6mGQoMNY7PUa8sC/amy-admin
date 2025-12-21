@@ -3,12 +3,22 @@ on:
   push:
     branches:
       - dev
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    env:
+      CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      # 如果你希望用 secret 存项目名，可以替换下面这一行为 ${{ secrets.CF_PAGES_PROJECT_NAME }}
+      CF_PROJECT_NAME: "amy-admin"
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      # 要轮询的分支，建议与 trigger 分支一致（见下方说明）
+      PAGES_BRANCH: "dev"
     steps:
       - uses: actions/checkout@v5
+
       - uses: pnpm/action-setup@v4
         with:
           version: 10
@@ -17,15 +27,82 @@ jobs:
         with:
           node-version: '24'
           cache: 'pnpm'
-      - name : Install Dependencies
-        run: pnpm i  &&  pnpm build
-      
-      - name: Build & Deploy Worker
+
+      - name: Install Dependencies
+        run: pnpm i && pnpm build
+
+      - name: Build & Deploy Pages (wrangler)
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=amy-admin --branch=main
+          command: pages deploy dist --project-name=${{ env.CF_PROJECT_NAME }} --branch=${{ env.PAGES_BRANCH }}
           packageManager: pnpm
 
+      - name: Install jq & curl
+        run: sudo apt-get update && sudo apt-get install -y jq curl
 
+      - name: Get latest Pages deployment id
+        id: get-deploy
+        run: |
+          api="https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT_NAME}/deployments?order_by=created_on&direction=desc"
+          echo "Calling $api" >&2
+          resp=$(curl -s -H "Authorization: Bearer ${CF_API_TOKEN}" "$api")
+          # 尝试优先按分支匹配最新部署（如果 API 返回中包含 deployment_trigger.revision.branch）
+          deploy_id=$(echo "$resp" | jq -r --arg branch "$PAGES_BRANCH" '.result[] | select(.deployment_trigger.revision.branch == $branch) | .id' | head -n 1)
+          if [ -z "$deploy_id" ] || [ "$deploy_id" = "null" ]; then
+            # 回退到 result[0]
+            deploy_id=$(echo "$resp" | jq -r '.result[0].id')
+          fi
+          if [ -z "$deploy_id" ] || [ "$deploy_id" = "null" ]; then
+            echo "No deployment found" >&2
+            echo "deploy_id=" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "Found deploy id: $deploy_id" >&2
+          echo "deploy_id=$deploy_id" >> $GITHUB_OUTPUT
+
+      - name: Poll deployment status
+        id: poll
+        run: |
+          deploy_id="${{ steps.get-deploy.outputs.deploy_id }}"
+          if [ -z "$deploy_id" ]; then
+            echo "status=not_found" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          api_base="https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT_NAME}/deployments"
+          status=""
+          deploy_url=""
+          # 最多轮询 30 次，每次间隔 10s（约 5 分钟），可按需调整
+          for i in $(seq 1 30); do
+            resp=$(curl -s -H "Authorization: Bearer ${CF_API_TOKEN}" "${api_base}/${deploy_id}")
+            status=$(echo "$resp" | jq -r '.result.status // "unknown"')
+            deploy_url=$(echo "$resp" | jq -r '.result.url // ""')
+            echo "[$i] deployment ${deploy_id} status: $status"
+            if [ "$status" = "ready" ] || [ "$status" = "failed" ]; then
+              break
+            fi
+            sleep 10
+          done
+          echo "status=$status" >> $GITHUB_OUTPUT
+          echo "deploy_url=$deploy_url" >> $GITHUB_OUTPUT
+
+      - name: Send notification to Discord
+        if: always()
+        run: |
+          status="${{ steps.poll.outputs.status }}"
+          deploy_url="${{ steps.poll.outputs.deploy_url }}"
+          proj="${{ env.CF_PROJECT_NAME }}"
+          branch="${{ env.PAGES_BRANCH }}"
+          if [ -z "$status" ] || [ "$status" = "not_found" ]; then
+            content="⚠️ 无法获取 Cloudflare Pages 部署状态 — 项目：${proj} 分支：${branch}"
+          elif [ "$status" = "ready" ]; then
+            content="✅ 部署完成：${proj}（${branch}）\n访问：${deploy_url}"
+          elif [ "$status" = "failed" ]; then
+            content="❌ 部署失败：${proj}（${branch}）\n详情：${deploy_url}"
+          else
+            content="ℹ️ 部署状态：${status} — 项目：${proj} 分支：${branch} 链接：${deploy_url}"
+          fi
+          # 转义双引号
+          payload=$(jq -n --arg c "$content" '{content:$c}')
+          curl -H "Content-Type: application/json" -X POST -d "$payload" "${DISCORD_WEBHOOK_URL}"
