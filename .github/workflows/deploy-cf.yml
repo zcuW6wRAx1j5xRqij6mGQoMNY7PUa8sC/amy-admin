@@ -39,7 +39,7 @@ jobs:
         if: always() # 确保失败也能收到通知告知你哪里错了
         uses: appleboy/discord-action@master
         with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }} # 关键修正：url 改为 webhook_url
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           color: ${{ job.status == 'success' && '#0070f3' || '#ff0000' }}
           message: |
             🚀 **项目部署通知**
