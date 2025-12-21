@@ -150,3 +150,4 @@ jobs:
             echo "discord_body=${body}" >> $GITHUB_OUTPUT
             exit 0
           fi
+
