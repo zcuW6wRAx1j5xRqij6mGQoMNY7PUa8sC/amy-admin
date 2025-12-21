@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - dev
+      - master
 
 jobs:
   deploy:
@@ -11,11 +12,8 @@ jobs:
     env:
       CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      # 如果你希望用 secret 存项目名，可以替换下面这一行为 ${{ secrets.CF_PAGES_PROJECT_NAME }}
       CF_PROJECT_NAME: "amy-admin"
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-      # 要轮询的分支，建议与 trigger 分支一致（见下方说明）
-      PAGES_BRANCH: "dev"
     steps:
       - uses: actions/checkout@v5
 
@@ -28,6 +26,12 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
 
+      - name: Determine branch
+        run: |
+          # 把 refs/heads/<branch> 提取为纯分支名并导出到 GITHUB_ENV
+          echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          echo "Detected branch: ${GITHUB_REF#refs/heads/}"
+
       - name: Install Dependencies
         run: pnpm i && pnpm build
 
@@ -36,7 +40,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ env.CF_PROJECT_NAME }} --branch=${{ env.PAGES_BRANCH }}
+          command: pages deploy dist --project-name=${{ env.CF_PROJECT_NAME }} --branch=${{ env.BRANCH }}
           packageManager: pnpm
 
       - name: Install jq & curl
@@ -48,10 +52,13 @@ jobs:
           api="https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT_NAME}/deployments?order_by=created_on&direction=desc"
           echo "Calling $api" >&2
           resp=$(curl -s -H "Authorization: Bearer ${CF_API_TOKEN}" "$api")
-          # 尝试优先按分支匹配最新部署（如果 API 返回中包含 deployment_trigger.revision.branch）
-          deploy_id=$(echo "$resp" | jq -r --arg branch "$PAGES_BRANCH" '.result[] | select(.deployment_trigger.revision.branch == $branch) | .id' | head -n 1)
+          # 捕获可能的 API 错误信息
+          api_errors=$(echo "$resp" | jq -c '.errors // empty')
+          echo "api_errors=$api_errors" >> $GITHUB_OUTPUT
+
+          # 按分支优先查找 deployment id
+          deploy_id=$(echo "$resp" | jq -r --arg branch "$BRANCH" '.result[] | select(.deployment_trigger.revision.branch == $branch) | .id' | head -n 1)
           if [ -z "$deploy_id" ] || [ "$deploy_id" = "null" ]; then
-            # 回退到 result[0]
             deploy_id=$(echo "$resp" | jq -r '.result[0].id')
           fi
           if [ -z "$deploy_id" ] || [ "$deploy_id" = "null" ]; then
@@ -68,16 +75,19 @@ jobs:
           deploy_id="${{ steps.get-deploy.outputs.deploy_id }}"
           if [ -z "$deploy_id" ]; then
             echo "status=not_found" >> $GITHUB_OUTPUT
+            echo "deploy_url=" >> $GITHUB_OUTPUT
+            echo "api_errors=${{ steps.get-deploy.outputs.api_errors }}" >> $GITHUB_OUTPUT
             exit 0
           fi
           api_base="https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT_NAME}/deployments"
           status=""
           deploy_url=""
-          # 最多轮询 30 次，每次间隔 10s（约 5 分钟），可按需调整
+          last_api_errors=""
           for i in $(seq 1 30); do
             resp=$(curl -s -H "Authorization: Bearer ${CF_API_TOKEN}" "${api_base}/${deploy_id}")
             status=$(echo "$resp" | jq -r '.result.status // "unknown"')
             deploy_url=$(echo "$resp" | jq -r '.result.url // ""')
+            last_api_errors=$(echo "$resp" | jq -c '.errors // empty')
             echo "[$i] deployment ${deploy_id} status: $status"
             if [ "$status" = "ready" ] || [ "$status" = "failed" ]; then
               break
@@ -86,14 +96,18 @@ jobs:
           done
           echo "status=$status" >> $GITHUB_OUTPUT
           echo "deploy_url=$deploy_url" >> $GITHUB_OUTPUT
+          echo "api_errors=$last_api_errors" >> $GITHUB_OUTPUT
 
-      - name: Send notification to Discord
+      - name: Send notification to Discord (and log response)
         if: always()
         run: |
           status="${{ steps.poll.outputs.status }}"
           deploy_url="${{ steps.poll.outputs.deploy_url }}"
+          api_errors_get="${{ steps.get-deploy.outputs.api_errors }}"
+          api_errors_poll="${{ steps.poll.outputs.api_errors }}"
           proj="${{ env.CF_PROJECT_NAME }}"
-          branch="${{ env.PAGES_BRANCH }}"
+          branch="${{ env.BRANCH }}"
+
           if [ -z "$status" ] || [ "$status" = "not_found" ]; then
             content="⚠️ 无法获取 Cloudflare Pages 部署状态 — 项目：${proj} 分支：${branch}"
           elif [ "$status" = "ready" ]; then
@@ -103,6 +117,36 @@ jobs:
           else
             content="ℹ️ 部署状态：${status} — 项目：${proj} 分支：${branch} 链接：${deploy_url}"
           fi
-          # 转义双引号
-          payload=$(jq -n --arg c "$content" '{content:$c}')
-          curl -H "Content-Type: application/json" -X POST -d "$payload" "${DISCORD_WEBHOOK_URL}"
+
+          # 如果 Cloudflare API 返回 errors（例如 {"sender":["This field is required"]}），把它附加到消息
+          combined_errors=""
+          if [ -n "$api_errors_get" ] && [ "$api_errors_get" != "null" ]; then
+            combined_errors="${combined_errors}GET_ERRORS: ${api_errors_get}\n"
+          fi
+          if [ -n "$api_errors_poll" ] && [ "$api_errors_poll" != "null" ]; then
+            combined_errors="${combined_errors}POLL_ERRORS: ${api_errors_poll}\n"
+          fi
+          if [ -n "$combined_errors" ]; then
+            content="${content}\n\nAPI_ERRORS:\n${combined_errors}"
+          fi
+
+          payload=$(jq -n --arg c "$content" '{content:$c, username:"CF Pages CI"}')
+
+          # 发送并记录 HTTP 状态码与响应体，Discord 成功返回 204 (No Content)
+          response=$(curl -s -w "\n%{http_code}" -H "Content-Type: application/json" -X POST -d "$payload" "${DISCORD_WEBHOOK_URL}")
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          echo "Discord HTTP status: $http_code"
+          if [ -n "$body" ]; then
+            echo "Discord response body: $body"
+          else
+            echo "Discord response body: (empty)"
+          fi
+
+          if [ "$http_code" != "204" ]; then
+            echo "Warning: Discord webhook returned non-204 status. Check webhook URL / payload."
+            # 失败时把错误也写为步骤输出以便在 Actions UI 查阅
+            echo "discord_status=${http_code}" >> $GITHUB_OUTPUT
+            echo "discord_body=${body}" >> $GITHUB_OUTPUT
+            exit 0
+          fi
