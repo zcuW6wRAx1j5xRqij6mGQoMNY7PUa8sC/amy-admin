@@ -4,36 +4,69 @@ on:
     branches:
       - dev
       - master
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: false
+        default: ''
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     env:
       CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CF_PROJECT_NAME: "amy-admin"
+      CF_PROJECT_NAME: ${{ secrets.CF_PAGES_PROJECT_NAME || 'amy-admin' }}
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v5
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - uses: actions/setup-node@v6
+      - name: Setup Node.js (required before pnpm)
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
           cache: 'pnpm'
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Debug: show environment & versions
+        run: |
+          echo "User: $(whoami)"
+          echo "Node version:"
+          node -v || true
+          echo "npm version:"
+          npm -v || true
+          echo "pnpm path:"
+          which pnpm || true
+          echo "pnpm version:"
+          pnpm -v || true
+          echo "Working directory listing:"
+          ls -la || true
+          echo "Top of package.json (if exists):"
+          if [ -f package.json ]; then head -n 50 package.json || true; else echo "no package.json in repo root"; fi
+
       - name: Determine branch
         run: |
-          # 把 refs/heads/<branch> 提取为纯分支名并导出到 GITHUB_ENV
-          echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-          echo "Detected branch: ${GITHUB_REF#refs/heads/}"
+          if [ -n "${{ github.event.inputs.branch }}" ]; then
+            echo "BRANCH=${{ github.event.inputs.branch }}" >> $GITHUB_ENV
+          else
+            echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          fi
+          echo "Using branch: $BRANCH"
 
       - name: Install Dependencies
-        run: pnpm i && pnpm build
+        # 如果你的项目在子目录（monorepo），把 working-directory 改成子目录路径
+        run: |
+          # 若遇到内存问题，可开启下面这一行
+          # export NODE_OPTIONS="--max_old_space_size=4096"
+          pnpm -v
+          pnpm i --prefer-offline --no-frozen-lockfile
+          pnpm build
 
       - name: Build & Deploy Pages (wrangler)
         uses: cloudflare/wrangler-action@v3
