@@ -29,8 +29,8 @@ const visible = defineModel<boolean>('visible', {
 
 const title = computed(() => {
   const titles: Record<NaiveUI.TableOperateType, string> = {
-    add: '新增ETF产品',
-    edit: '编辑ETF产品'
+    add: '新增AI7.0产品',
+    edit: '编辑AI7.0产品'
   };
   return titles[props.operateType];
 });

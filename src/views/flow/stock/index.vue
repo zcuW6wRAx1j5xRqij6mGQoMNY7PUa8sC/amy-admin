@@ -119,6 +119,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination,getDataB
           financial_redeem: { type: 'error', text: '日内赎回' },
           financial_redeem_deduct: { type: 'error', text: '日内赎回收益扣除' },
           financial_redeem_fee: { type: 'error', text: '日内赎回违约金' },
+          financial_force_close: { type: 'error', text: '日内后台结算' },
         };
         const config = typeMap[row.type] || { type: 'default', text: row.type };
         return <NTag type={config.type}>{config.text}</NTag>;
