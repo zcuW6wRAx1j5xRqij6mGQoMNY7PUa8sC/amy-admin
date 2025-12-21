@@ -4,7 +4,8 @@ on:
     branches:
       - dev
       - master
-      - main  # 建议同时包含 master 和 main，以防命名习惯不同
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,34 +19,40 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: '24'
+          node-version: '22' # 降级到更稳定的 LTS 版本
           cache: 'pnpm'
 
       - name: Install Dependencies
-        run: pnpm i && pnpm build
+        run: pnpm install && pnpm build
 
       - name: Build & Deploy Worker
-        id: cloudflare_deploy # 添加 ID 以便后续步骤引用状态
+        id: cloudflare_deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # 建议使用你定义的 CF_PROJECT_NAME 变量
-          command: pages deploy dist --project-name=${{ secrets.CF_PROJECT_NAME }} --branch=main
+          # 修正为动态分支，避免 master 推送但在 CF 显示为 main
+          command: pages deploy dist --project-name=${{ secrets.CF_PROJECT_NAME }} --branch=${{ github.ref_name }}
           packageManager: pnpm
 
-      # 新增：Discord 通知步骤
-      - name: Discord notification
-        if: always() # 确保无论成功还是失败都会发送通知
+      - name: Discord Notification
+        if: always() # 确保失败也能收到通知告知你哪里错了
         uses: appleboy/discord-action@master
         with:
-          webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }} # 如果你有 ID 分开的话
-          webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }} # 或者直接用下面的映射方式
-          url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          color: ${{ job.status == 'success' && '#42b883' || '#eb4034' }}
-          username: "GitHub Deploy Bot"
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }} # 关键修正：url 改为 webhook_url
+          username: "Cloudflare Deployer"
+          avatar_url: "https://www.cloudflare.com/img/logo-cloudflare-dark.png"
+          color: ${{ job.status == 'success' && '#0070f3' || '#ff0000' }}
+          content: "🚀 **项目部署通知**"
           message: |
-            **项目:** ${{ secrets.CF_PROJECT_NAME }}
-            **状态:** ${{ job.status == 'success' && '✅ 部署成功' || '❌ 部署失败' }}
-            **提交信息:** ${{ github.event.head_commit.message }}
-            **流程链接:** https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            **项目名称**: `${{ secrets.CF_PROJECT_NAME }}`
+            **当前状态**: ${{ job.status == 'success' && '✅ SUCCESS' || '❌ FAILED' }}
+
+            ---
+            **📄 部署详情**
+            > **分支**: `${{ github.ref_name }}`
+            > **提交信息**: ${{ github.event.head_commit.message }}
+            > **执行作者**: `${{ github.actor }}`
+
+            **🔗 相关链接**
+            [查看 GitHub Actions 日志](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
