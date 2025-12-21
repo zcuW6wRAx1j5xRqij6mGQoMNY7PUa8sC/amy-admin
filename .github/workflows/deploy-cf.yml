@@ -31,8 +31,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # 修正为动态分支，避免 master 推送但在 CF 显示为 main
-          command: pages deploy dist --project-name=${{ secrets.CF_PROJECT_NAME }} --branch=${{ github.ref_name }}
+          command: pages deploy dist --project-name=${{ secrets.CF_PROJECT_NAME }} --branch=${{ github.ref_name }} --commit-dirty=true
           packageManager: pnpm
 
       - name: Discord Notification
