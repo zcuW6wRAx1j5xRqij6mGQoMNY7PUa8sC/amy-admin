@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: '22' # 降级到更稳定的 LTS 版本
+          node-version: '22.16' # 降级到更稳定的 LTS 版本
           cache: 'pnpm'
 
       - name: Install Dependencies
@@ -41,16 +41,11 @@ jobs:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }} # 关键修正：url 改为 webhook_url
           color: ${{ job.status == 'success' && '#67C23A' || '#F56C6C' }}
           message: |
-            **项目部署通知**
+            **项目名称**： ${{ secrets.CF_PROJECT_NAME }}
+            **当前状态**： ${{ job.status == 'success' && '✅ SUCCESS' || '❌ FAILED' }}
 
-            **项目名称**: amy-admin
-            **当前状态**: ${{ job.status == 'success' && '✅ SUCCESS' || '❌ FAILED' }}
-
-            ---
             **部署详情**
-            > **分支**: `${{ github.ref_name }}`
-            > **提交信息**: ${{ github.event.head_commit.message }}
-            > **执行作者**: `${{ github.actor }}`
+            > **部署分支**： `${{ github.ref_name }}`
+            > **提交信息**： ${{ github.event.head_commit.message }}
+            > **执行作者**： `${{ github.actor }}`
 
-            **🔗 相关链接**
-            [查看 GitHub Actions 日志](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
