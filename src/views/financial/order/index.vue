@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { NButton, NPopconfirm } from 'naive-ui';
 import dayjs from 'dayjs';
-import { auditFinancial, fetchGetOrderList } from '@/service/api/financial';
+import { auditFinancial, fetchGetOrderList, forceSettleFinancial } from '@/service/api/financial';
 import { useAppStore } from '@/store/modules/app';
 import { useTable } from '@/hooks/common/table';
 import { useAuth } from '@/hooks/business/auth';
@@ -208,6 +208,18 @@ const {
                 }}
               </NPopconfirm>
             )}
+            {hasAuth('forceSettle') && row.status === 'processing' && (
+              <NPopconfirm onPositiveClick={() => handleForceSettle({ id: row.id })}>
+                {{
+                  default: () => '确认强制结算吗？',
+                  trigger: () => (
+                    <NButton type="primary" ghost size="small">
+                      强制结算
+                    </NButton>
+                  )
+                }}
+              </NPopconfirm>
+            )}
           </div>
         );
       }
@@ -217,6 +229,11 @@ const {
 
 const handleAudit = async (params: { id: number; status: string }) => {
   await auditFinancial(params);
+  getData();
+};
+
+const handleForceSettle = async (params: { id: number }) => {
+  await forceSettleFinancial(params);
   getData();
 };
 </script>

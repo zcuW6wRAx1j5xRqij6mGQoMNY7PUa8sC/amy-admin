@@ -25,3 +25,8 @@ export function fetchGetOrderList(params: any) {
 export function auditFinancial(data: { id: number; status: string }) {
   return request<any>({ url: '/api/admin/financial/order/audit', method: 'post', data });
 }
+
+/** 强制结算 */
+export function forceSettleFinancial(data: { id: number }) {
+  return request<any>({ url: '/api/admin/financial/order/force-settle', method: 'post', data });
+}
