@@ -15,3 +15,13 @@ export function getLevelOptions() {
     method: 'get'
   });
 }
+
+// 获取平台配置数据
+export function fetchGetPlatformConfigData(params: any) {
+  return request<any>({ url: '/api/admin/platform/config/data', method: 'get', params: params });
+}
+
+// 保存平台配置数据
+export function fetchSavePlatformConfigData(data: any) {
+  return request<any>({ url: '/api/admin/platform/config/save', method: 'post', data });
+}

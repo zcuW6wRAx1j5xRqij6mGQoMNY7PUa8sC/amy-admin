@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 import { fetchAddProduct, fetchUpdateProduct } from '@/service/api/financial';
 import { isEmpty } from '@/utils/is';
 import useUpload from '@/hooks/business/useUpload';
@@ -14,6 +14,8 @@ interface Props {
   operateType: NaiveUI.TableOperateType;
   /** the edit row data */
   rowData?: any;
+  /** the duration list */
+  durationList?: any[];
 }
 
 const props = defineProps<Props>();
@@ -50,17 +52,17 @@ const categoryList = [
   { label: '定期', value: 'fixed' }
 ];
 
-const durationList = [
-  { label: '1天', value: 1 },
-  { label: '3天', value: 3 },
-  { label: '5天', value: 5 },
-  { label: '7天', value: 7 },
-  { label: '10天', value: 10 },
-  { label: '15天', value: 15 },
-  { label: '30天', value: 30 },
-  { label: '60天', value: 60 },
-  { label: '120天', value: 120 }
-];
+// const durationList = [
+//   { label: '1天', value: 1 },
+//   { label: '3天', value: 3 },
+//   { label: '5天', value: 5 },
+//   { label: '7天', value: 7 },
+//   { label: '10天', value: 10 },
+//   { label: '15天', value: 15 },
+//   { label: '30天', value: 30 },
+//   { label: '60天', value: 60 },
+//   { label: '120天', value: 120 }
+// ];
 
 const needTradeCodeList = [
   { label: '是', value: 1 },

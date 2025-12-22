@@ -1,8 +1,9 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { fetchGetProductList } from '@/service/api/financial';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
+import { fetchSavePlatformConfigData,fetchGetPlatformConfigData } from '@/service/api/common';
 import { setBaseUrl, percentFormat } from '@/utils/utils';
 import SearchBox from './modules/search-box.vue';
 import OperateDrawer from './modules/operate-drawer.vue';
@@ -129,6 +130,59 @@ const {
   ]
 });
 
+// 期限
+const platformConfigData = ref({
+  financial_durations: [],
+  group: 'financial'
+})
+const timeVisible = ref(false)
+const btnLoading = ref(false)
+const defaultDurationList = ref([])
+
+// 处理修改期限
+function handleTime() {
+  // platformConfigData.value.financial_durations = defaultDurationList.value.join(',');
+  timeVisible.value = true;
+}
+
+// 处理保存期限
+function handleSaveTime() {
+  btnLoading.value = true;
+  const params = {
+    group: 'financial',
+    data: {
+      financial_durations: platformConfigData.value.financial_durations.split(',')
+    }
+  }
+  fetchSavePlatformConfigData(params).then(res => {
+    getData()
+    getPlatformConfig()
+  }).finally(() => {
+    timeVisible.value = false;
+    btnLoading.value = false;
+  });
+}
+
+function getPlatformConfig() {
+  fetchGetPlatformConfigData({
+    group: 'financial',
+    key: 'financial_durations'
+  }).then(res => {
+    platformConfigData.value.financial_durations = res?.join(',') || '';
+    defaultDurationList.value = []
+    res.forEach(item => {
+      defaultDurationList.value.push({
+        label: `${item}天`,
+        value: item
+      })
+    })
+  });
+}
+
+onMounted(() => {
+  getPlatformConfig();
+});
+
 const { drawerVisible, operateType, editingData, handleAdd, handleEdit } = useTableOperate(data, getData);
 </script>
 
@@ -138,6 +192,7 @@ const { drawerVisible, operateType, editingData, handleAdd, handleEdit } = useTa
     <NCard title="日内产品管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <NSpace>
+          <NTag type="primary" v-if="hasAuth('setTime')" class="cursor-pointer" @click="handleTime">修改期限</NTag>
           <TableHeaderOperation v-model:columns="columnChecks" :loading="loading" @refresh="getData"
             :no-add="!hasAuth('add')" @add="handleAdd" />
         </NSpace>
@@ -146,7 +201,20 @@ const { drawerVisible, operateType, editingData, handleAdd, handleEdit } = useTa
         :loading="loading" remote :row-key="row => row.id" :pagination="mobilePagination" class="sm:h-full" />
     </NCard>
 
-    <OperateDrawer v-model:visible="drawerVisible" :operate-type="operateType" :row-data="editingData"
+    <!-- 站内信 -->
+    <ObDialog
+      v-model:visible="timeVisible"
+      title="修改期限(天) 提示:'已英文,隔开'"
+      :loading="btnLoading"
+      width="420px"
+      :handle-confirm="handleSaveTime"
+    >
+      <MyForm all-required>
+        <MyFormItem v-model="platformConfigData.financial_durations" label="期限" prop-name="financial_durations" />
+      </MyForm>
+    </ObDialog>
+
+    <OperateDrawer v-model:visible="drawerVisible" :durationList="defaultDurationList" :operate-type="operateType" :row-data="editingData"
       @submitted="getData" />
   </div>
 </template>
