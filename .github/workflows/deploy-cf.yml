@@ -4,26 +4,23 @@ on:
     branches:
       - dev
       - master
-      - main # 建议同时包含 master 和 main，以防命名习惯不同
-
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5
-
       - uses: pnpm/action-setup@v4
         with:
           version: 10
 
       - uses: actions/setup-node@v6
         with:
-          node-version: '22.16' # 降级到更稳定的 LTS 版本
+          node-version: '22.16'
           cache: 'pnpm'
-
       - name: Install Dependencies
-        run: pnpm install && pnpm build
+        run: pnpm i  &&  pnpm build
 
       - name: Build & Deploy Worker
         id: cloudflare_deploy
@@ -31,21 +28,28 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ secrets.CF_PROJECT_NAME }} --branch=${{ github.ref_name }} --commit-dirty=true
+          command: pages deploy dist --project-name=${{ secrets.CF_PROJECT_NAME }} --branch=${{ github.ref_name }}  --commit-dirty=true
           packageManager: pnpm
 
+      - name: Set Deployment Time
+        if: always()
+        run: echo "DEPLOYMENT_TIME=$(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+
       - name: Discord Notification
-        if: always() # 确保失败也能收到通知告知你哪里错了
+        if: always()
         uses: appleboy/discord-action@master
         with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }} # 关键修正：url 改为 webhook_url
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           color: ${{ job.status == 'success' && '#67C23A' || '#F56C6C' }}
           message: |
-            **项目名称**： ${{ secrets.CF_PROJECT_NAME }}
-            **当前状态**： ${{ job.status == 'success' && '✅ SUCCESS' || '❌ FAILED' }}
+            **🚀 部署通知**【${{ secrets.CF_PROJECT_NAME }}】
 
-            **部署详情**
-            > **部署分支**： `${{ github.ref_name }}`
-            > **提交信息**： ${{ github.event.head_commit.message }}
-            > **执行作者**： `${{ github.actor }}`
+            **部署状态**: ${{ job.status == 'success' && '✅ 成功' || job.status == 'failure' && '❌ 失败' || '⚠️ 取消' }}
+            **当前分支**: ${{ github.ref_name }}
+            **提交哈希**: ${{ github.sha }}
+            **提交信息**: ${{ github.event.head_commit.message || 'N/A' }}
+            **执行用户**: ${{ github.actor }}
+            **部署时间**: ${{ env.DEPLOYMENT_TIME }}
+
+            ${{ job.status == 'success' && '部署成功！可以访问应用查看最新更改。' || '部署失败，请检查 GitHub Actions 日志获取详细信息。' }}
 
