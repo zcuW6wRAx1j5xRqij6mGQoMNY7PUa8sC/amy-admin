@@ -55,6 +55,8 @@ const {
         </NText>
       )
     },
+    { key: 'beneficiary_email', title: '受益人邮箱', align: 'left', width: 150, 
+    render: row => <div><div>名称:{row.beneficiary_name || '-'}</div><div>邮箱:{row.beneficiary_email || '-'}</div></div> },
     // { key: 'nickname', title: '昵称', align: 'center', width: 100 },
     // { key: 'parent_id', title: '组长码', align: 'center', width: 100 },
     { key: 'agent.invite_code', title: '业务员邀请码', align: 'center', width: 120 },
@@ -267,28 +269,12 @@ function handleBankCardSubmitted() {
     <SearchBox v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard title="用户管理" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <TableHeaderOperation
-          v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
-          :loading="loading"
-          :no-add="!hasAuth('add')"
-          @add="handleCreateUser"
-          @refresh="getData"
-        />
+        <TableHeaderOperation v-model:columns="columnChecks" :disabled-delete="checkedRowKeys.length === 0"
+          :loading="loading" :no-add="!hasAuth('add')" @add="handleCreateUser" @refresh="getData" />
       </template>
-      <NDataTable
-        v-model:checked-row-keys="checkedRowKeys"
-        :columns="columns"
-        :data="data"
-        size="small"
-        :flex-height="!appStore.isMobile"
-        :scroll-x="2300"
-        :loading="loading"
-        remote
-        :row-key="row => row.id"
-        :pagination="mobilePagination"
-        class="sm:h-full"
-      />
+      <NDataTable v-model:checked-row-keys="checkedRowKeys" :columns="columns" :data="data" size="small"
+        :flex-height="!appStore.isMobile" :scroll-x="2520" :loading="loading" remote :row-key="row => row.id"
+        :pagination="mobilePagination" class="sm:h-full" />
     </NCard>
 
     <!-- 创建用户抽屉 -->
@@ -298,31 +284,19 @@ function handleBankCardSubmitted() {
     <UserEditDrawer v-model:visible="drawerVisible" :row-data="editingData" @submitted="getData" />
 
     <!-- 重置密码抽屉 -->
-    <ResetPasswordDrawer
-      v-model:visible="resetPasswordDrawerVisible"
-      :user-id="resetPasswordUserId"
-      :reset-type="resetPasswordType"
-      @submitted="handleResetPasswordSubmitted"
-    />
+    <ResetPasswordDrawer v-model:visible="resetPasswordDrawerVisible" :user-id="resetPasswordUserId"
+      :reset-type="resetPasswordType" @submitted="handleResetPasswordSubmitted" />
 
     <!-- 实名抽屉 -->
     <KycDrawer v-model:visible="kycDrawerVisible" :user-id="kycUserId" @submitted="handleKycSubmitted" />
 
     <!-- 银行卡抽屉 -->
-    <BankCardDrawer
-      v-model:visible="bankCardDrawerVisible"
-      :user-id="bankCardUserId"
-      @submitted="handleBankCardSubmitted"
-    />
+    <BankCardDrawer v-model:visible="bankCardDrawerVisible" :user-id="bankCardUserId"
+      @submitted="handleBankCardSubmitted" />
 
     <!-- 站内信 -->
-    <ObDialog
-      v-model:visible="msgVisible"
-      title="发送站内信"
-      :loading="btnLoading"
-      width="420px"
-      :handle-confirm="handleMsg"
-    >
+    <ObDialog v-model:visible="msgVisible" title="发送站内信" :loading="btnLoading" width="420px"
+      :handle-confirm="handleMsg">
       <MyForm all-required :error-obj="errorObj">
         <MyFormItem v-model="fromData.subject" label="消息主题" prop-name="subject" />
         <MyFormItem label="消息内容" form-type="others" prop-name="content">

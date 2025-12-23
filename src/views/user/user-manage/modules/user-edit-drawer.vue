@@ -41,7 +41,9 @@ function createDefaultModel() {
     credit: 0,
     is_kyc: 0,
     status: 1,
-    remark: ''
+    remark: '',
+    beneficiary_email: '',
+    beneficiary_name: '',
   };
 }
 
@@ -139,6 +141,8 @@ watch(visible, () => {
           :data-list="levelOptions"
           prop-name="level_id"
         />
+        <MyFormItem v-model="ruleForm.beneficiary_name" label="受益人名称" prop-name="beneficiary_name" />
+        <MyFormItem v-model="ruleForm.beneficiary_email" label="受益人邮箱" prop-name="beneficiary_email" />
         <MyFormItem v-model="ruleForm.credit" label="信用分" prop-name="credit" />
         <MyFormItem
           v-model="ruleForm.is_kyc"
