@@ -31,14 +31,17 @@ const {
   apiFn: fetchGetUserList,
   apiParams: {
     id: '',
-    email: '',
     invite_code: '',
     status: null,
     size: 20,
     role_type: null,
     is_kyc: null,
     page: 1,
-    remark: ''
+    remark: '',
+    like:{
+      phone: '',
+      email: ''
+    }
   },
   columns: () => [
     { key: 'id', title: 'UID', align: 'center', width: 80, fixed: 'left' },
@@ -56,7 +59,7 @@ const {
       )
     },
     { key: 'agent.invite_code', title: '业务员邀请码', align: 'center', width: 120 },
-    { key: 'beneficiary_email', title: '受益人', align: 'left', width: 150, 
+    { key: 'beneficiary_email', title: '受益人', align: 'left', width: 150,
     render: row => <div><div>名称:{row.beneficiary_name || '-'}</div><div>邮箱:{row.beneficiary_email || '-'}</div></div> },
     // { key: 'nickname', title: '昵称', align: 'center', width: 100 },
     // { key: 'parent_id', title: '组长码', align: 'center', width: 100 },

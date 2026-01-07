@@ -52,10 +52,10 @@ async function search() {
               <NInput v-model:value="model.id" placeholder="请输入用户ID" />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:8 l:6" label="邮箱" path="email" class="pr-24px">
-              <NInput v-model:value="model.email" placeholder="请输入邮箱" />
+              <NInput v-model:value="model.like.email" placeholder="请输入邮箱" />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:8 l:6" label="手机号码" path="phone" class="pr-24px">
-              <NInput v-model:value="model.phone" placeholder="请输入手机号码" />
+              <NInput v-model:value="model.like.phone" placeholder="请输入手机号码" />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:8 l:6" label="邀请码" path="invite_code" class="pr-24px">
               <NInput v-model:value="model.invite_code" placeholder="请输入邀请码" />
